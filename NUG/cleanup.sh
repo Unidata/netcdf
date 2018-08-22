@@ -2,4 +2,4 @@
 
 rm -rf html
 rm -rf latex
-rm *~
+rm -rf *~
