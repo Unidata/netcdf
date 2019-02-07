@@ -1,4 +1,5 @@
 - \subpage netcdf_introduction
+- \subpage getting_and_building_netcdf
 - \subpage file_structure_and_performance
 - \subpage data_type
 - \subpage netcdf_data_set_components
@@ -10,7 +11,6 @@
 - \subpage BestPractices
 - \subpage user_defined_formats
 - \subpage users_guide_appendices
-- \subpage getting_and_building_netcdf
 
 ## The Purpose of NetCDF
 
