@@ -1,7 +1,3 @@
-/*! \page user_guide The NetCDF User's Guide
-
-<H2>The sections of the netCDF User's Guide</H2>
-
 - \subpage netcdf_introduction
 - \subpage file_structure_and_performance
 - \subpage data_type
@@ -14,8 +10,9 @@
 - \subpage BestPractices
 - \subpage user_defined_formats
 - \subpage users_guide_appendices
+- \subpage getting_and_building_netcdf
 
-<H2>The Purpose of NetCDF</H2>
+## The Purpose of NetCDF
 
 The purpose of the Network Common Data Form (netCDF) interface is to
 allow you to create, access, and share array-oriented data in a form
@@ -2923,6 +2920,4 @@ inadvertent reading of values that haven't been written.
 The following appendices are available.
 
 - \subpage attribute_conventions
-- \subpage file_format_specifications
-
-*/
+- \subpage file_format_specification
