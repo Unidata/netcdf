@@ -1,18 +1,14 @@
-NetCDF-4 Filter Support
-============================
-<!-- double header is needed to workaround doxygen bug -->
-
-NetCDF-4 Filter Support {#compress}
+NetCDF-4 Filter Support {#nug_filters_compress}
 =================================
 
 [TOC]
 
-Introduction {#compress_intro}
+Introduction {#nug_filters_compress_intro}
 ==================
 
-The HDF5 library (1.8.11 and later) 
+The HDF5 library (1.8.11 and later)
 supports a general filter mechanism to apply various
-kinds of filters to datasets before reading or writing. 
+kinds of filters to datasets before reading or writing.
 The netCDF enhanced (aka netCDF-4) library inherits this
 capability since it depends on the HDF5 library.
 
@@ -37,7 +33,7 @@ can locate, load, and utilize the compressor.
 These libraries are expected to installed in a specific
 directory.
 
-Enabling A Compression Filter {#Enable}
+Enabling A Compression Filter {#nug_filters_Enable}
 =============================
 
 In order to compress a variable, the netcdf-c library
@@ -66,7 +62,7 @@ using __ncgen__, via an API call, or via command line parameters to __nccopy__.
 In any case, remember that filtering also requires setting chunking, so the
 variable must also be marked with chunking information.
 
-Using The API {#API}
+Using The API {#nug_filters_API}
 -------------
 The necessary API methods are included in __netcdf.h__ by default.
 One API method is for setting the filter to be used
@@ -90,7 +86,7 @@ __params__.  As is usual with the netcdf API, one is expected to call
 this function twice. The first time to get __nparams__ and the
 second to get the parameters in client-allocated memory.
 
-Using ncgen {#NCGEN}
+Using ncgen {#nug_filters_NCGEN}
 -------------
 
 In a CDL file, compression of a variable can be specified
@@ -123,7 +119,7 @@ data:
 }
 ````
 
-Using nccopy {#NCCOPY}
+Using nccopy {#nug_filters_NCCOPY}
 -------------
 When copying a netcdf file using __nccopy__ it is possible
 to specify filter information for any output variable by
@@ -169,9 +165,9 @@ by this table.
 <tr><td>false<td>unspecified<td>defined<td>use input filter
 <tr><td>false<td>-Fvar,none<td>NA<td>unfiltered
 <tr><td>false<td>-Fvar,...<td>NA<td>use output filter
-</table> 
+</table>
 
-Parameter Encoding {#ParamEncode}
+Parameter Encoding {#nug_filters_ParamEncode}
 ==========
 
 The parameters passed to a filter are encoded internally as a vector
@@ -241,7 +237,7 @@ This is irritating, but one needs to be aware of it. Since most
 machines are little-endian. We choose to use that as the endianness
 for handling 64 bit entities.
 
-Filter Specification Syntax {#Syntax}
+Filter Specification Syntax {#nug_filters_Syntax}
 ==========
 
 Both of the utilities
@@ -256,7 +252,7 @@ constants (see the <a href="#ParamEncode">parameter encoding section</a>).
 
 To simplify things, various kinds of constants can be specified
 rather than just simple unsigned integers. The utilities will encode
-them properly using the rules specified in 
+them properly using the rules specified in
 the <a href="#ParamEncode">parameter encoding section</a>.
 
 The currently supported constants are as follows.
@@ -286,7 +282,7 @@ Some things to note.
    to network byte order and then treated as two unsigned int values.
    This is consistent with the <a href="#ParamEncode">parameter encoding</a>.
 
-Dynamic Loading Process {#Process}
+Dynamic Loading Process {#nug_filters_Process}
 ==========
 
 The documentation[1,2] for the HDF5 dynamic loading was (at the time
@@ -294,7 +290,7 @@ this was written) out-of-date with respect to the actual HDF5 code
 (see HDF5PL.c). So, the following discussion is largely derived
 from looking at the actual code. This means that it is subject to change.
 
-Plugin directory {#Plugindir}
+Plugin directory {#nug_filters_Plugindir}
 ----------------
 
 The HDF5 loader expects plugins to be in a specified plugin directory.
@@ -306,7 +302,7 @@ The default directory is:
 The default may be overridden using the environment variable
 __HDF5_PLUGIN_PATH__.
 
-Plugin Library Naming {#Pluginlib}
+Plugin Library Naming {#nug_filters_Pluginlib}
 ---------------------
 
 Given a plugin directory, HDF5 examines every file in that
@@ -320,7 +316,7 @@ as determined by the platform on which the library is being executed.
 <tr halign="left"><td>Windows<td>*<td>.dll
 </table>
 
-Plugin Verification {#Pluginverify}
+Plugin Verification {#nug_filters_Pluginverify}
 -------------------
 For each dynamic library located using the previous patterns,
 HDF5 attempts to load the library and attempts to obtain information
@@ -340,7 +336,7 @@ specified for the variable in __nc_def_var_filter__ in order to be used.
 If plugin verification fails, then that plugin is ignored and
 the search continues for another, matching plugin.
 
-Debugging {#Debug}
+Debugging {#nug_filters_Debug}
 -------
 Debugging plugins can be very difficult. You will probably
 need to use the old printf approach for debugging the filter itself.
@@ -356,7 +352,7 @@ Since ncdump is not being asked to access the data (the -h flag), it
 can obtain the filter information without failures. Then it can print
 out the filter id and the parameters (the -s flag).
 
-Test Case {#TestCase}
+Test Case {#nug_filters_TestCase}
 -------
 Within the netcdf-c source tree, the directory
 __netcdf-c/nc_test4__ contains a test case (__test_filter.c__) for
@@ -365,7 +361,7 @@ bzip2. Another test (__test_filter_misc.c__) validates
 parameter passing.  These tests are disabled if __--enable-shared__
 is not set or if __--enable-netcdf-4__ is not set.
 
-Example {#Example}
+Example {#nug_filters_Example}
 -------
 A slightly simplified version of the filter test case is also
 available as an example within the netcdf-c source tree
@@ -377,7 +373,7 @@ The files __example/C/hdf5plugins/Makefile.am__
 and  __example/C/hdf5plugins/CMakeLists.txt__
 demonstrate how to build the hdf5 plugin for bzip2.
 
-Notes
+Notes {#nug_filters_notes}
 ==========
 
 Supported Systems
@@ -397,7 +393,7 @@ has been known to work.
 gcc -g -O0 -shared -o libbzip2.so <plugin source files>  -L${HDF5LIBDIR} -lhdf5_hl -lhdf5 -L${ZLIBDIR} -lz
 ````
 
-Appendix A. Byte Swap Code {#AppendixA}
+Appendix A. Byte Swap Code {#nug_filters_AppendixA}
 ==========
 Since in some cases, it is necessary for a filter to
 byte swap from little-endian to big-endian, This appendix
@@ -428,13 +424,13 @@ byteswap8(unsigned char* mem)
 
 ````
 
-Test for Machine Endianness
+Test for Machine Endianness {#nug_filters_endianness}
 -------
 ````
 static const unsigned char b[4] = {0x0,0x0,0x0,0x1}; /* value 1 in big-endian*/
 int endianness = (1 == *(unsigned int*)b); /* 1=>big 0=>little endian
 ````
-References {#References}
+References {#nug_filters_References}
 ========================
 
 1. https://support.hdfgroup.org/HDF5/doc/Advanced/DynamicallyLoadedFilters/HDF5DynamicallyLoadedFilters.pdf
@@ -449,4 +445,3 @@ __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu
 __Initial Version__: 1/10/2018<br>
 __Last Revised__: 2/5/2018
-

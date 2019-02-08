@@ -1,10 +1,10 @@
-/*! \page dap4 DAP4 Support
+/*! \page nug_dap4 DAP4 Support
 
 \section dap4_accessing The DAP4 Prototocol
 
 \tableofcontents
 
-\subsection dap4_introduction DAP4 Introduction
+\subsection nug_dap4_introduction DAP4 Introduction
 
 Beginning with netCDF version 4.2.2, optional support is provided for
 accessing data through DAP4 servers using the DAP4 protocol.
@@ -25,7 +25,7 @@ For detailed information about the DAP4 DMR, refer to
 the DAP4 specification Volume 1:
 http://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
 
-\subsection dap4_access Accessing Data Using the DAP4 Prototocol
+\subsection nug_dap4_access Accessing Data Using the DAP4 Prototocol
 
 In order to access a DAP4 data source through the netCDF API, the
 file name normally used is replaced with a URL with a specific
@@ -88,7 +88,7 @@ Parameter Name Legal Values Semantics
   enabled, then this can be helpful in checking to see the access
   behavior of the netCDF code.
 
-\subsection dap4_debug Notes on Debugging DAP4 Access
+\subsection nug_dap4_debug Notes on Debugging DAP4 Access
 
 The DAP4 support has a logging facility.
 Note that this is currently separate from the

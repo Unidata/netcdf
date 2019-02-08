@@ -1,12 +1,12 @@
-Getting and Building netCDF {#getting_and_building_netcdf}
+Getting and Building netCDF {#nug_getting_and_building_netcdf}
 =============================
 
 [TOC]
 
 This document is for getting and building the netCDF C library and utilities for the most recent released version.  Other libraries that depend on the netCDF C library, such as the Fortran, Python, Java, and C++ libraries, are available as separate distributions that can be optionally built and installed after the C library is successfully installed.  The netCDF-Java library is independent of the netCDF C library unless writing netCDF-4 files from Java is required.
 
-Getting netCDF-C {#getting}
-=========================
+# Getting netCDF-C {#nug_getting_netcdf_c}
+
 
 * For information regarding the netCDF-Fortran libraries, see \subpage building_netcdf_fortran.
 * Functionality to make it easier to build netcdf-fortran as part of   the netcdf-c build for *non-MSVC* builds may be enabled at configure time by using the following **Highly Experimental** options:
@@ -16,8 +16,9 @@ Getting netCDF-C {#getting}
 
 For more details, see the <a href="https://github.com/Unidata/netcdf-c/blob/master/RELEASE_NOTES.md">draft instructions</a> in the Release Notes under the `4.3.3-rc3` section.
 
-Getting pre-built netCDF-C libraries. {#sec_get_pre_built}
--------------------------------------
+
+# Getting pre-built netCDF-C libraries. {#nug_sec_get_pre_built}
+
 
 The easiest way to get netCDF is through a package management program,
 such as rpm, yum, homebrew, macports, adept, and others. NetCDF is
@@ -31,8 +32,8 @@ or "libnetcdf-dev".
 
 Instructions for installing and using pre-built libraries for Windows may be found here: \ref winbin.
 
-Getting the latest netCDF-C Source Code {#sec_get_source}
-----------------------------------------
+# Getting the latest netCDF-C Source Code {#nug_sec_get_source}
+
 
 The netCDF-C source code is hosted from the <a href="http://github.com/Unidata/netcdf-c" >Unidata GitHub repository</a>.
 
@@ -42,13 +43,13 @@ Two options are available for building from source:
 * The latest release.
 * The developer snapshot.
 
-### The latest release {#sec_latest_release}
+## The latest release {#nug_sec_latest_release}
 
 The latest full release may be <a href="http://github.com/Unidata/netcdf-c/releases" >downloaded from GitHub</a>.
 
 Source files are available in `.tar.gz` and `.zip` formats.
 
-### The developer snapshot {#sec_dev_snapshot}
+### The developer snapshot {#nug_sec_dev_snapshot}
 
 The developer snapshot may be cloned from GitHub directly by using the `git` command.
 
@@ -58,8 +59,7 @@ The developer snapshot may be cloned from GitHub directly by using the `git` com
 
 *The developer snapshot release contains bug-fixes and new features added since the last full release, but may also contain new bugs, as it is not tested as extensively as the full release.*
 
-Building netCDF-C {#building}
-===========================
+# Building netCDF-C {#nug_building}
 
 The netCDF-C library and utilities require third-party libraries for
 full functionality. (See \ref architecture).
@@ -70,8 +70,7 @@ full functionality. (See \ref architecture).
 * \ref building_netcdf_fortran
 * \ref configure_options
 
-Requirements {#netcdf_requirements}
-----------------------------------
+## Requirements {#nug_netcdf_requirements}
 
 * For netCDF-4 support
   * HDF5 1.8.9 or later.
@@ -84,14 +83,13 @@ Requirements {#netcdf_requirements}
 > **Important Note**: When building netCDF-C library versions older than 4.4.1, use only HDF5 1.8.x versions.  Combining older netCDF-C versions with newer HDF5 1.10 versions will create superblock 3 files that are not readable by lots of older software.  See <a href="http://www.unidata.ucar.edu/blogs/news/entry/netcdf-4-4-1">this announcement</a> for more details.
 
 
-CMake and Windows support {#sub}
---------------------------------
+## CMake and Windows support {#nug_sub}
+
 
 * \ref netCDF-CMake
 * \subpage winbin
 
-Building with netCDF-4 and the Remote Data Client {#build_default}
---------------------------------
+## Building with netCDF-4 and the Remote Data Client {#build_default}
 
 The usual way of building netCDF requires the HDF5, zlib, and curl libraries. Versions required are at least HDF5 1.8.9, zlib 1.2.5, and curl 7.18.0 or later.
 
@@ -99,7 +97,7 @@ HDF5 and zlib packages are available from the <a href="http://www.hdfgroup.org/d
 
 > Note that for building netCDF, it is not necessary to build the HDF5 Fortran, C++, or Java API's. Only the HDF5 C library is used, even for netCDF Fortran or C++ libraries.
 
-### Optional: szip support {#op_szip_support}
+### Optional: szip support {#nug_op_szip_support}
 
 *Optionally*, you can also build netCDF-4 with the szip library (a.k.a. szlib). If building with szlib, get szip 2.0 or later. Technically, we mean that
 the HDF5 library is built with szip support. The netcdf build will then
@@ -113,7 +111,7 @@ then determine whether license restrictions on the use of szip apply to your sit
 
 If `make check` fails for either `zlib` or `HDF5`, the problem must be resolved before the netCDF-4 installation can continue. For HDF5 problems, see the <a href="http://www.hdfgroup.org/services/support.html">HDF5 help services</a>.
 
-### Building zlib from source {#build_zlib_from_source}
+### Building zlib from source {#nug_build_zlib_from_source}
 
 To build zlib from source, specify where you want to install zlib in a shell variable you will also use later (ZDIR, for example), and build it like this from the top-level zlib source directory
 
@@ -125,7 +123,7 @@ To build zlib from source, specify where you want to install zlib in a shell var
     $ make install   # or sudo make install, if root permissions required
 ~~~~
 
-### Building hdf5 from source {#build_hdf5_from_source}
+### Building hdf5 from source {#nug_build_hdf5_from_source}
 
 Next, specify where you want to install HDF5 in another shell variable, for example H5DIR, and build it from the HDF5 top-level source directory:
 
@@ -159,8 +157,7 @@ If you don't provide a `--prefix` option, installation will be in `/usr/local/`,
 
 > WARNING: you should be able to use parallel 'make all'. But 'make check' will probably fail if you use parallel make. This is because historically, there are inter-dependencies between test programs. It is unlikely that this will be fixed any time soon, if ever.
 
-Building netCDF with Classic Library Only {#build_classic}
----------------------------------------
+## Building netCDF with Classic Library Only {#nug_build_classic}
 
 It is possible to build the netCDF C libraries and utilities so that
 only the netCDF classic and 64-bit offset formats are supported, or
@@ -200,8 +197,7 @@ To build without netCDF-4 support or remote client access, use:
 If you get the message that netCDF installed correctly, then you are
 done!
 
-Building with HDF4 Support {#build_hdf4}
----------------------
+## Building with HDF4 Support {#nug_build_hdf4}
 
 The netCDF-4 library can read HDF4 data files, if they were created
 with the SD (Scientific Data) API.
@@ -243,8 +239,7 @@ Then from the top-level netCDF directory:
     $ make install
 ~~~~
 
-Building with Parallel I/O Support {#build_parallel}
---------------
+## Building with Parallel I/O Support {#nug_build_parallel}
 
 For parallel I/O to work, HDF5 must be installed with
 `--enable-parallel`, and an MPI library (and related libraries) must be
@@ -273,7 +268,7 @@ From the top-level netCDF-4 source directory, the following builds netCDF-4 with
     $ make install
 ~~~~
 
-### Building PnetCDF from source {#build_pnetcdf_from_source}
+### Building PnetCDF from source {#nug_build_pnetcdf_from_source}
 
 To enable parallel I/O support for classic netCDF files, i.e. CDF-1, 2 and 5
 formats, [PnetCDF library](https://parallel-netcdf.github.io) must also be
@@ -305,8 +300,7 @@ is built with static library only, add "--disable-shared" option.
     $ make install
 ~~~~
 
-Linking to netCDF-C {#linking}
--------------------
+## Linking to netCDF-C {#nug_linking}
 
 For static builds of applications that use netCDF-4 you must link to all the
 libraries, netCDF, HDF5, zlib, szip (if used with HDF5 build), pnetcdf (if used
@@ -342,8 +336,7 @@ or
     $ cc -o myapp myapp.c `pkg-config --cflags --libs netcdf`
 ~~~~
 
-configure options {#configure_options}
------------------------------
+## configure options {#nug_configure_options}
 
 These options are used for `autotools`-based builds.yup
 
@@ -389,17 +382,16 @@ Note: `--disable` prefix indicates that the option is normally enabled.
 <tr><td>--enable-valgrind-tests <td>build with valgrind-tests; static builds only<td>valgrind
 </table>
 
-Build Instructions for netCDF-C using CMake {#netCDF-CMake}
-===========================================
+# Build Instructions for netCDF-C using CMake {#nug_netCDF-CMake}
 
-## Overview {#cmake_overview}
+## Overview {#nug_cmake_overview}
 
 Starting with netCDF-C 4.3.0, we are happy to announce the inclusion of CMake support.  CMake will allow for building netCDF on a wider range of platforms, include Microsoft Windows with Visual Studio.  CMake support also provides robust unit and regression testing tools.  We will also maintain the standard autotools-based build system in parallel.
 
 In addition to providing new build options for netCDF-C, we will also provide pre-built binary downloads for the shared versions of netCDF for use with Visual Studio.
 
 
-##  Requirements {#cmake_requirements}
+##  Requirements {#nug_cmake_requirements}
 The following packages are required to build netCDF-C using CMake.
 
 * netCDF-C Source Code
@@ -413,7 +405,7 @@ The following packages are required to build netCDF-C using CMake.
 <img src="deptree.jpg" height="250px" />
 </center>
 
-## The CMake Build Process {#cmake_build}
+## The CMake Build Process {#nug_cmake_build}
 
 There are four steps in the Build Process when using CMake
 
@@ -424,7 +416,7 @@ There are four steps in the Build Process when using CMake
 
 For users who prefer pre-built binaries, installation packages are available at \ref winbin
 
-### Configuration {#cmake_configuration}
+### Configuration {#nug_cmake_configuration}
 
 The output of the configuration step is a project file based on the appropriate configurator specified.  Common configurators include:
 
@@ -433,7 +425,7 @@ The output of the configuration step is a project file based on the appropriate 
 * CodeBlocks
 * ... and others
 
-### Common CMake Options {#cmake_common_options}
+### Common CMake Options {#nug_cmake_common_options}
 
 | **Option** | **Autotools** | **CMake** |
 | :------- | :---- | :----- |
@@ -451,7 +443,7 @@ Specify a custom library location | Use *CFLAGS* and *LDFLAGS* | -D"CMAKE_PREFIX
 
 A full list of *basic* options can be found by invoking `cmake [Source Directory] -L`. To enable a list of *basic* and *advanced* options, one would invoke `cmake [Source Directory] -LA`.
 
-### Configuring your build from the command line. {#cmake_command_line}
+### Configuring your build from the command line. {#nug_cmake_command_line}
 
 The easiest configuration case would be one in which all of the dependent libraries are installed on the system path (in either Unix/Linux or Windows) and all the default options are desired. From the build directory (often, but not required to be located within the source directory):
 
@@ -461,7 +453,7 @@ If you have libraries installed in a custom directory, you may need to specify t
 
 > $ cmake [Source Directory] -DCMAKE\_PREFIX\_PATH=/usr/custom_libraries/
 
-## Building {#cmake_building}
+## Building {#nug_cmake_building}
 
 The compiler can be executed directly with 'make' or the appropriate command for the configurator which was used.
 
@@ -471,7 +463,7 @@ Building can also be executed indirectly via cmake:
 
 > $ cmake --build [Build Directory]
 
-## Testing {#cmake_testing}
+## Testing {#nug_cmake_testing}
 
 Testing can be executed several different ways:
 
@@ -485,7 +477,7 @@ or
 
 > $ cmake --build [Build Directory] --target test
 
-### Installation {#cmake_installation}
+### Installation {#nug_cmake_installation}
 
 Once netCDF has been built and tested, it may be installed using the following commands:
 
@@ -495,6 +487,6 @@ or
 
 > $ cmake --build [Build Directory] --target install
 
-## See Also {#cmake_see_also}
+## See Also {#nug_cmake_see_also}
 
 For further information regarding netCDF and CMake, see \ref cmake_faq.

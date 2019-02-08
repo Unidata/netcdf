@@ -1,8 +1,8 @@
-# User-Defined Formats for NetCDF {#user_defined_formats}
+# User-Defined Formats for NetCDF {#nug_user_defined_formats}
 
 [TOC]
 
-# Introduction {#udf_Introduction}
+# Introduction {#nug_udf_Introduction}
 
 User-defined formats allow users to write their own adaptors for the
 netCDF C library, so that it can read and (optionally) write a
@@ -23,7 +23,7 @@ Coding the user-defined format dispatch library requires knowledge of
 the netCDF library internals. User-defined format dispatch libraries
 must be written in C.
 
-# Magic Numbers {#udf_magic_numbers}
+# Magic Numbers {#nug_udf_magic_numbers}
 
 Some file formats use the first few bytes of the file as an identifier
 for format. For example, HDF5 files have "HDF5" as the fist 4 bytes,
@@ -36,7 +36,7 @@ associated with the user-defined format, then netCDF will be able to
 correctly identify those files from nc_open(). It will not be
 necessary for the user to know or specify the underlying format.
 
-# Using User-Defined Formats from C Programms {#udf_With_C}
+# Using User-Defined Formats from C Programms {#nug_udf_With_C}
 
 A user-defined format can be added dynamically in the case of C programs.
 
@@ -58,7 +58,7 @@ the magic number, and automatically associate the file with
 NC_UDF0. The user will not need to know the format in order to open
 the file with nc_open().
 
-# Building NetCDF C Library with a User-Defined Format Library {#udf_Build_NetCDF_With_UDF}
+# Building NetCDF C Library with a User-Defined Format Library {#nug_udf_Build_NetCDF_With_UDF}
 
 Once a user-defined format library is created, it may built into a
 netCDF install. This allows the netCDF Fortran APIs, and the netCDF
@@ -77,12 +77,12 @@ Configure netcdf-c with the option ````--with-udf0=<udf_lib_name>````.
 If a magic number is associated with the user-defined format, it can
 be specified with the --with-udf0-magic-number= argument.
 
-# Creating a User-Defined Format {#udf_Create_UDF}
+# Creating a User-Defined Format {#nug_udf_Create_UDF}
 
 Creators of user-defined format libraries will have to become familar
 with the internals of the netCDF-4 code.
 
-# Read-Only User-Defined Formats {#udf_read_only_udf}
+# Read-Only User-Defined Formats {#nug_udf_read_only_udf}
 
 Many users will find that a read-only user-defined formats meets most
 of their needs. With a read-only user-defined format, netCDF will be
@@ -93,7 +93,7 @@ A read-only user-defined format can be implemented with only 6
 functions. The code in libhdf4 is an excellent example of a read-only
 dispatch layer.
 
-# Examples {#udf_Examples}
+# Examples {#nug_udf_Examples}
 
 The most simple-case example of a user-defined format is provided in
 test nc_test4/tst_udf.c.
