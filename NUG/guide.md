@@ -1,10 +1,10 @@
-/*! \mainpage The NetCDF User's Guide
+# The NetCDF User's Guide
 
-\section user_guide The NetCDF User's Guide
+[TOC]
 
 The project page for the NetCDF User's Guide can be found at https://github.com/Unidata/netcdf.
 
-\subsection user_guide_toc Table of Contents
+## Table of Contents
 
 - \subpage netcdf_introduction
 - \subpage file_structure_and_performance
@@ -18,7 +18,7 @@ The project page for the NetCDF User's Guide can be found at https://github.com/
 - \subpage dap2
 - \subpage dap4
 
-\section nc_purpose The Purpose of NetCDF
+## The Purpose of NetCDF
 
 The purpose of the Network Common Data Form (netCDF) interface is to
 allow you to create, access, and share array-oriented data in a form
