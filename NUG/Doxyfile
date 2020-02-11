@@ -800,7 +800,10 @@ INPUT                  = guide.md \
                          OPeNDAP.dox \
                          types.dox \
                          user_defined_formats.md \
-                         filters.md
+                         filters.md \
+                         cdl.dox \
+                         attribute_conventions.md \
+                         file_format_specifications.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

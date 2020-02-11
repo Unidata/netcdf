@@ -1,5 +1,6 @@
-Appendix A: Attribute Conventions {#attribute_conventions}
-=====================
+# Appendix A
+
+## Attribute Conventions {#attribute_conventions}
 
 Attribute conventions are assumed by some netCDF generic applications, e.g., ‘units’ as the name for a string attribute that gives the units for a netCDF variable.
 
@@ -29,7 +30,7 @@ It is strongly recommended that applicable conventions be followed unless there 
 
 <p>
 
-> Generic applications often need to write a value to represent undefined or missing values. The fill value provides an appropriate value for this purpose because it is normally outside the valid range and therefore treated as missing when read by generic applications. It is legal (but not recommended) for the fill value to be within the valid range.		
+> Generic applications often need to write a value to represent undefined or missing values. The fill value provides an appropriate value for this purpose because it is normally outside the valid range and therefore treated as missing when read by generic applications. It is legal (but not recommended) for the fill value to be within the valid range.
 
 > **Note that if you change the value of this attribute, the changed value applies only to subsequent writes; previously written data are not changed.**
 

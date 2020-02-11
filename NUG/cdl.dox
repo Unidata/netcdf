@@ -1,8 +1,8 @@
 /**
-\file 
+\file cdl_documentation
 Documentation for Common Data Language
 
-\page CDL 
+\page CDL
 
 \section cdl_syntax CDL Syntax
 
@@ -13,16 +13,16 @@ data.
 
 \code
      netcdf foo { // example netCDF specification in CDL
-     
+
      dimensions:
      lat = 10, lon = 5, time = unlimited;
-     
+
      variables:
        int     lat(lat), lon(lon), time(time);
        float   z(time,lat,lon), t(time,lat,lon);
        double  p(time,lat,lon);
        int     rh(time,lat,lon);
-     
+
        char lat:units = "degrees_north";
        lon:units = "degrees_east";
        time:units = "seconds";
@@ -30,7 +30,7 @@ data.
        float z:valid_range = 0., 5000.;
        double p:_FillValue = -9999.;
        rh:_FillValue = -1;
-     
+
      data:
        lat   = 0, 10, 20, 30, 40, 50, 60, 70, 80, 90;
        lon   = -140, -118, -96, -84, -52;
@@ -154,7 +154,7 @@ The CDL primitive data types for the classic model are:
 - long (Deprecated, synonymous with int)
 - float IEEE single-precision floating point (32 bits).
 - real (Synonymous with float).
-- double IEEE double-precision floating point (64 bits). 
+- double IEEE double-precision floating point (64 bits).
 
 NetCDF-4 supports the additional primitive types:
 - ubyte Unsigned eight-bit integers.
@@ -162,7 +162,7 @@ NetCDF-4 supports the additional primitive types:
 - uint Unsigned 32-bit integers.
 - int64 64-bit signed integers.
 - uint64 Unsigned 64-bit signed integers.
-- string Variable-length string of characters 
+- string Variable-length string of characters
 
 Except for the added data-type byte, CDL supports the same primitive
 data types as C. For backward compatibility, in declarations primitive

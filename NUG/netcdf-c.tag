@@ -10564,32 +10564,6 @@
     <docanchor file="winbin.html" title="Notes">msvc-notes</docanchor>
   </compound>
   <compound kind="page">
-    <name>attribute_conventions</name>
-    <title>Appendix A: Attribute Conventions</title>
-    <filename>attribute_conventions</filename>
-  </compound>
-  <compound kind="page">
-    <name>file_format_specifications</name>
-    <title>Appendix B. File Format Specifications</title>
-    <filename>file_format_specifications</filename>
-    <docanchor file="file_format_specifications.html" title="The NetCDF Classic Format Specification">classic_format_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Notes on Computing File Offsets">computing_offsets</docanchor>
-    <docanchor file="file_format_specifications.html" title="Examples">offset_examples</docanchor>
-    <docanchor file="file_format_specifications.html" title="The 64-bit Offset Format">offset_format_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="The NetCDF-4 Format">netcdf_4_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Creation Order">creation_order</docanchor>
-    <docanchor file="file_format_specifications.html" title="Groups">groups_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Dimensions with HDF5 Dimension Scales">dims_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Dimensions without HDF5 Dimension Scales">dim_spec2</docanchor>
-    <docanchor file="file_format_specifications.html" title="Dimension and Coordinate Variable Ordering">dim_spec3</docanchor>
-    <docanchor file="file_format_specifications.html" title="Variables">vars_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Attributes">atts_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="User-Defined Data Types">user_defined_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="Compression">compression_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="The NetCDF-4 Classic Model Format">netcdf_4_classic_spec</docanchor>
-    <docanchor file="file_format_specifications.html" title="HDF4 SD Format">hdf4_sd_format</docanchor>
-  </compound>
-  <compound kind="page">
     <name>md__Volumes_Workspace_gitprojects_netcdf-c_docs_inmemory</name>
     <title>NetCDF In-Memory Support</title>
     <filename>md__Volumes_Workspace_gitprojects_netcdf-c_docs_inmemory</filename>

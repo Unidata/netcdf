@@ -1,5 +1,7 @@
 # The NetCDF User's Guide
 
+## The NetCDF User's Guide {#user_guide}
+
 The project page for the NetCDF User's Guide can be found at [the NetCDF User's Guide Github Page](https://github.com/Unidata/netcdf).
 
 ## Table of Contents
@@ -15,6 +17,10 @@ The project page for the NetCDF User's Guide can be found at [the NetCDF User's 
 - \subpage users_guide_appendices
 - \subpage dap2
 - \subpage dap4
+- \subpage CDL
+- \subpage attribute_conventions
+- \subpage file_format_specifications
+
 
 ## The Purpose of NetCDF
 
