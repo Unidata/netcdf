@@ -833,6 +833,8 @@ INPUT                  = guide.md \
                          netcdf_introduction.md \
                          file_structure_and_performance.md \
                          bestpractices.md \
+                         chunking.md \
+                         netcdf_utilities_guide.md \
                          install.md \
                          DAP2.dox \
                          DAP4.dox \
