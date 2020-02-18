@@ -16,4 +16,5 @@ For the time being, the final files will use some `doxygen` conventions, as we a
 
 * File names end with the `.md` prefix.
 * Files are organized one rendered page per file, in markdown format.  *This may require splitting some .dox files (which can contain multiple rendered pages) into multiple files*.
+* **Raw HTML** is considered valid markdown.
 * Paragraphs written one sentence per line, with no blank space between them.  Blank spaces denote different paragraphs. This helps with diff viewing.
