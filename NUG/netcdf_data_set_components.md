@@ -4,29 +4,22 @@
 
 # The Data Model {#data_model}
 
-A netCDF dataset contains dimensions, variables, and attributes, which
-all have both a name and an ID number by which they are
-identified. These components can be used together to capture the
-meaning of data and relations among data fields in an array-oriented
-dataset. The netCDF library allows simultaneous access to multiple
-netCDF datasets which are identified by dataset ID numbers, in
-addition to ordinary file names.
+A netCDF dataset contains dimensions, variables, and attributes, which all have both a name and an ID number by which they are identified.  
+These components can be used together to capture the meaning of data and relations among data fields in an array-oriented dataset.
+The netCDF library allows simultaneous access to multiple netCDF datasets which are identified by dataset ID numbers, in addition to ordinary file names.
 
 ## Enhanced Data Model in NetCDF-4/HDF5 Files {#enhanced_nc4_hdf5}
 
-Files created with the netCDF-4 format have access to an enhanced data
-model, which includes named groups. Groups, like directories in a Unix
-file system, are hierarchically organized, to arbitrary depth. They
-can be used to organize large numbers of variables.
+Files created with the netCDF-4 format have access to an enhanced data model, which includes named groups.
+Groups, like directories in a Unix file system, are hierarchically organized, to arbitrary depth.
+They can be used to organize large numbers of variables.
 
 ![Enhanced NetCDF Data Model](images/nc4-model.png "Enhanced NetCDF Data Model")
 
-Each group acts as an entire netCDF dataset in the classic model. That
-is, each group may have attributes, dimensions, and variables, as well
-as other groups.
+Each group acts as an entire netCDF dataset in the classic model.
+That is, each group may have attributes, dimensions, and variables, as well as other groups.
 
-The default group is the root group, which allows the classic netCDF
-data model to fit neatly into the new model.
+The default group is the root group, which allows the classic netCDF data model to fit neatly into the new model.
 
 Dimensions are scoped such that they can be seen in all descendant
 groups. That is, dimensions can be shared between variables in
