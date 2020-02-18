@@ -206,7 +206,7 @@ Version 1 has two (key,value) pairs (after than the initial version pair)
 
 Version 2 has an unlimited set of (key,value) pairs (after the initial version pair). By convention (but unenforced), the first pair is the name and version of the primary library used to create this file. For netcdf, it has the form _netcdf={version}_. The remaining fields are by convention as follows.
 
-- If the primary build library is netcdf, then the second pair is of the form \_hdf5={version}.
+* If the primary build library is netcdf, then the second pair is of the form \_hdf5={version}.
   * The remaining pairs consist of a combination of the name and version of important supporting libraries, *the libcurl version, for example*, plus an arbitrary set of pairs as specified by the *--with-ncproperties* option to the ./configure command.
   * Note that the argument to --with-ncproperties should be wrapped with double quotes, like this.
   * *./configure ... --with-ncproperties="key1=value,key2=value"*
