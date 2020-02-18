@@ -4,17 +4,16 @@
 
 Attribute conventions are assumed by some netCDF generic applications, e.g., ‘units’ as the name for a string attribute that gives the units for a netCDF variable.
 
-It is strongly recommended that applicable conventions be followed unless there are good reasons for not doing so. Below we list the names and meanings of recommended standard attributes that have proven useful. Note that some of these (e.g. units, valid_range, scale_factor) assume numeric data and should not be used with character data.
+It is strongly recommended that applicable conventions be followed unless there are good reasons for not doing so. Below we list the names and meanings of recommended standard attributes that have proven useful.
+Note that some of these (e.g. units, valid_range, scale_factor) assume numeric data and should not be used with character data.
 
-    Attribute names commencing with underscore ('_') are reserved for use by the netCDF library.
+> Attribute names commencing with underscore ('_') are reserved for use by the netCDF library.
 
-# Conventions
-
+## Conventions {#sec_attribute_conventions}
 
 `units`
 
 > A character string that specifies the units used for the variable's data. Unidata has developed a freely-available library of routines to convert between character string and binary forms of unit specifications and to perform various useful operations on the binary forms. This library is used in some netCDF applications. Using the recommended units syntax permits data represented in conformable units to be automatically converted to common units for arithmetic operations. For more information see Units.
-
 
 `long_name`
 
@@ -147,12 +146,14 @@ counted in the number of global attributes in the root group.
 The simplest way to view these attributes is to use the -s flag to the
 ncdump command.  Alternatively, one can use the following API calls to
 obtain information.
+
 - nc_inq_att
 - nc_inq_atttype
 - nc_inq_attlen
 - nc_get_att (and derivatives)
 
 Using the following API calls will fail.
+
 - nc_inq_attid
 - nc_inq_attname
 - nc_copy_att
@@ -191,7 +192,7 @@ Using the following API calls will fail.
 
 > This attribute is ephemeral in that it is computed by walking the metadata of the file looking for attributes specific to netCDF-4 files.
 
-> The _IsNetcdf4 attribute has the form: `_IsNetcdf4 = 0|1`
+> The `_IsNetcdf4` attribute has the form: `_IsNetcdf4 = 0|1`
 > where 1 means the file has various tags indicating it was produced thru the netcdf-4 API.
 > The type of this attribute is NC_INT.
 
