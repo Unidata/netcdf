@@ -28,5 +28,5 @@ The list of files to be converted.
 * [ ] netcdf_introduction.md
 * [ ] netcdf_utilities_guide.md
 * [ ] OPeNDAP.dox
-* [ ] types.dox
-* [ ] user_defined_formats.md
+* [-] types.dox
+* [-] user_defined_formats.md
