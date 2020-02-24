@@ -1,66 +1,35 @@
-Writing NetCDF Files: Best Practices {#BestPractices}
-====================================
+# Writing NetCDF Files: Best Practices {#BestPractices}
 
 [TOC]
+\tableofcontents
 
-Best Practices {#bp_Best_Practices}
-=====================================
+## Best Practices {#bp_Best_Practices}
 
 ## Conventions {#bp_Conventions}
 
-While netCDF is intended for "self-documenting data", it is often
-necessary for data writers and readers to agree upon attribute
-conventions and representations for discipline-specific data structures.
-These agreements are written up as human readable documents called
-***netCDF conventions***.
+While netCDF is intended for "self-documenting data", it is often necessary for data writers and readers to agree upon attribute conventions and representations for discipline-specific data structures. These agreements are written up as human readable documents called ***netCDF conventions***.
 
-Use an existing Convention if possible. See the list of [registered
-conventions](/software/netcdf/conventions.html).
+Use an existing Convention if possible. See the list of [registered conventions](https://www.unidata.ucar.edu/software/netcdf/conventions.html).
 
-The CF Conventions are recommended where applicable, especially for
-gridded (model) datasets.
+The CF Conventions are recommended where applicable, especially for gridded (model) datasets.
 
-Document the convention you are using by adding the global attribute
-"Conventions" to each netCDF file, for example:
+Document the convention you are using by adding the global attribute "Conventions" to each netCDF file, for example:
 
-This document refers to conventions for the netCDF *classic* data model.
-For recommendations about conventions for the netCDF-4 *enhanced* data
-model, see [Developing Conventions for
-NetCDF-4](/netcdf/papers/nc4_conventions.html).
+This document refers to conventions for the netCDF *classic* data model. For recommendations about conventions for the netCDF-4 *enhanced* data model, see [Developing Conventions for NetCDF-4](https://www.unidata.ucar.edu/software/netcdf/papers/nc4_conventions.html).
 
 ## Coordinate Systems {#bp_Coordinate-Systems}
 
-A ***coordinate variable*** is a one-dimensional variable with the same
-name as a dimension, which names the coordinate values of the dimension.
-It must not have any missing data (for example, no `_FillValue` or
-`missing_value` attributes) and must be strictly monotonic (values
-increasing or decreasing). A two-dimensional variable of type char is a
-***string-valued coordinate variable*** if it has the same name as its
-first dimension, e.g.: **char time( time, time\_len);** all of its
-strings must be unique. A variable's ***coordinate system*** is the set
-of coordinate variables used by the variable. Coordinates that refer to
-physical space are called ***spatial coordinates***, ones that refer to
-physical time are called ***time coordinates***, ones that refer to
-either physical space or time are called ***spatio-temporal
-coordinates.***
+A ***coordinate variable*** is a one-dimensional variable with the same name as a dimension, which names the coordinate values of the dimension. It must not have any missing data (for example, no `_FillValue` or `missing_value` attributes) and must be strictly monotonic (values increasing or decreasing). A two-dimensional variable of type char is a ***string-valued coordinate variable*** if it has the same name as its first dimension, e.g.: **char time( time, time\_len);** all of its
+strings must be unique. A variable's ***coordinate system*** is the set of coordinate variables used by the variable. Coordinates that refer to physical space are called ***spatial coordinates***, ones that refer to physical time are called ***time coordinates***, ones that refer to either physical space or time are called ***spatio\ temporal coordinates.***
 
--   Make coordinate variables for every dimension possible (except for
-    string length dimensions).
--   Give each coordinate variable at least `unit` and `long_name`
-    attributes to document its meaning.
--   Use an existing netCDF [Convention](#Conventions) for your
-    coordinate variables, especially to identify
-    spatio-temporal coordinates.
--   Use shared dimensions to indicate that two variables use the same
-    coordinates along that dimension. If two variables' dimensions are
-    not related, create separate dimensions for them, even if they
-    happen to have the same length.
+- Make coordinate variables for every dimension possible (except for string length dimensions).
+- Give each coordinate variable at least `unit` and `long_name` attributes to document its meaning.
+- Use an existing netCDF [Convention](#Conventions) for your coordinate variables, especially to identify spatio-temporal coordinates.
+- Use shared dimensions to indicate that two variables use the same coordinates along that dimension. If two variables' dimensions are not related, create separate dimensions for them, even if they happen to have the same length.
 
 ## Variable Grouping {#bp_Variable-Grouping}
 
-You may structure the data in a netCDF file in different ways, for
-example putting related parameters into a single variable by adding an
-extra dimension. Standard visualization and analysis software may have
+You may structure the data in a netCDF file in different ways, for example putting related parameters into a single variable by adding an extra dimension. Standard visualization and analysis software may have
 trouble breaking that data out, however. On the other extreme, it is
 possible to create different variables e.g. for different vertical
 levels of the same parameter. However, standard visualization and
