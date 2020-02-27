@@ -14,7 +14,7 @@ The project page for the NetCDF User's Guide can be found at [the NetCDF User's 
 - \subpage netcdf_data_set_components
 - \subpage netcdf_perf_chunking
 - \subpage netcdf_utilities_guide
-- \subpage BestPractices
+- \subpage best_practices
 - \subpage user_defined_formats
 - \subpage dap2
 - \subpage dap4
