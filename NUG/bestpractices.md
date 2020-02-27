@@ -7,7 +7,8 @@
 
 ## Conventions {#bp_Conventions}
 
-While netCDF is intended for "self-documenting data", it is often necessary for data writers and readers to agree upon attribute conventions and representations for discipline-specific data structures. These agreements are written up as human readable documents called ***netCDF conventions***.
+While netCDF is intended for "self-documenting data", it is often necessary for data writers and readers to agree upon attribute conventions and representations for discipline-specific data structures.
+These agreements are written up as human readable documents called ***netCDF conventions***.
 
 Use an existing Convention if possible. See the list of [registered conventions](https://www.unidata.ucar.edu/software/netcdf/conventions.html).
 
@@ -15,12 +16,16 @@ The CF Conventions are recommended where applicable, especially for gridded (mod
 
 Document the convention you are using by adding the global attribute "Conventions" to each netCDF file, for example:
 
-This document refers to conventions for the netCDF *classic* data model. For recommendations about conventions for the netCDF-4 *enhanced* data model, see [Developing Conventions for NetCDF-4](https://www.unidata.ucar.edu/software/netcdf/papers/nc4_conventions.html).
+This document refers to conventions for the netCDF *classic* data model.
+For recommendations about conventions for the netCDF-4 *enhanced* data model, see [Developing Conventions for NetCDF-4](https://www.unidata.ucar.edu/software/netcdf/papers/nc4_conventions.html).
 
 ## Coordinate Systems {#bp_Coordinate-Systems}
 
-A ***coordinate variable*** is a one-dimensional variable with the same name as a dimension, which names the coordinate values of the dimension. It must not have any missing data (for example, no `_FillValue` or `missing_value` attributes) and must be strictly monotonic (values increasing or decreasing). A two-dimensional variable of type char is a ***string-valued coordinate variable*** if it has the same name as its first dimension, e.g.: **char time( time, time\_len);** all of its
-strings must be unique. A variable's ***coordinate system*** is the set of coordinate variables used by the variable. Coordinates that refer to physical space are called ***spatial coordinates***, ones that refer to physical time are called ***time coordinates***, ones that refer to either physical space or time are called ***spatio\ temporal coordinates.***
+A ***coordinate variable*** is a one-dimensional variable with the same name as a dimension, which names the coordinate values of the dimension.
+It must not have any missing data (for example, no `_FillValue` or `missing_value` attributes) and must be strictly monotonic (values increasing or decreasing).
+A two-dimensional variable of type char is a ***string-valued coordinate variable*** if it has the same name as its first dimension, e.g.: **char time( time, time\_len);** all of its strings must be unique.
+A variable's ***coordinate system*** is the set of coordinate variables used by the variable.
+Coordinates that refer to physical space are called ***spatial coordinates***, ones that refer to physical time are called ***time coordinates***, ones that refer to either physical space or time are called ***spatio\ temporal coordinates***.
 
 - Make coordinate variables for every dimension possible (except for string length dimensions).
 - Give each coordinate variable at least `unit` and `long_name` attributes to document its meaning.
@@ -29,7 +34,10 @@ strings must be unique. A variable's ***coordinate system*** is the set of coord
 
 ## Variable Grouping {#bp_Variable-Grouping}
 
-You may structure the data in a netCDF file in different ways, for example putting related parameters into a single variable by adding an extra dimension. Standard visualization and analysis software may have trouble breaking that data out, however. On the other extreme, it is possible to create different variables e.g. for different vertical levels of the same parameter. However, standard visualization and analysis software may have trouble grouping that data back together.
+You may structure the data in a netCDF file in different ways, for example putting related parameters into a single variable by adding an extra dimension.
+Standard visualization and analysis software may have trouble breaking that data out, however.
+On the other extreme, it is possible to create different variables e.g. for different vertical levels of the same parameter.
+However, standard visualization and analysis software may have trouble grouping that data back together.
 Here are some guidelines for deciding how to group your data into variables:
 
 -   All of the data in a variable must be of the same type and shouldhave the same units of measurement.
@@ -46,9 +54,10 @@ Here are some guidelines for deciding how to group your data into variables:
 
 ## Strings and Variables of type char {#bp_Strings-and-Variables-of-type-char}
 
-NetCDF-3 does not have a primitive **String** type, but does have arrays of type **char**, which are 8 bits in size. The main difference is that
-Strings are variable length arrays of chars, while char arrays are fixed length. Software written in C usually depends on Strings being zero
-terminated, while software in Fortran and Java do not. Both C (*nc\_get\_vara\_text()*) and Java (*ArrayChar.getString()*) libraries have convenience routines that read char arrays and convert to Strings.
+NetCDF-3 does not have a primitive **String** type, but does have arrays of type **char**, which are 8 bits in size.
+The main difference is that Strings are variable length arrays of chars, while char arrays are fixed length.
+Software written in C usually depends on Strings being zero terminated, while software in Fortran and Java do not.
+Both C (*nc\_get\_vara\_text()*) and Java (*ArrayChar.getString()*) libraries have convenience routines that read char arrays and convert to Strings.
 
 -   Do not use char type variables for numeric data, use byte type variables instead.
 -   Consider using a global Attribute instead of a Variable to store a String applicable to the whole dataset.
@@ -62,14 +71,19 @@ terminated, while software in Fortran and Java do not. Both C (*nc\_get\_vara\_t
 
 ## Calendar Date/Time {#bp_Calendar-Date-Time}
 
-Time as a fundamental unit means a time interval, measured in seconds. A Calendar date/time is a specific instance in real, physical time. Dates are specified as an interval from some ***reference time*** e.g. "days elapsed since Greenwich mean noon on 1 January 4713 BCE". The reference time implies a system of counting time called a ***calendar*** (e.g. Gregorian calendar) and a textual representation (e.g. [ISO 8601](http://www.cl.cam.ac.uk/%7Emgk25/iso-time.html)).
+Time as a fundamental unit means a time interval, measured in seconds.
+A Calendar date/time is a specific instance in real, physical time.
+Dates are specified as an interval from some ***reference time*** e.g. "days elapsed since Greenwich mean noon on 1 January 4713 BCE".
+The reference time implies a system of counting time called a ***calendar*** (e.g. Gregorian calendar) and a textual representation (e.g. [ISO 8601](http://www.cl.cam.ac.uk/%7Emgk25/iso-time.html)).
 
-There are two strategies for storing a date/time into a netCDF variable. One is to encode it as a numeric value and a unit that includes the
-reference time, e.g. "seconds since 2001-1-1 0:0:0" or"days since 2001-1-1 0:0:0" . The other is to store it as a String using a standard encoding and Calendar. The former is more compact if you have more than one date, and makes it easier to compute intervals between two dates.
+There are two strategies for storing a date/time into a netCDF variable.
+One is to encode it as a numeric value and a unit that includes the reference time, e.g. "seconds since 2001-1-1 0:0:0" or"days since 2001-1-1 0:0:0".
+The other is to store it as a String using a standard encoding and Calendar.
+The former is more compact if you have more than one date, and makes it easier to compute intervals between two dates.
 
-Unidata's [udunits](https://www.unidata.ucar.edu/software/udunits/) package provides a convenient way to implement the first strategy. It uses the ISO 8601 encoding and a hybrid Gregorian/Julian calendar, but udunits does not support use of other Calendars or encodings for the reference time. However the ncdump
-"-T" option can display numeric times that use udunits (and optionally climate calendars) as ISO 8601 strings that are easy for humans to
-interpret.
+Unidata's [udunits](https://www.unidata.ucar.edu/software/udunits/) package provides a convenient way to implement the first strategy.
+It uses the ISO 8601 encoding and a hybrid Gregorian/Julian calendar, but udunits does not support use of other Calendars or encodings for the reference time.
+However the ncdump "-T" option can display numeric times that use udunits (and optionally climate calendars) as ISO 8601 strings that are easy for humans to interpret.
 
 -   If your data uses real, physical time that is well represented using the Gregorian/Julian calendar, encode it as an interval from a reference time, and add a units attribute which uses a udunits-compatible time unit. If the data assumes one of the non-standard calendars mentioned in the CF Conventions, specify that with a Calendar attribute. Readers can then use the udunits package to manipulate or format the date values, and the ncdump utility can display them with either numeric or string representation.
 -   If your data uses a calendar not supported by the CF Conventions, make it compatible with existing date manipulation packages if possible (for example, java.text.SimpleDateFormat).
@@ -85,9 +99,10 @@ NetCDF-3 does not have unsigned integer primitive types.
 
 ## Packed Data Values {#bp_Packed-Data-Values}
 
-Packed data is stored in a netCDF file by limiting precision and using a smaller data type than the original data, for example, packing
-double-precision (64-bit) values into short (16-bit) integers. TheC-based netCDF libraries do not do the packing and unpacking. (The [netCDF Java library](https://www.unidata.ucar.edu/software/netcdf-java/) will do automatic unpacking when the [Variable Enhanced](https://www.unidata.ucar.edu/software/netcdf-java/v4.1/javadocAll/ucar/nc2/dataset/VariableEnhanced.html)
-Interface is used. For details see [EnhancedScaleMissing](https://www.unidata.ucar.edu/software/netcdf-java/v4.1/javadocAll/ucar/nc2/dataset/EnhanceScaleMissing.html)).
+Packed data is stored in a netCDF file by limiting precision and using a smaller data type than the original data, for example, packing double-precision (64-bit) values into short (16-bit) integers.
+TheC-based netCDF libraries do not do the packing and unpacking. (The [netCDF Java library](https://www.unidata.ucar.edu/software/netcdf-java/) will do automatic unpacking when the [Variable Enhanced](https://www.unidata.ucar.edu/software/netcdf-java/v4.1/javadocAll/ucar/nc2/dataset/VariableEnhanced.html)
+Interface is used.
+For details see [EnhancedScaleMissing](https://www.unidata.ucar.edu/software/netcdf-java/v4.1/javadocAll/ucar/nc2/dataset/EnhanceScaleMissing.html)).
 
 -   Each variable with packed data has two attributes called **scale\_factor** and **add\_offset**, so that the packed data may be read and unpacked using the formula:
 
@@ -102,9 +117,12 @@ Interface is used. For details see [EnhancedScaleMissing](https://www.unidata.uc
     > ***packed\_data\_value = nint((unpacked\_data\_value -
     > add\_offset) / scale\_factor)***
 
-Depending on whether the packed data values are intended to be interpreted by the reader as signed or unsigned integers, there are alternative ways for the data provider to compute the *scale\_factor* and *add\_offset* attributes. In either case, the formulas above apply for unpacking and packing the data.
+Depending on whether the packed data values are intended to be interpreted by the reader as signed or unsigned integers, there are alternative ways for the data provider to compute the *scale\_factor* and *add\_offset* attributes.
+In either case, the formulas above apply for unpacking and packing the data.
 
-A conventional way to indicate whether a byte, short, or int variable is meant to be interpreted as unsigned, even for the netCDF-3 classic model that has no external unsigned integer type, is by providing the special variable attribute `_Unsigned` with value `"true"`. However, most existing data for which packed values are intended to be interpreted as unsigned are stored without this attribute, so readers must be aware of packing assumptions in this case. In the enhanced netCDF-4 data model, packed integers may be declared to be of the appropriate unsigned type.
+A conventional way to indicate whether a byte, short, or int variable is meant to be interpreted as unsigned, even for the netCDF-3 classic model that has no external unsigned integer type, is by providing the special variable attribute `_Unsigned` with value `"true"`.
+However, most existing data for which packed values are intended to be interpreted as unsigned are stored without this attribute, so readers must be aware of packing assumptions in this case.
+In the enhanced netCDF-4 data model, packed integers may be declared to be of the appropriate unsigned type.
 
 Let *n* be the number of bits in the packed type, and assume *dataMin* and *dataMax* are the minimum and maximum values that will be used for a variable to be packed.
 
@@ -143,7 +161,9 @@ Let *n* be the number of bits in the packed type, and assume *dataMin* and *data
 
 ## Missing Data Values {#bp_Missing-Data-Values}
 
-***Missing data*** is a general name for data values that are invalid, never written, or missing. The netCDF library itself does not handle these values in any special way, except that the value of a `_FillValue` attribute, if any, is used in pre-filling unwritten data. (The Java-netCDF library will assist in recognizing these values when reading, see class **VariableStandardized**).
+***Missing data*** is a general name for data values that are invalid, never written, or missing.
+The netCDF library itself does not handle these values in any special way, except that the value of a `_FillValue` attribute, if any, is used in pre-filling unwritten data.
+(The Java-netCDF library will assist in recognizing these values when reading, see class **VariableStandardized**).
 
 -   Default fill values for each type are available in the C-based interfaces, and are defined in the appropriate header files. For example, in the C interface, NC\_FILL\_FLOAT and NC\_FILL\_DOUBLE are numbers near 9.9692e+36 that are returned when you try to read values that were never written. Writing, reading, and testing for equality with these default fill values works portably on the platforms on which netCDF has been tested.
 -   The `_FillValue` attribute should have the same data type as the variable it describes. If the variable is packed using `scale_factor` and `add_offset` attributes, the `_FillValue` attribute should have the data type of the packed data.

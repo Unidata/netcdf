@@ -15,7 +15,7 @@ This file contains a list of files that need to be converted.  When conversion i
 The list of files to be converted.
 
 * [x] attribute_conventions.md (Ward)
-* [-] bestpractices.md
+* [x] bestpractices.md
 * [ ] cdl.md
 * [ ] chunking.md
 * [ ] DAP2.dox
