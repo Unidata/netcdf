@@ -16,7 +16,7 @@ The list of files to be converted.
 
 * [x] attribute_conventions.md (Ward)
 * [x] bestpractices.md
-* [ ] cdl.md
+* [-] cdl.md
 * [ ] chunking.md
 * [ ] DAP2.dox
 * [ ] DAP4.dox

@@ -1,10 +1,6 @@
-/**
-\file
-Documentation for Common Data Language
+# Documentation for Common Data Language {#CDL}
 
-\page CDL
-
-\section cdl_syntax CDL Syntax
+## CDL Syntax {#cdl_syntax}
 
 Below is an example of CDL, describing a netCDF dataset with several
 named dimensions (lat, lon, time), variables (z, t, p, rh, lat, lon,
@@ -144,7 +140,7 @@ conversions among primitive types are supported.
 A special notation for fill values is supported: the ‘_’ character
 designates a fill value for variables.
 
-\section cdl_data_types CDL Data Types
+## CDL Data Types {#cdl_data_types}
 
 The CDL primitive data types for the classic model are:
 - char Characters.
@@ -184,7 +180,7 @@ floating-point numbers. The double type can hold values between about
 standard normalized double-precision, floating-point numbers. The
 string type holds variable length strings.
 
-\section cdl_notations_for_data_constants CDL Notation for Data Constants
+## CDL Notation for Data Constants {#cdl_notations_for_data_constants}
 
 This section describes the CDL notation for constants.
 
