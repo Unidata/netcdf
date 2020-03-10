@@ -77,11 +77,9 @@ Names that have trailing space characters are also not permitted.
 
 Beginning with versions `3.6.3` and `4.0`, names may also include UTF-8 encoded Unicode characters as well as other special characters, exceptfor the character '/', which may not appear in a name (because it is reserved for path names of nested groups).
 In CDL, most special characters are escaped with a backslash '\' character, but that character is not actually part of the netCDF name. The special characters that do not need to be escaped in CDL names are underscore '_', period '.', plus '+', hyphen '-', or at sign '@'.
-For the formal specification of CDL name syntax See **Format**.
+For the formal specification of CDL name syntax See \ref classic_format_spec.
 
-\todo Find reference for Format and link here.
-
-Note that by using special characters in names, you may make your data not compliant with conventions that have more stringent requirements on valid names for netCDF components, for example the CF Conventions.
+> Note that by using special characters in names, you may make your data not compliant with conventions that have more stringent requirements on valid names for netCDF components, for example the CF Conventions.
 
 The names for the primitive data types are reserved words in CDL, so names of variables, dimensions, and attributes must not be primitive type names.
 
