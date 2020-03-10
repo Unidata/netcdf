@@ -21,6 +21,7 @@ The project page for the NetCDF User's Guide can be found at [the NetCDF User's 
 - \subpage CDL
 - \subpage attribute_conventions
 - \subpage file_format_specifications
+- \subpage nug_style_guide
 
 
 ## The Purpose of NetCDF {#netcdf_purpose}

@@ -183,7 +183,7 @@ Using the following API calls will fail.
 - nc_del_att()
 - nc_put_att() (and derivatives)
 
-### \_NCProperties {#NCProperties}
+## \_NCProperties {#NCProperties}
 
 This attribute is persistent in the file, but hidden. It is inserted in the file at creation time and is never modified after that point.
 The type of this attribute is currently NC_CHAR. There two versions of this property, but both have the general form
@@ -192,7 +192,7 @@ The type of this attribute is currently NC_CHAR. There two versions of this prop
 
 where the version number n is either 1 or 2.
 
-#### Version 1 {#NC_Properties_v1}
+### Version 1 {#NC_Properties_v1}
 
 Version 1 has two (key,value) pairs (after than the initial version pair)
 
@@ -202,7 +202,7 @@ Version 1 has two (key,value) pairs (after than the initial version pair)
 * Note that for version 1, the separator character is '|' instead of ','
 * Occurrences of '=' or '|' in the name or value are disallowed.
 
-#### Version 2 {#NC_Properties_v2}
+### Version 2 {#NC_Properties_v2}
 
 Version 2 has an unlimited set of (key,value) pairs (after the initial version pair). By convention (but unenforced), the first pair is the name and version of the primary library used to create this file. For netcdf, it has the form _netcdf={version}_. The remaining fields are by convention as follows.
 
