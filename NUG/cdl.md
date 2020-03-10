@@ -32,14 +32,24 @@ Below is an example of CDL, describing a netCDF dataset with several named dimen
 
 ````
 
-All CDL statements are terminated by a semicolon. Spaces, tabs, and newlines can be used freely for readability. Comments may follow the double slash characters '//' on any line.
+All CDL statements are terminated by a semicolon.
+Spaces, tabs, and newlines can be used freely for readability.
+Comments may follow the double slash characters '//' on any line.
 
-A CDL description for a classic model file consists of three optional parts: dimensions, variables, and data. The variable part may contain variable declarations and attribute assignments. For the enhanced model supported by netCDF-4, a CDL description may also include groups, subgroups, and user-defined types.
+A CDL description for a classic model file consists of three optional parts: dimensions, variables, and data.
+The variable part may contain variable declarations and attribute assignments.
+For the enhanced model supported by netCDF-4, a CDL description may also include groups, subgroups, and user-defined types.
 
-A dimension is used to define the shape of one or more of the multidimensional variables described by the CDL description. A dimension has a name and a length. At most one dimension in a classic CDL description can have the unlimited length, which means a variable using this dimension can grow to any length (like a record number in a file). Any number of dimensions can be declared of unlimited length in CDL for an enhanced model file.
+A dimension is used to define the shape of one or more of the multidimensional variables described by the CDL description.
+A dimension has a name and a length.
+At most one dimension in a classic CDL description can have the unlimited length, which means a variable using this dimension can grow to any length (like a record number in a file).
+Any number of dimensions can be declared of unlimited length in CDL for an enhanced model file.
 
-A variable represents a multidimensional array of values of the same type. A variable has a name, a data type, and a shape described by its
-list of dimensions. Each variable may also have associated attributes (see below) as well as data values. The name, data type, and shape of a variable are specified by its declaration in the variable section of a CDL description. A variable may have the same name as a dimension; by convention such a variable contains coordinates of the dimension it names.
+A variable represents a multidimensional array of values of the same type.
+A variable has a name, a data type, and a shape described by its list of dimensions.
+Each variable may also have associated attributes (see below) as well as data values.
+The name, data type, and shape of a variable are specified by its declaration in the variable section of a CDL description.
+A variable may have the same name as a dimension; by convention such a variable contains coordinates of the dimension it names.
 
 An attribute contains information about a variable or about the whole netCDF dataset or containing group. Attributes may be used to specify such properties as units, special values, maximum and minimum valid values, and packing parameters. Attribute information is represented by single values or one-dimensional arrays of values. For example, “units” might be an attribute represented by a string such as “celsius”. An attribute has an associated variable, a name, a data type, a length, and a value. In contrast to variables that are intended for data, attributes are intended for ancillary data or metadata (data about data).
 
