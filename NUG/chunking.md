@@ -2,41 +2,19 @@
 
 [TOC]
 
-# The Chunk Cache {#chunk_cache}
+## The Chunk Cache {#chunk_cache}
 
-For good performance your chunk cache must be larger than one chunk of
-your data - preferably that it be large enough to hold multiple chunks
-of data.
+For good performance your chunk cache must be larger than one chunk of your data - preferably that it be large enough to hold multiple chunks of data.
 
-In addition, when a file is opened (or a variable created in an open
-file), the netCDF-4 library checks to make sure the default chunk
-cache size will work for that variable. The cache will be large enough
-to hold N chunks, up to a maximum size of M bytes. (Both N and M are
-settable at configure time with the –with-default-chunks-in-cache and
-the –with-max-default-cache-size options to the configure
-script. Currently they are set to 10 and 64 MB.)
+In addition, when a file is opened (or a variable created in an open file), the netCDF-4 library checks to make sure the default chunk cache size will work for that variable. The cache will be large enough to hold N chunks, up to a maximum size of M bytes. (Both N and M are settable at configure time with the `–with-default-chunks-in-cache` and the `–with-max-default-cache-size` options to the configure script. Currently they are set to **10** and **64** MB.)
 
-To change the default chunk cache size, use the set_chunk_cache
-function before opening the file with nc_set_chunk_cache(). Fortran 77
-programmers see NF_SET_CHUNK_CACHE()). Fortran 90 programmers use the
-optional cache_size, cache_nelems, and cache_preemption parameters to
-nf90_open/nf90_create to change the chunk size before opening the
-file.
+To change the default chunk cache size, use the `set_chunk_cache()` function before opening the file with nc_set_chunk_cache(). Fortran 77 programmers see `NF_SET_CHUNK_CACHE()`). Fortran 90 programmers use the optional `cache_size`, `cache_nelems`, and `cache_preemption` parameters to `nf90_open()/nf90_create()` to change the chunk size before opening the file.
 
-To change the per-variable cache size, use the set_var_chunk_cache
-function at any time on an open file. C programmers see
-nc_set_var_chunk_cache(), Fortran 77 programmers see
-NF_SET_VAR_CHUNK_CACHE().
+To change the per-variable cache size, use the set_var_chunk_cache function at any time on an open file. C programmers see `nc_set_var_chunk_cache()`, Fortran 77 programmers see `NF_SET_VAR_CHUNK_CACHE()`.
 
-# The Default Chunking Scheme {#default_chunking_4_1}
+## The Default Chunking Scheme {#default_chunking_4_1}
 
-Unfortunately, there are no general-purpose chunking defaults that are
-optimal for all uses. Different patterns of access lead to different
-chunk shapes and sizes for optimum access. Optimizing for a single
-specific pattern of access can degrade performance for other access
-patterns.  By creating or rewriting datasets using appropriate
-chunking, it is sometimes possible to support efficient access for
-multiple patterns of access.
+Unfortunately, there are no general-purpose chunking defaults that are optimal for all uses. Different patterns of access lead to different chunk shapes and sizes for optimum access. Optimizing for a single specific pattern of access can degrade performance for other access patterns.  By creating or rewriting datasets using appropriate chunking, it is sometimes possible to support efficient access for multiple patterns of access.
 
 If you don't know or can't anticipate what access patterns will be most common, or you want to store a variable in a way that will support reasonable access along any of its dimensions, you can use the library's default chunking strategy.
 
@@ -48,34 +26,24 @@ The current default chunking strategy of the netCDF library is to balance access
 
 A pragmatic exception to the default strategy is used for variables that only have a single unlimited dimension, for example time series with only a time dimension. In that case, in order to avoid chunks much larger than needed when there are only a small number of records, the chunk sizes for such variables are limited to 4KiB. This may be overridden by explicitly setting the chunk shapes for such variables.
 
-# Chunking and Parallel I/O {#chunking_parallel_io}
+## Chunking and Parallel I/O {#chunking_parallel_io}
 
-When files are opened for read/write parallel I/O access, the chunk
-cache is not used. Therefore it is important to open parallel files
-with read only access when possible, to achieve the best performance.
+When files are opened for read/write parallel I/O access, the chunk cache is not used. Therefore it is important to open parallel files with read only access when possible, to achieve the best performance.
 
-# A Utility to Help Benchmark Results: bm_file {#bm_file}
+## A Utility to Help Benchmark Results: bm_file {#bm_file}
 
-The bm_file utility may be used to copy files, from one netCDF format
-to another, changing chunking, filter, parallel I/O, and other
-parameters. This program may be used for benchmarking netCDF
-performance for user data files with a range of choices, allowing data
-producers to pick settings that best serve their user base.
+The bm_file utility may be used to copy files, from one netCDF format to another, changing chunking, filter, parallel I/O, and other parameters. This program may be used for benchmarking netCDF performance for user data files with a range of choices, allowing data producers to pick settings that best serve their user base.
 
-NetCDF must have been configured with –enable-benchmarks at build time
-for the bm_file program to be built. When built with
-–enable-benchmarks, netCDF will include tests (run with “make check”)
-that will run the bm_file program on sample data files.
+NetCDF must have been configured with `–enable-benchmarks` at build time for the `bm_file` program to be built. When built with
+`–enable-benchmarks`, netCDF will include tests (run with “make check”) that will run the `bm_file` program on sample data files.
 
-Since data files and their access patterns vary from case to case,
-these benchmark tests are intended to suggest further use of the
-bm_file program for users.
+Since data files and their access patterns vary from case to case, these benchmark tests are intended to suggest further use of the `bm_file` program for users.
 
 Here's an example of a call to bm_file:
 
-\code
+````
      ./bm_file -d -f 3 -o  tst_elena_out.nc -c 0:-1:0:1024:256:256 tst_elena_int_3D.nc
-\endcode
+````
 
 Generally a range of settings must be tested. This is best done with a
 shell script, which calls bf_file repeatedly, to create output like
@@ -93,12 +61,9 @@ this:
      *** SUCCESS!!!
 </pre>
 
-Such tables are suitable for import into spreadsheets, for easy
-graphing of results.
+Such tables are suitable for import into spreadsheets, for easy graphing of results.
 
-Several test scripts are run during the “make check” of the netCDF
-build, in the nc_test4 directory. The following example may be found
-in nc_test4/run_bm_elena.sh.
+Several test scripts are run during the “make check” of the netCDF build, in the `nc_test4/` directory. The following example may be found in `nc_test4/run_bm_elena.sh`.
 
 <pre>
      #!/bin/sh
@@ -123,10 +88,9 @@ in nc_test4/run_bm_elena.sh.
      exit 0
 </pre>
 
-The reading that bm_file does can be tailored to match the expected
-access pattern.
+The reading that `bm_file` does can be tailored to match the expected access pattern.
 
-The bm_file program is controlled with command line options.
+The `bm_file` program is controlled with command line options.
 
 <pre>
      ./bm_file
