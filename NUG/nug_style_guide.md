@@ -32,4 +32,4 @@ The following table shows the various `html` and `doxygen` tags which may exist 
 
 | doxygen | html | markdown | description |
 |-----|-----|------|-----|
-|  |  <pre\>/<\pre\> | ```` | Quote Blocks |
+|  |  <pre\>/<\\pre\> | ```` | Quote Blocks |
