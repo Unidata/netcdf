@@ -1,6 +1,7 @@
 # Appendix C. NUG Style Guide {#nug_style_guide}
 
 [TOC]
+\tableofcontents
 
 The NUG is being converted from either straight doxygen (typically `.dox` files) or mixed doxygen/markdown files (typically `.md` files).
 During the conversion, we will apply the following style conventions.  
@@ -24,3 +25,11 @@ These conventions should also be used when adding new documentation to the NetCD
 * Files are organized one rendered page per file, in markdown format.  *This may require splitting some .dox files (which can contain multiple rendered pages) into multiple files*.
 * **Raw HTML** is considered valid markdown.
 * Paragraphs written one sentence per line, with no blank space between them.  Blank spaces denote different paragraphs. This helps with diff viewing.
+
+## Conversions {#nug_conversions}
+
+The following table shows the various `html` and `doxygen` tags which may exist in the existing documentation, and what the corresponding `markdown` syntax should be.
+
+| doxygen | html | markdown | description |
+|-----|-----|------|-----|
+|  |  <pre\>/<\\pre\> | ```` | Quote Blocks |
