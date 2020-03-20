@@ -1,10 +1,7 @@
-/*!
-\page dap2 DAP2 Protocol Support
+# DAP2 Protocol Support {#dap2}
 
+[TOC]
 \tableofcontents
-
-<!-- Note that this file has the .dox extension, but is mostly markdown -->
-<!-- Begin MarkDown -->
 
 # DAP2 (OPeNDAP) Introduction {#dap2_intro}
 
@@ -651,6 +648,7 @@ key. See the libcurl documentation of the _curl_easy_setopt()_ function
 for more detail (http://curl.haxx.se/libcurl/c/curl_easy_setopt.html).
 
 For ESG client side key support, the following entries must be specified:
+
 ````
 HTTP.SSL.VALIDATE
 HTTP.COOKIEJAR
@@ -670,7 +668,3 @@ __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 3/26/2009<br>
 __Last Revised__: 9/25/2018
-
-<!-- End MarkDown -->
-
-*/
