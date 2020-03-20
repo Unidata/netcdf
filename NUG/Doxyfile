@@ -839,7 +839,6 @@ INPUT                  = guide.md \
                          install.md \
                          DAP2.md \
                          DAP4.md \
-                         OPeNDAP.dox \
                          types.dox \
                          user_defined_formats.md \
                          filters.md \

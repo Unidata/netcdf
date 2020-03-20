@@ -5,67 +5,33 @@
 
 # DAP2 (OPeNDAP) Introduction {#dap2_intro}
 
-Beginning with netCDF version 4.1, optional support is provided for
-accessing data through servers supporting the DAP2 protocol.
+Beginning with netCDF version 4.1, optional support is provided fo accessing data through servers supporting the DAP2 protocol.
 
-DAP2 support is enabled if the _--enable-dap__ option
-is used with _./configure_. If DAP2 support is enabled, then
-a usable version of _libcurl_ must be specified
-using the _LDFLAGS_ environment variable (similar to the way
-that the _HDF5_ libraries are referenced).
-Refer to the installation manual for details.
-By default DAP2 support is enabled if _libcurl_ is found.
-DAP2 support can be disabled using the _--disable-dap_.
+DAP2 support is enabled if the _--enable-dap__ option is used with _./configure_. If DAP2 support is enabled, then a usable version of _libcurl_ must be specified using the _LDFLAGS_ environment variable (similar to the way that the _HDF5_ libraries are referenced). Refer to the installation manual for details. By default DAP2 support is enabled if _libcurl_ is found. DAP2 support can be disabled using the _--disable-dap_.
 
-DAP2 uses a data model that is different from that supported by
-netCDF, either classic or enhanced. Generically, the DAP2
-meta-data is encoded textually in a _DDS_ (Dataset Descriptor
-Structure). There is a second textual object, the _DAS_ (Dataset
-Attribute Structure), for specifying DAP2 attributes.  . For
-detailed information about the DAP2 DDS and DAS, refer to the
-OPeNDAP web site http://opendap.org.
+DAP2 uses a data model that is different from that supported by netCDF, either classic or enhanced. Generically, the DAP2 meta-data is encoded textually in a _DDS_ (Dataset Descriptor Structure). There is a second textual object, the _DAS_ (Dataset Attribute Structure), for specifying DAP2 attributes. For detailed information about the DAP2 DDS and DAS, refer to the OPeNDAP web site http://opendap.org.
 
 # Accessing DAP2 Data {#dap2_accessing_data}
 
-In order to access an OPeNDAP data source through the netCDF API, the
-file name normally used is replaced with a URL with a specific
-format. The URL is composed of three parts.
--  URL - this is a standard form URL such as
-   http://remotetest.unidata.ucar.edu/dts/test.01
+In order to access an OPeNDAP data source through the netCDF API, the file name normally used is replaced with a URL with a specific format. The URL is composed of three parts.
 
--  Constraints - these are suffixed to the URL and take the form
-   “?\<projections>&\<selections>”. The meaning of the terms "projection"
-   and "selection" is somewhat complicated; and the OPeNDAP web site,
-   http://www.opendap.org, should be consulted. The interaction of DAP2
-   constraints with netCDF is complex and at the moment requires an
-   understanding of how DAP2 is translated to netCDF.
+-  URL - this is a standard form URL such as http://remotetest.unidata.ucar.edu/dts/test.01
 
-- Client parameters - these may be specified in either of
-  two ways.  The older, deprecated form prefixes text to the
-  front of the url and is of the the general form [\<name>]
-  or [\<name>=value].  Examples include [show=fetch] and
-  [noprefetch].  The newer, preferred form prefixes the
-  parameters to the end of the url using the semi-standard '#'
-  format: e.g. http://....#show=fetch&noprefetch.
+-  Constraints - these are suffixed to the URL and take the form “?\<projections>&\<selections>”. The meaning of the terms "projection" and "selection" is somewhat complicated; and the OPeNDAP web site, http://www.opendap.org, should be consulted. The interaction of DAP2 constraints with netCDF is complex and at the moment requires an understanding of how DAP2 is translated to netCDF.
 
-It is possible to see what the translation does to a particular
-DAP2 data source by examining the DDS source through a web
-browser and then examining the translation using the _ncdump -h_
-command to see the netCDF Classic translation. The ncdump output
-will actually be the union of the DDS with the DAS, so to see
-the complete translation, it is necessary to view both via the
-browser.
+- Client parameters - these may be specified in either of two ways.  The older, deprecated form prefixes text to the front of the url and is of the the general form [\<name>] or [\<name>=value].  Examples include [show=fetch] and [noprefetch].  The newer, preferred form prefixes the parameters to the end of the url using the semi-standard '#' format: e.g. http://....#show=fetch&noprefetch.
 
-For example, if a web browser is given the following, the first URL
-will return the DDS for the specified dataset, and the second URL will
-return the DAS for the specified dataset.
+It is possible to see what the translation does to a particular DAP2 data source by examining the DDS source through a web browser and then examining the translation using the _ncdump -h_ command to see the netCDF Classic translation. The ncdump output will actually be the union of the DDS with the DAS, so to see the complete translation, it is necessary to view both via the browser.
+
+For example, if a web browser is given the following, the first URL will return the DDS for the specified dataset, and the second URL will return the DAS for the specified dataset.
+
 ````
      http://remotetest.unidata.ucar.edu/dts/test.01.dds
      http://remotetest.unidata.ucar.edu/dts/test.01.das
 ````
 
-Then by using the following ncdump command, it is possible to see the
-equivalent netCDF Classic translation.
+Then by using the following ncdump command, it is possible to see the equivalent netCDF Classic translation.
+
 ````
      ncdump -h http://remotetest.unidata.ucar.edu/dts/test.01
 ````
@@ -126,32 +92,20 @@ variables:
 }
 ````
 
-Note that the fields of type String and type URL have suddenly
-acquired a dimension. This is because the netCDF model does
-not support strings, but DAP2 does support strings.
-So, DAP2 strings are translated to arrays
-of char, which requires adding an extra dimension. The size of the
-dimension is determined in a variety of ways and can be specified. It
-defaults to 64 and when read, the underlying string is either padded
-or truncated to that length.
+Note that the fields of type String and type URL have suddenly acquired a dimension. This is because the netCDF model does not support strings, but DAP2 does support strings. So, DAP2 strings are translated to arrays of char, which requires adding an extra dimension. The size of the dimension is determined in a variety of ways and can be specified. It defaults to 64 and when read, the underlying string is either padded or truncated to that length.
 
-Also note that the "Facility" attributes do not appear in the
-translation because they are neither global nor associated with a
-variable in the DDS.
+Also note that the "Facility" attributes do not appear in the translation because they are neither global nor associated with a variable in the DDS.
 
 # DAP2 to NetCDF Translation Rules {#dap2_to_netcdf}
 
-The netCDF library DAP2 support code translate the DAP2 data model
-into the netCDF classic (netCDF-3) data model.
+The netCDF library DAP2 support code translate the DAP2 data model into the netCDF classic (netCDF-3) data model.
 
 ## netCDF-3 Translation Rules {#dap2_nc32_trans_rules}
 
-The netCDF-3 translation is designed to mimic as closely as
-possible the translation provided by the now obsolete libnc-dap2
-system, except that some errors in that older translation have
-been fixed.
+The netCDF-3 translation is designed to mimic as closely as possible the translation provided by the now obsolete `libnc-dap2` system, except that some errors in that older translation have been fixed.
 
 For illustrative purposes, the following example will be used.
+
 ````
 Dataset {
   Int32 f1;
@@ -185,11 +139,8 @@ Dataset {
 
 ## Variable Definition {#dap2_var2_def}
 
-The set of netCDF variables is derived from the fields with primitive
-base types as they occur in Sequences, Grids, and Structures. The
-field names are modified to be fully qualified initially. For the
-above, the set of variables are as follows. The coordinate variables
-within grids are left out in order to mimic the behavior of libnc-dap2.
+The set of netCDF variables is derived from the fields with primitive base types as they occur in Sequences, Grids, and Structures. The field names are modified to be fully qualified initially. For the above, the set of variables are as follows. The coordinate variables within grids are left out in order to mimic the behavior of libnc-dap2.
+
 ````
     f1
     S1.f11
@@ -203,7 +154,7 @@ within grids are left out in order to mimic the behavior of libnc-dap2.
 
 ## DAP2 Reserved Keywords {#dap2_reserved_keywords}
 
-In the OPeNDAP DAP2 protocol, there are a number of reserved keywords.  These keywords are case insensitive and if you use one as a netCDF variable name, you may encounter odd behavior such as case changes (depending on the client DDS/DAS parser).  The list of reserved keywords as used by the netCDF-C library parser are as follows:
+In the OPeNDAP DAP2 protocol, there are a number of reserved keywords.  These keywords are case insensitive and if you use one as a netCDF variable name, you may encounter odd behavior such as case changes (depending on the client DDS/DAS parser).  The list of reserved keywords as used by the netCDF C library parser are as follows:
 
 - alias
 - array
