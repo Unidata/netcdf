@@ -18,8 +18,8 @@ The list of files to be converted.
 * [x] bestpractices.md
 * [x] cdl.md
 * [x] chunking.md
-* [-] DAP2.dox
-* [ ] DAP4.dox
+* [-] DAP2.md
+* [ ] DAP4.md
 * [ ] file_format_specifications.md
 * [ ] filters.md
 * [ ] guide.md
