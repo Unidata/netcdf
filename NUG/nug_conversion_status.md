@@ -18,15 +18,15 @@ The list of files to be converted.
 * [x] bestpractices.md
 * [x] cdl.md
 * [x] chunking.md
-* [-] DAP2.md
-* [ ] DAP4.md
+* [-] DAP2.dox (Ward)
+* [-] DAP4.dox (Ward)
 * [ ] file_format_specifications.md
 * [ ] filters.md
 * [ ] guide.md
 * [ ] install.md
 * [ ] netcdf_data_set_components.md
 * [ ] netcdf_introduction.md
-* [ ] netcdf_utilities_guide.md
-* [ ] OPeNDAP.dox
-* [-] types.dox
-* [-] user_defined_formats.md
+* [-] netcdf_utilities_guide.md (Sean)
+* [x] ~~OPeNDAP.dox~~ (skipping)
+* [x] types.dox
+* [x] user_defined_formats.md
