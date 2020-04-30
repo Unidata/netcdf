@@ -7,13 +7,20 @@
 
 Beginning with netCDF version 4.1, optional support is provided fo accessing data through servers supporting the DAP2 protocol.
 
-DAP2 support is enabled if the _--enable-dap__ option is used with _./configure_. If DAP2 support is enabled, then a usable version of _libcurl_ must be specified using the _LDFLAGS_ environment variable (similar to the way that the _HDF5_ libraries are referenced). Refer to the installation manual for details. By default DAP2 support is enabled if _libcurl_ is found. DAP2 support can be disabled using the _--disable-dap_.
+DAP2 support is enabled if the _--enable-dap__ option is used with _./configure_.
+If DAP2 support is enabled, then a usable version of _libcurl_ must be specified using the _LDFLAGS_ environment variable (similar to the way that the _HDF5_ libraries are referenced).
+Refer to the installation manual for details. By default DAP2 support is enabled if _libcurl_ is found.
+DAP2 support can be disabled using the _--disable-dap_.
 
-DAP2 uses a data model that is different from that supported by netCDF, either classic or enhanced. Generically, the DAP2 meta-data is encoded textually in a _DDS_ (Dataset Descriptor Structure). There is a second textual object, the _DAS_ (Dataset Attribute Structure), for specifying DAP2 attributes. For detailed information about the DAP2 DDS and DAS, refer to the OPeNDAP web site http://opendap.org.
+DAP2 uses a data model that is different from that supported by netCDF, either classic or enhanced.
+Generically, the DAP2 meta-data is encoded textually in a _DDS_ (Dataset Descriptor Structure).
+There is a second textual object, the _DAS_ (Dataset Attribute Structure), for specifying DAP2 attributes.
+For detailed information about the DAP2 DDS and DAS, refer to the OPeNDAP web site http://opendap.org.
 
 # Accessing DAP2 Data {#dap2_accessing_data}
 
-In order to access an OPeNDAP data source through the netCDF API, the file name normally used is replaced with a URL with a specific format. The URL is composed of three parts.
+In order to access an OPeNDAP data source through the netCDF API, the file name normally used is replaced with a URL with a specific format.
+The URL is composed of three parts.
 
 -  URL - this is a standard form URL such as http://remotetest.unidata.ucar.edu/dts/test.01
 
@@ -21,7 +28,8 @@ In order to access an OPeNDAP data source through the netCDF API, the file name 
 
 - Client parameters - these may be specified in either of two ways.  The older, deprecated form prefixes text to the front of the url and is of the the general form [\<name>] or [\<name>=value].  Examples include [show=fetch] and [noprefetch].  The newer, preferred form prefixes the parameters to the end of the url using the semi-standard '#' format: e.g. http://....#show=fetch&noprefetch.
 
-It is possible to see what the translation does to a particular DAP2 data source by examining the DDS source through a web browser and then examining the translation using the _ncdump -h_ command to see the netCDF Classic translation. The ncdump output will actually be the union of the DDS with the DAS, so to see the complete translation, it is necessary to view both via the browser.
+It is possible to see what the translation does to a particular DAP2 data source by examining the DDS source through a web browser and then examining the translation using the _ncdump -h_ command to see the netCDF Classic translation.
+The ncdump output will actually be the union of the DDS with the DAS, so to see the complete translation, it is necessary to view both via the browser.
 
 For example, if a web browser is given the following, the first URL will return the DDS for the specified dataset, and the second URL will return the DAS for the specified dataset.
 
@@ -92,7 +100,11 @@ variables:
 }
 ````
 
-Note that the fields of type String and type URL have suddenly acquired a dimension. This is because the netCDF model does not support strings, but DAP2 does support strings. So, DAP2 strings are translated to arrays of char, which requires adding an extra dimension. The size of the dimension is determined in a variety of ways and can be specified. It defaults to 64 and when read, the underlying string is either padded or truncated to that length.
+Note that the fields of type String and type URL have suddenly acquired a dimension.
+This is because the netCDF model does not support strings, but DAP2 does support strings.
+So, DAP2 strings are translated to arrays of char, which requires adding an extra dimension.
+The size of the dimension is determined in a variety of ways and can be specified.
+It defaults to 64 and when read, the underlying string is either padded or truncated to that length.
 
 Also note that the "Facility" attributes do not appear in the translation because they are neither global nor associated with a variable in the DDS.
 
@@ -139,7 +151,10 @@ Dataset {
 
 ## Variable Definition {#dap2_var2_def}
 
-The set of netCDF variables is derived from the fields with primitive base types as they occur in Sequences, Grids, and Structures. The field names are modified to be fully qualified initially. For the above, the set of variables are as follows. The coordinate variables within grids are left out in order to mimic the behavior of libnc-dap2.
+The set of netCDF variables is derived from the fields with primitive base types as they occur in Sequences, Grids, and Structures.
+The field names are modified to be fully qualified initially.
+For the above, the set of variables are as follows.
+The coordinate variables within grids are left out in order to mimic the behavior of libnc-dap2.
 
 ````
     f1
@@ -154,7 +169,9 @@ The set of netCDF variables is derived from the fields with primitive base types
 
 ## DAP2 Reserved Keywords {#dap2_reserved_keywords}
 
-In the OPeNDAP DAP2 protocol, there are a number of reserved keywords.  These keywords are case insensitive and if you use one as a netCDF variable name, you may encounter odd behavior such as case changes (depending on the client DDS/DAS parser).  The list of reserved keywords as used by the netCDF C library parser are as follows:
+In the OPeNDAP DAP2 protocol, there are a number of reserved keywords.  
+These keywords are case insensitive and if you use one as a netCDF variable name, you may encounter odd behavior such as case changes (depending on the client DDS/DAS parser).  
+The list of reserved keywords as used by the netCDF C library parser are as follows:
 
 - alias
 - array
@@ -183,25 +200,19 @@ In the OPeNDAP DAP2 protocol, there are a number of reserved keywords.  These ke
 ## Variable Dimension Translation {#dap2_var_dim_trans}
 
 A variable's rank is determined from three sources.
-- The variable has the dimensions associated with the field it
-represents (e.g. S1.FS2.f1[3] in the above example).
-- The variable inherits the dimensions associated with any containing
-structure that has a rank greater than zero. These dimensions precede
-those of case 1. Thus, we have in our example, f1[2][3], where the
-first dimension comes from the containing Structure FS2[2].
-- The variable's set of dimensions are altered if any of its
-containers is a DAP2 DDS Sequence. This is discussed more fully below.
 
-If the type of the netCDF variable is char, then an extra string
-dimension is added as the last dimension.
+- The variable has the dimensions associated with the field it represents (e.g. S1.FS2.f1[3] in the above example).
+- The variable inherits the dimensions associated with any containing structure that has a rank greater than zero. These dimensions precede those of case 1. Thus, we have in our example, f1[2][3], where the first dimension comes from the containing Structure FS2[2].
+- The variable's set of dimensions are altered if any of its containers is a DAP2 DDS Sequence. This is discussed more fully below.
+
+If the type of the netCDF variable is char, then an extra string dimension is added as the last dimension.
 
 ## Dimension translation {#dap2_dim2_trans}
 
 For dimensions, the rules are as follows.
 
-Fields in dimensioned structures inherit the dimension of the
-structure; thus the above list would have the following dimensioned
-variables.
+Fields in dimensioned structures inherit the dimension of the structure; thus the above list would have the following dimensioned variables.
+
 ````
         S1.FS2.f1 -> S1.FS2.f1[2][3]
         S1.FS2.f2 -> S1.FS2.f2[2]
@@ -215,12 +226,9 @@ variables.
         lon -> lon[lon=2]
 ````
 
-Collect all of the dimension specifications from the DDS, both named
-and anonymous (unnamed) For each unique anonymous dimension with value
-NN create a netCDF dimension of the form "XX_\<i\>=NN", where XX is the
-fully qualified name of the variable and i is the i'th (inherited)
-dimension of the array where the anonymous dimension occurs. For our
-example, this would create the following dimensions.
+Collect all of the dimension specifications from the DDS, both named and anonymous (unnamed) For each unique anonymous dimension with value NN create a netCDF dimension of the form "XX_\<i\>=NN", where XX is the fully qualified name of the variable and i is the i'th (inherited) dimension of the array where the anonymous dimension occurs.
+For our example, this would create the following dimensions.
+
 ````
         S1.FS2.f1_0 = 2 ;
         S1.FS2.f1_1 = 3 ;
@@ -229,18 +237,17 @@ example, this would create the following dimensions.
         S2.G2.lon_0 = 2 ;
 ````
 
-If however, the anonymous dimension is the single dimension of a MAP
-vector in a Grid then the dimension is given the same name as the map
-vector This leads to the following.
+If however, the anonymous dimension is the single dimension of a MAP vector in a Grid then the dimension is given the same name as the map vector This leads to the following.
+
 ````
         S2.G2.lat_0 -> S2.G2.lat
         S2.G2.lon_0 -> S2.G2.lon
 ````
 
-For each unique named dimension "<name>=NN", create a netCDF dimension
-of the form "<name>=NN", where name has the qualifications removed. If
-this leads to duplicates (i.e. same name and same value), then the
-duplicates are ignored. This produces the following.
+For each unique named dimension "<name>=NN", create a netCDF dimension of the form "<name>=NN", where name has the qualifications removed.
+If this leads to duplicates (i.e. same name and same value), then the duplicates are ignored.
+This produces the following.
+
 ````
         S2.G2.lat -> lat
         S2.G2.lon -> lon
@@ -248,17 +255,15 @@ duplicates are ignored. This produces the following.
 
 Note that this produces duplicates that will be ignored later.
 
-At this point the only dimensions left to process should be named
-dimensions with the same name as some dimension from step number 3,
-but with a different value. For those dimensions create a dimension of
-the form "<name>M=NN" where M is a counter starting at 1. The example
-has no instances of this.
+At this point the only dimensions left to process should be named dimensions with the same name as some dimension from step number 3, but with a different value.
+For those dimensions create a dimension of the form "<name>M=NN" where M is a counter starting at 1.
+The example has no instances of this.
 
-Finally and if needed, define a single UNLIMITED dimension named
-"unlimited" with value zero. Unlimited will be used to handle certain
-kinds of DAP2 sequences (see below).
+Finally and if needed, define a single UNLIMITED dimension name "unlimited" with value zero.
+Unlimited will be used to handle certain kinds of DAP2 sequences (see below).
 
 This leads to the following set of dimensions.
+
 ````
 dimensions:
   unlimited = UNLIMITED;
@@ -273,8 +278,8 @@ dimensions:
 
 The steps for variable name translation are as follows.
 
-Take the set of variables captured above. Thus for the above DDS, the
-following fields would be collected.
+Take the set of variables captured above. Thus for the above DDS, the following fields would be collected.
+
 ````
         f1
         S1.f11
@@ -286,21 +291,20 @@ following fields would be collected.
         lon
 ````
 
-All grid array variables are renamed to be the same as the containing
-grid and the grid prefix is removed. In the above DDS, this results in
-the following changes.
+All grid array variables are renamed to be the same as the containing grid and the grid prefix is removed. In the above DDS, this results in the following changes.
+
 ````
         G1.temp -> G1
         G2.G2 -> G2
 ````
 
-It is important to note that this process could produce duplicate
-variables (i.e. with the same name); in that case they are all assumed
-to have the same content and the duplicates are ignored. If it turns
-out that the duplicates have different content, then the translation
-will not detect this. YOU HAVE BEEN WARNED.
+It is important to note that this process could produce duplicate variables (i.e. with the same name); in that case they are all assumed to have the same content and the duplicates are ignored.
+If it turns out that the duplicates have different content, then the translation will not detect this.
+
+**YOU HAVE BEEN WARNED.**
 
 The final netCDF-3 schema (minus attributes) is then as follows.
+
 ````
 netcdf t {
 dimensions:
@@ -324,42 +328,31 @@ variables:
 
 In practice, the unlimited dimension is dropped because it is unused.
 
-There are differences with the original libnc-dap2 here because
-libnc-dap2 technically was incorrect. The original would have said
-this, for example.
+There are differences with the original libnc-dap2 here because libnc-dap2 technically was incorrect.
+The original would have said this, for example.
+
 ````
 int S1.FS2.f1(lat, lat) ;
 ````
 
-Note that this is incorrect because it dimensions S1.FS2.f1(2,2)
-rather than S1.FS2.f1(2,3).
+Note that this is incorrect because it dimensions `S1.FS2.f1(2,2)` rather than `S1.FS2.f1(2,3)`.
 
 ## Translating DAP2 DDS Sequences {#dap2_translation}
 
-Any variable (as determined above) that is contained directly or
-indirectly by a Sequence is subject to revision of its rank using the
-following rules.
+Any variable (as determined above) that is contained directly or indirectly by a Sequence is subject to revision of its rank using the following rules.
 
-Let the variable be contained in Sequence Q1, where Q1 is the
-innermost containing sequence. If Q1 is itself contained (directly or
-indirectly) in a sequence, or Q1 is contained (again directly or
-indirectly) in a structure that has rank greater than 0, then the
-variable will have an initial UNLIMITED dimension. Further, all
-dimensions coming from "above" and including (in the containment
-sense) the innermost Sequence, Q1, will be removed and replaced by
-that single UNLIMITED dimension. The size associated with that
-UNLIMITED is zero, which means that its contents are inaccessible
-through the netCDF-3 API. Again, this differs from libnc-dap2, which
-leaves out such variables. Again, however, this difference is backward
-compatible.
+Let the variable be contained in Sequence Q1, where Q1 is the innermost containing sequence.
+If Q1 is itself contained (directly or indirectly) in a sequence, or Q1 is contained (again directly or indirectly) in a structure that has rank greater than 0, then the variable will have an initial UNLIMITED dimension.
+Further, all dimensions coming from "above" and including (in the containment sense) the innermost Sequence, Q1, will be removed and replaced by that single UNLIMITED dimension.
+The size associated with that UNLIMITED is zero, which means that its contents are inaccessible through the netCDF-3 API.
+Again, this differs from libnc-dap2, which leaves out such variables.
+Again, however, this difference is backward compatible.
 
-If the variable is contained in a single Sequence (i.e. not nested)
-and all containing structures have rank 0, then the variable will have
-an initial dimension whose size is the record count for that
-Sequence. The name of the new dimension will be the name of the
-Sequence.
+If the variable is contained in a single Sequence (i.e. not nested) and all containing structures have rank 0, then the variable will have an initial dimension whose size is the record count for that Sequence.
+The name of the new dimension will be the name of the Sequence.
 
 Consider this example.
+
 ````
 Dataset {
   Structure {
@@ -376,8 +369,8 @@ Dataset {
 } D;
 ````
 
-The corresponding netCDF-3 translation is pretty much as follows (the
-value for dimension Q2 may differ).
+The corresponding netCDF-3 translation is pretty much as follows (the value for dimension Q2 may differ).
+
 ````
 dimensions:
     unlimited = UNLIMITED ; // (0 currently)
@@ -393,89 +386,56 @@ variables:
     int Q2.S2.x1(Q2, Q2.S2.x1_0, Q2.S2.x1_1) ;
 ````
 
-Note that for example S1.SQ1.f1_0 is not actually used because it has
-been folded into the unlimited dimension.
+Note that for example S1.SQ1.f1_0 is not actually used because it has been folded into the unlimited dimension.
 
-Note that for sequences without a leading unlimited dimension, there
-is a performance cost because the translation code has to walk the
-data to determine how many records are associated with the
-sequence. Since libnc-dap2 did essentially the same thing, it can be
-assumed that the cost is not prohibitive.
+Note that for sequences without a leading unlimited dimension, there is a performance cost because the translation code has to walk the data to determine how many records are associated with the sequence.
+Since libnc-dap2 did essentially the same thing, it can be assumed that the cost is not prohibitive.
 
 # Caching {#dap2_dap2_caching}
 
-In an effort to provide better performance for some access patterns,
-client-side caching of data is available. The default is no caching,
-but it may be enabled by prefixing the URL with the parameter "cache".
+In an effort to provide better performance for some access patterns, client-side caching of data is available.
+The default is no caching, but it may be enabled by prefixing the URL with the parameter "cache".
 
-Caching operates basically as follows.
+Caching operates as follows.
 
-When a URL is first accessed using _nc_open()_, netCDF automatically
-does a pre-fetch of selected variables. These include all variables
-smaller than a specified (and user definable) size. This allows, for
-example, quick access to coordinate variables. This can be suppressed
-with the parameter "noprefetch".
+When a URL is first accessed using _nc_open()_, netCDF automatically does a pre-fetch of selected variables.
+These include all variables smaller than a specified (and user definable) size.
+This allows, for example, quick access to coordinate variables.
+This can be suppressed with the parameter "noprefetch".
 
-Whenever a request is made using some variant of the _nc_get_var()_ API
-procedures, the complete variable is fetched and stored in the cache
-as a new cache entry. Subsequence requests for any part of that
-variable will access the cache entry to obtain the data.
+Whenever a request is made using some variant of the _nc_get_var()_ API procedures, the complete variable is fetched and stored in the cache as a new cache entry.
+Subsequence requests for any part of that variable will access the cache entry to obtain the data.
 
-The cache may become too full, either because there are too many
-entries or because it is taking up too much disk space. In this case
-cache entries are purged until the cache size limits are reached. The
-cache purge algorithm is LRU (least recently used) so that variables
-that are repeatedly referenced will tend to stay in the cache.
+The cache may become too full, either because there are too many entries or because it is taking up too much disk space.
+In this case cache entries are purged until the cache size limits are reached.
+The cache purge algorithm is LRU (least recently used) so that variables that are repeatedly referenced will tend to stay in the cache.
 
 The cache is completely purged when _nc_close()_ is invoked.
 
-In order to decide if you should enable caching, you will need to have
-some understanding of the access patterns of your program.
+In order to decide if you should enable caching, you will need to have some understanding of the access patterns of your program.
 
-The ncdump program always dumps one or more whole variables so it
-turns on caching.
+The ncdump program always dumps one or more whole variables so it turns on caching.
 
-If your program accesses only parts of a number of variables, then
-caching should probably not be used since fetching whole variables
-will probably slow down your program for no purpose.
+If your program accesses only parts of a number of variables, then caching should probably not be used since fetching whole variables will probably slow down your program for no purpose.
 
-Unfortunately, caching is currently an all or nothing proposition, so
-for more complex access patterns, the decision to cache or not may not
-have an obvious answer. Probably a good rule of thumb is to avoid
-caching initially and later turn it on to see its effect on
-performance.
+Unfortunately, caching is currently an all or nothing proposition, so for more complex access patterns, the decision to cache or not may not have an obvious answer.
+Probably a good rule of thumb is to avoid caching initially and later turn it on to see its effect on performance.
 
 # Defined Client Parameters {#dap2_dap2_defined_params}
 
-Currently, a limited set of client parameters is
-recognized. Parameters not listed here are ignored, but no error is
-signalled. All names are case insensitive.
+Currently, a limited set of client parameters is recognized. Parameters not listed here are ignored, but no error is signalled. All names are case insensitive.
 
-Parameter Name Legal Values Semantics
-- "log" | "log=<file>" - Turn on logging and send the log output to
-  the specified file. If no file is specified, then log output is sent
-  to standard error.
-- "show=... das|dds|url" - This causes information to appear as
-  specific global attributes. The currently recognized tags are "dds"
-  to display the underlying DDS, "das" similarly, and "url" to display
-  the url used to retrieve the data. This parameter may be specified
-  multiple times (e.g. “show=dds&show=url”).
-- "show=fetch" - This parameter causes the netCDF code to log a copy
-  of the complete url for every HTTP get request. If logging is
-  enabled, then this can be helpful in checking to see the access
-  behavior of the netCDF code.
-- "stringlength=NN" - Specify the default string length to use for
-  string dimensions. The default is 64. The name "maxstrlen" is an
-  alias for "stringlength".
-- "stringlength_\<var\>=NN" - Specify the default string length to use
-  for a string dimension for the specified variable. The default is
-  64. The name "maxstrlen_\<var\>" is an alias for "stringlength_\<var\>".
+## Parameter Name Legal Values Semantics {#dap2_parameter_name_legal_values_semantics}
+
+- "log" | "log=<file>" - Turn on logging and send the log output to the specified file. If no file is specified, then log output is sent to standard error.
+- "show=... das|dds|url" - This causes information to appear as specific global attributes. The currently recognized tags are "dds" to display the underlying DDS, "das" similarly, and "url" to display the url used to retrieve the data. This parameter may be specified multiple times (e.g. “show=dds&show=url”).
+- "show=fetch" - This parameter causes the netCDF code to log a copy of the complete url for every HTTP get request. If logging is enabled, then this can be helpful in checking to see the access behavior of the netCDF code.
+- "stringlength=NN" - Specify the default string length to use for string dimensions. The default is 64. The name "maxstrlen" is an alias for "stringlength".
+- "stringlength_\<var\>=NN" - Specify the default string length to use for a string dimension for the specified variable. The default is 64. The name "maxstrlen_\<var\>" is an alias for "stringlength_\<var\>".
 - "cache" - This enables caching.
 - "nocache" - This disbles caching.
-- "cachelimit=NN" - Specify the maximum amount of space allowed for
-  the cache.
-- "cachecount=NN" - Specify the maximum number of entries in the
-  cache.
+- "cachelimit=NN" - Specify the maximum amount of space allowed for the cache.
+- "cachecount=NN" - Specify the maximum number of entries in the cache.
 - "prefetch" - This enables prefetch of small variables (default).
 - "noprefetch" - This disables prefetch of small variables.
 - "fillmismatch" - This enables _FillValue/Variable type mismatch.
@@ -483,48 +443,33 @@ Parameter Name Legal Values Semantics
 
 # Notes on Debugging OPeNDAP Access {#dap2_dap2_debug}
 
-The OPeNDAP support makes use of the logging facility of the
-underlying oc system (see http://www.OPeNDAP.org/oc).
-Note that this is currently separate from the
-existing netCDF logging facility. Turning on this logging can
-sometimes give important information. Logging can be enabled by
-using the client parameter "log" or "log=filename",
-where the first case will send log output to standard error and the
-second will send log output to the specified file.
+The OPeNDAP support makes use of the logging facility of the underlying oc system (see http://www.OPeNDAP.org/oc).
+Note that this is currently separate from the existing netCDF logging facility.
+Turning on this logging can sometimes give important information.
+Logging can be enabled by using the client parameter "log" or "log=filename", where the first case will send log output to standard error and the second will send log output to the specified file.
 
-Users should also be aware that if one is
-accessing data over an NFS mount, one may see some .nfsxxxxx files;
-those can be ignored.
+Users should also be aware that if one is accessing data over an NFS mount, one may see some .nfsxxxxx files; those can be ignored.
 
 ## HTTP Configuration. {#dap2_http2_config}
 
-Limited support for configuring the http connection is provided via
-parameters in the “.dodsrc” configuration file. The relevant .dodsrc file is
-located by first looking in the current working directory, and if not
-found, then looking in the directory specified by the “$HOME”
-environment variable.
+Limited support for configuring the http connection is provided via parameters in the “.dodsrc” configuration file.
+The relevant .dodsrc file is located by first looking in the current working directory, and if not found, then looking in the directory specified by the “$HOME” environment variable.
 
 Entries in the .dodsrc file are of the form:
 ````
      ['['<url>']']<key>=<value>
 ````
 
-That is, it consists of a key name and value pair and optionally
-preceded by a url enclosed in square brackets.
+That is, it consists of a key name and value pair and optionally preceded by a url enclosed in square brackets.
 
 For given KEY and URL strings, the value chosen is as follows:
 
-If URL is null, then look for the .dodsrc entry that has no url prefix
-and whose key is same as the KEY for which we are looking.
+If URL is null, then look for the .dodsrc entry that has no url prefix and whose key is same as the KEY for which we are looking.
 
-If the URL is not null, then look for all the .dodsrc entries that
-have a url, URL1, say, and for which URL1 has the same host and port
-as URL. All parts of the url's except host and port are ignored.
-For example, if URL = http//x.y/a, then it will match
-entries of the form
-_[http//x.y/a]KEY=VALUE_ or _[http//x.y/b]KEY=VALUE_.
-It will not match an entry of the form _[http//x.y:8080]KEY=VALUE
-because the second has a port number (8080) different than the URL.
+If the URL is not null, then look for all the .dodsrc entries that have a url, URL1, say, and for which URL1 has the same host and port as URL.
+All parts of the url's except host and port are ignored.
+For example, if URL = http//x.y/a, then it will match entries of the form _[http//x.y/a]KEY=VALUE_ or _[http//x.y/b]KEY=VALUE_.
+It will not match an entry of the form _[http//x.y:8080]KEY=VALUE because the second has a port number (8080) different than the URL.
 Finally from the set so constructed, choose the first matching entry.
 
 Currently, the supported set of keys (with descriptions) are as
@@ -594,9 +539,8 @@ follows.
         Description: Specify the maximum time in seconds that you allow the http connection to complete.
         Related CURL Flags: CURLOPT_TIMEOUT, CURLOPT_NOSIGNAL  
 
-The related curl flags line indicates the curl flags modified by this
-key. See the libcurl documentation of the _curl_easy_setopt()_ function
-for more detail (http://curl.haxx.se/libcurl/c/curl_easy_setopt.html).
+The related curl flags line indicates the curl flags modified by this key.
+See the libcurl documentation of the _curl_easy_setopt()_ function for more detail (http://curl.haxx.se/libcurl/c/curl_easy_setopt.html).
 
 For ESG client side key support, the following entries must be specified:
 
@@ -608,14 +552,12 @@ HTTP.SSL.KEY
 HTTP.SSL.CAPATH
 ````
 
-Additionally, for ESG, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_
-entries should have same value, which is the file path for the
-certificate produced by MyProxyLogon. The HTTP.SSL.CAPATH entry should
-be the path to the "certificates" directory produced by MyProxyLogon.
+Additionally, for ESG, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_ entries should have same value, which is the file path for the certificate produced by MyProxyLogon.
+The HTTP.SSL.CAPATH entry should be the path to the "certificates" directory produced by MyProxyLogon.
 
 # Point of Contact {#dap2_poc}
 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 3/26/2009<br>
-__Last Revised__: 9/25/2018
+__Last Revised__: 04/30/2020
