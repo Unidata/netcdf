@@ -1,40 +1,21 @@
-/*!
-\page dap4 DAP4 Protocol Support
+# DAP4 Protocol Support {#dap4}
 
-
-<!-- Note that this file has the .dox extension, but is mostly markdown -->
-<!-- Begin MarkDown -->
-
+[TOC]
 \tableofcontents
 
 # DAP4 Introduction {#dap4_introduction}
 
-Beginning with netCDF version 4.5.0, optional support is provided for
-accessing data from servers supporting the DAP4 protocol.
+Beginning with netCDF version 4.5.0, optional support is provided for accessing data from servers supporting the DAP4 protocol.
 
-DAP4 support is enabled if the _--enable-dap_ option
-is used with './configure'. If DAP4 support is enabled, then
-a usable version of _libcurl_ must be specified
-using the _LDFLAGS_ environment variable (similar to the way
-that the _HDF5_ libraries are referenced).
-Refer to the installation manual for details.
-By default DAP4 support is enabled if _libcurl_ is found.
-DAP4 support can be disabled using the _--disable-dap_.
+DAP4 support is enabled if the _--enable-dap_ option is used with './configure'. If DAP4 support is enabled, then a usable version of _libcurl_ must be specified using the _LDFLAGS_ environment variable (similar to the way that the _HDF5_ libraries are referenced). Refer to the installation manual for details. By default DAP4 support is enabled if _libcurl_ is found. DAP4 support can be disabled using the _--disable-dap_.
 
-DAP4 uses a data model that is, by design, similar to,
-but -- for historical reasons -- not identical with,
-the netCDF-Enhanced (aka netcdf-4) model.
-Generically, the DAP4 data model is encoded in XML document
-called a DMR.
-For detailed information about the DAP4 DMR, refer to
-the DAP4 specification Volume 1:
-http://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
+DAP4 uses a data model that is, by design, similar to, but -- for historical reasons -- not identical with, the netCDF-Enhanced (aka netcdf-4) model. Generically, the DAP4 data model is encoded in XML document called a DMR. For detailed information about the DAP4 DMR, refer to
+the DAP4 specification Volume 1: http://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
 
 # Accessing Data Using the DAP4 Prototocol {#dap4_accessing_data}
 
-In order to access a DAP4 data source through the netCDF API, the
-file name normally used is replaced with a URL with a specific
-format. The URL is composed of three parts.
+In order to access a DAP4 data source through the netCDF API, the file name normally used is replaced with a URL with a specific format. The URL is composed of three parts.
+
 -  URL - this is a standard form URL with specific markers to indicate that
    it refers to a DAP4 encoded dataset. The markers are of the form
    "dap4", "mode=dap4", or "/thredds/dap4". The following
@@ -58,24 +39,19 @@ format. The URL is composed of three parts.
    parameters to the end of the url using the semi-standard '#'
    format: e.g. http://....#show=fetch&noprefetch.
 
-It is possible to see what the translation does to a particular DAP4
-data source in two steps. First, one can examine the DMR
-source through a web browser and then second, one can examine
-the translation using the "ncdump -h" command to see the
-corresponding netCDF-4 representation.
+It is possible to see what the translation does to a particular DAP4 data source in two steps. First, one can examine the DMR source through a web browser and then second, one can examine the translation using the "ncdump -h" command to see the corresponding netCDF-4 representation.
 
-For example, if a web browser is given the following (fictional) URL,
-it will return the DMR for the specified dataset (in XML format).
-\code
+For example, if a web browser is given the following (fictional) URL, it will return the DMR for the specified dataset (in XML format).
+
+````  
      http://remotetest.unidata.ucar.edu/d4ts/test.01.dmr.xml#dap4
-\endcode
+````
 
-By using the following ncdump command, it is possible to see the
-equivalent netCDF-4 translation.
+By using the following ncdump command, it is possible to see the equivalent netCDF-4 translation.
 
-\code
+````
      ncdump -h '[dap4]http://remotetest.unidata.ucar.edu/d4ts/test.01'
-\endcode
+````
 
 # Defined Client Parameters {#dap4_defined_params}
 
@@ -84,6 +60,7 @@ recognized. Parameters not listed here are
 ignored, but no error is signalled.
 
 Parameter Name Legal Values Semantics
+
 - "log" | "log=<file>" - Turn on logging and send the log output to
   the specified file. If no file is specified, then output is sent to standard
   error.
@@ -106,136 +83,115 @@ Parameter Name Legal Values Semantics
 
 # Notes on Debugging DAP4 Access {#dap4_debug}
 
-The DAP4 support has a logging facility.
-Turning on this logging can
-sometimes give important information. Logging can be enabled by
-using the client parameter "log" or "log=filename",
-where the first case will send log output to standard error and the
-second will send log output to the specified file.
+The DAP4 support has a logging facility. Turning on this logging can sometimes give important information. Logging can be enabled by using the client parameter "log" or "log=filename", where the first case will send log output to standard error and the second will send log output to the specified file.
 
-Users should also be aware that if one is
-accessing data over an NFS mount, one may see some .nfsxxxxx files;
-those can be ignored.
+Users should also be aware that if one is accessing data over an NFS mount, one may see some .nfsxxxxx files; those can be ignored.
 
 ## HTTP Configuration. {#dap4_http2_config}
 
-Limited support for configuring the http connection is provided via
-parameters in the “.daprc” configuration file (aka ".dodsrc").
-The relevant .daprc file is
-located by first looking in the current working directory, and if not
-found, then looking in the directory specified by the “$HOME”
-environment variable.
+Limited support for configuring the http connection is provided via parameters in the “.daprc” configuration file (aka ".dodsrc"). The relevant .daprc file is located by first looking in the current working directory, and if not found, then looking in the directory specified by the “$HOME” environment variable.
 
 Entries in the .daprc file are of the form:
+
 ````
      ['['<url>']']<key>=<value>
 ````
 
-That is, it consists of a key name and value pair and optionally
-preceded by a url enclosed in square brackets.
+That is, it consists of a key name and value pair and optionally preceded by a url enclosed in square brackets.
 
 For given KEY and URL strings, the value chosen is as follows:
 
-If URL is null, then look for the .daprc entry that has no url prefix
-and whose key is same as the KEY for which we are looking.
+If URL is null, then look for the .daprc entry that has no url prefix and whose key is same as the KEY for which we are looking.
 
-If the URL is not null, then look for all the .daprc entries that
-have a url, URL1, say, and for which URL1 has the same host and port
-as URL. All parts of the url's except host and port are ignored.
-For example, if URL = http//x.y/a, then it will match
-entries of the form
-_[http//x.y/a]KEY=VALUE_ or _[http//x.y/b]KEY=VALUE_.
-It will not match an entry of the form _[http//x.y:8080]KEY=VALUE
-because the second has a port number (8080) different than the URL.
-Finally from the set so constructed, choose the first matching entry.
+If the URL is not null, then look for all the .daprc entries that have a url, URL1, say, and for which URL1 has the same host and port as URL. All parts of the url's except host and port are ignored. For example, if URL = http//x.y/a, then it will match entries of the form _[http//x.y/a]KEY=VALUE_ or _[http//x.y/b]KEY=VALUE_. It will not match an entry of the form _[http//x.y:8080]KEY=VALUE because the second has a port number (8080) different than the URL. Finally from the set so constructed, choose the first matching entry.
 
-Currently, the supported set of keys (with descriptions) are as
-follows.
+Currently, the supported set of keys (with descriptions) are as follows.
 
--# HTTP.VERBOSE
+````
+- HTTP.VERBOSE
         Type: boolean ("1"/"0")
         Description: Produce verbose output, especially using SSL.
         Related CURL Flags: CURLOPT_VERBOSE
 
--# HTTP.DEFLATE
+- HTTP.DEFLATE
         Type: boolean ("1"/"0")
         Description: Allow use of compression by the server.
         Related CURL Flags: CURLOPT_ENCODING
 
--# HTTP.COOKIEJAR
+- HTTP.COOKIEJAR
         Type: String representing file path
         Description: Specify the name of file into which to store cookies. Defaults to in-memory storage.
         Related CURL Flags:CURLOPT_COOKIEJAR
 
--# HTTP.CREDENTIALS.USER
+- HTTP.CREDENTIALS.USER
         Type: String representing user name
         Description: Specify the user name for Digest and Basic authentication.
         Related CURL Flags:
 
--# HTTP.CREDENTIALS.PASSWORD
+- HTTP.CREDENTIALS.PASSWORD
         Type: String representing password
         Type: boolean ("1"/"0")
         Description: Specify the password for Digest and Basic authentication.
         Related CURL Flags:
 
--# HTTP.SSL.CERTIFICATE
+- HTTP.SSL.CERTIFICATE
         Type: String representing file path
         Description: Path to a file containing a PEM cerficate.
         Related CURL Flags: CURLOPT_CERT
 
--# HTTP.SSL.KEY
+- HTTP.SSL.KEY
         Type: String representing file path
         Description: Same as HTTP.SSL.CERTIFICATE, and should usually have the same value.
         Related CURL Flags: CURLOPT_SSLKEY
 
--# HTTP.SSL.KEYPASSWORD
+- HTTP.SSL.KEYPASSWORD
         Type: String representing password
         Description: Password for accessing the HTTP.SSL.KEY/HTTP.SSL.CERTIFICATE
         Related CURL Flags: CURLOPT_KEYPASSWORD
 
--# HTTP.SSL.CAPATH
+- HTTP.SSL.CAPATH
         Type: String representing directory
         Description: Path to a directory containing trusted certificates for validating server certificates.
         Related CURL Flags: CURLOPT_CAPATH
 
--# HTTP.SSL.VALIDATE
+- HTTP.SSL.VALIDATE
         Type: boolean ("1"/"0")
         Description: Cause the client to verify the server's presented certificate.
         Related CURL Flags: CURLOPT_SSL_VERIFYPEER, CURLOPT_SSL_VERIFYHOST
 
--# HTTP.TIMEOUT
+- HTTP.TIMEOUT
         Type: String ("dddddd")
         Description: Specify the maximum time in seconds that you allow the http transfer operation to take.
         Related CURL Flags: CURLOPT_TIMEOUT, CURLOPT_NOSIGNAL, CURLOPT_CONNECTIONTIMEOUT
 
--# HTTP.PROXY_SERVER
+- HTTP.PROXY_SERVER
         Type: String representing url to access the proxy: (e.g.http://[username:password@]host[:port])
         Description: Specify the needed information for accessing a proxy.
         Related CURL Flags: CURLOPT_PROXY, CURLOPT_PROXYHOST, CURLOPT_PROXYUSERPWD
 
--# HTTP.READ.BUFFERSIZE
+- HTTP.READ.BUFFERSIZE
         Type: String ("dddddd")
         Description: Specify the the internal buffer size for curl reads.
         Related CURL Flags: CURLOPT_BUFFERSIZE, CURL_MAX_WRITE_SIZE (16kB),
                             CURL_MAX_READ_SIZE (512kB).
 
--# HTTP.KEEPALIVE
+- HTTP.KEEPALIVE
         Type: String ("on|n/m")
         Description: Specify that TCP KEEPALIVE should be enabled and that the associated idle wait time is n and that the associated repeat interval is m. If the value is of the form is the string "on", then turn on keepalive, but do not set idle or interval.
         Related CURL Flags: CURLOPT_TCP_KEEPALIVE, CURLOPT_TCP_KEEPIDLE,
                             CURLOPT_TCP_KEEPINTVL.
 
--# HTTP.CONNECTIONTIMEOUT
+- HTTP.CONNECTIONTIMEOUT
         Type: String ("dddddd")
         Description: Specify the maximum time in seconds that you allow the http connection to complete.
         Related CURL Flags: CURLOPT_TIMEOUT, CURLOPT_NOSIGNAL
 
-The related curl flags line indicates the curl flags modified by this
-key. See the libcurl documentation of the _curl_easy_setopt()_ function
-for more detail (http://curl.haxx.se/libcurl/c/curl_easy_setopt.html).
+````
 
-For servers that require client authentication, as a rule, the following
-.daprc entries should be specified.
+The related curl flags line indicates the curl flags modified by this key. See the libcurl documentation of the _curl_easy_setopt()_ function for more detail (http://curl.haxx.se/libcurl/c/curl_easy_setopt.html).
+
+For servers that require client authentication, as a rule, the following .daprc entries should be specified.
+
 ````
 HTTP.SSL.VALIDATE
 HTTP.COOKIEJAR
@@ -244,10 +200,7 @@ HTTP.SSL.KEY
 HTTP.SSL.CAPATH
 ````
 
-Additionally, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_
-entries should have same value, which is the file path for a
-certificate. The HTTP.SSL.CAPATH entry should
-be the path to a directory containing validation "certificates".
+Additionally, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_ entries should have same value, which is the file path for a certificate. The HTTP.SSL.CAPATH entry should be the path to a directory containing validation "certificates".
 
 # Point of Contact {#dap4_poc}
 
@@ -255,5 +208,3 @@ __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 6/5/2017<br>
 __Last Revised__: 11/7/2018
-
-*/
