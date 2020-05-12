@@ -1,0 +1,19 @@
+on:
+  pull_request:
+    paths:
+    - 'NUG/**'
+
+jobs:
+  check-nug-build:
+    name: Build NUG using Doxygen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: mattnotmitt/doxygen-action@v1
+        with:
+          working-directory: 'NUG/'
+          doxyfile-path: 'Doxyfile'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: preview-${{github.sha}}
+          path: NUG/html/
