@@ -207,4 +207,4 @@ Additionally, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_ entries should have 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 6/5/2017<br>
-__Last Revised__: 11/7/2018
+__Last Revised__: 06/18/2020

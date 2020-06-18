@@ -19,7 +19,7 @@ The list of files to be converted.
 * [x] cdl.md
 * [x] chunking.md
 * [x] DAP2.dox (Ward)
-* [-] DAP4.dox (Ward)
+* [x] DAP4.dox (Ward)
 * [ ] file_format_specifications.md
 * [ ] filters.md
 * [ ] guide.md
