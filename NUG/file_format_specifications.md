@@ -3,7 +3,7 @@ Appendix B. File Format Specifications {#file_format_specifications}
 
 [TOC]
 
-\section classic_format_spec The NetCDF Classic Format Specification
+# The NetCDF Classic Format Specification {#classic_format_spec}
 
 To present the format more formally, we use a BNF grammar notation. In
 this notation:
@@ -247,7 +247,7 @@ initialization of variable values with fill values. This makes the
 creation of large files faster, but also eliminates the possibility of
 detecting the inadvertent reading of values that haven't been written.
 
-\section computing_offsets Notes on Computing File Offsets
+# Notes on Computing File Offsets {#computing_offsets}
 
 The offset (position within the file) of a specified data value in a
 classic format or 64-bit offset data file is completely determined by
@@ -310,7 +310,7 @@ A special case: Where there is exactly one record variable, we drop
 the requirement that each record be four-byte aligned, so in this case
 there is no record padding.
 
-\subsection offset_examples Examples
+## Examples {#offset_examples}
 
 By using the grammar above, we can derive the smallest valid netCDF
 file, having no dimensions, no variables, no attributes, and hence, no
@@ -398,7 +398,7 @@ which corresponds to a 92-byte netCDF file. The following is an edited dump of t
      [    3] [    1] [    4] [    1] [    5] [fill ]
 \endcode
 
-\section offset_format_spec The 64-bit Offset Format
+# The 64-bit Offset Format {#offset_format_spec}
 
 The netCDF 64-bit offset format differs from the classic format only
 in the VERSION byte, ‘\\x02’ instead of ‘\\x01’, and the OFFSET entity,
@@ -410,7 +410,7 @@ limited in size to a little less that 4 GiB. The rationale for this
 limitation is to permit aggregate access to all the data in a netCDF
 variable (or a record's worth of data) on 32-bit platforms.
 
-\section netcdf_4_spec The NetCDF-4 Format
+# The NetCDF-4 Format {#netcdf_4_spec}
 
 The netCDF-4 format implements and expands the netCDF-3 data model by
 using an enhanced version of HDF5 as the storage layer. Use is made of
@@ -447,7 +447,7 @@ http://hdf.ncsa.uiuc.edu/HDF5/.
 The specification that follows is sufficient to allow HDF5 users to
 create files that will be accessible from netCDF-4.
 
-\subsection creation_order Creation Order
+## Creation Order {#creation_order}
 
 The netCDF API maintains the creation order of objects that are
 created in the file. The same is not true in HDF5, which maintains the
@@ -490,7 +490,7 @@ creation ordering is turned on by the netCDF library.
            BAIL(NC_EHDFERR);
 \endcode
 
-\subsection groups_spec Groups
+## Groups {#groups_spec}
 
 NetCDF-4 groups are the same as HDF5 groups, but groups in a netCDF-4
 file must be strictly hierarchical. In general, HDF5 permits
@@ -505,7 +505,7 @@ The root group of a file is named “/” in the netCDF API, where names
 of groups are used. It should be noted that the netCDF API (like the
 HDF5 API) makes little use of names, and refers to entities by number.
 
-\subsection dims_spec Dimensions with HDF5 Dimension Scales
+## Dimensions with HDF5 Dimension Scales {#dims_spec}
 
 Until version 1.8, HDF5 did not have any capability to represent
 shared dimensions. With the 1.8 release, HDF5 introduced the dimension
@@ -550,7 +550,7 @@ The _Netcdf4Coordinates attribute is otherwise hidden by the netCDF
 API. It does not appear as one of the attributes for the netCDF
 variable involved, except through the HDF5 API.
 
-\subsection dim_spec2 Dimensions without HDF5 Dimension Scales
+## Dimensions without HDF5 Dimension Scales {#dim_spec2}
 
 Starting with the netCDF-4.1 release, netCDF can read HDF5 files which
 do not use dimension scales. In this case the netCDF library assigns
@@ -574,7 +574,7 @@ Datasets must have either dimension scales for every dimension, or no
 dimension scales at all. Partial dimension scales are not, at this
 time, understood by the netCDF library.
 
-\subsection dim_spec3 Dimension and Coordinate Variable Ordering
+## Dimension and Coordinate Variable Ordering {#dim_spec3}
 
 In order to preserve creation order, the netCDF-4 library writes
 variables in their creation order. Since some variables are also
@@ -609,7 +609,7 @@ is the (zero-based) dimension ID for this dimension.
 If this attribute is present on any dimension scale, it must be
 present on all dimension scales in the file.
 
-\subsection vars_spec Variables
+## Variables {#vars_spec}
 
 Variables in netCDF-4/HDF5 files exactly correspond to HDF5
 datasets. The data types match naturally between netCDF and HDF5.
@@ -648,7 +648,7 @@ coordinate variable for that dimension. In this case the string
 "_nc4_non_coord_" is pre-pended to the name of the HDF5 dataset, and
 stripped from the name for the netCDF API.
 
-\subsection atts_spec Attributes
+## Attributes {#atts_spec}
 
 Attributes in HDF5 and netCDF-4 correspond very closely. Each
 attribute in an HDF5 file is represented as an attribute in the
@@ -674,14 +674,14 @@ hidden by the netCDF-4 API.
   it was created. It specifies the versions of the netCDF and HDF5
   libraries used to create the file.
 
-\subsection user_defined_spec User-Defined Data Types
+## User-Defined Data Types {#user_defined_spec}
 
 Each user-defined data type in an HDF5 file exactly corresponds to a
 user-defined data type in the netCDF-4 file. Only base data types
 which correspond to netCDF-4 data types may be used. (For example, no
 HDF5 reference data types may be used.)
 
-\subsection compression_spec Compression
+## Compression {#compression_spec}
 
 The HDF5 library provides data compression using the zlib library and
 the szlib library. NetCDF-4 only allows users to create data with the
@@ -699,7 +699,7 @@ a variable with zlib deflation of 0 - when asked to do so, it turns
 off deflation for the variable instead. NetCDF can read an HDF5 file
 with deflation of zero, and correctly report that to the user.
 
-\section netcdf_4_classic_spec The NetCDF-4 Classic Model Format
+# The NetCDF-4 Classic Model Format {#netcdf_4_classic_spec}
 
 Every classic and 64-bit offset file can be represented as a netCDF-4
 file, with no loss of information. There are some significant benefits
@@ -728,7 +728,7 @@ group. This attribute is hidden by the netCDF API, but is read when
 the file is later opened, and used to ensure that no enhanced model
 features are written to the file.
 
-\section hdf4_sd_format HDF4 SD Format
+# HDF4 SD Format {#hdf4_sd_format}
 
 Starting with version 4.1, the netCDF libraries can read HDF4 SD
 (Scientific Dataset) files. Access is limited to those HDF4 files
