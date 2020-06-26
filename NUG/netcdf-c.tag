@@ -1703,6 +1703,7 @@
     <name>dvar.c</name>
     <path>/Volumes/Workspace/gitprojects/netcdf-c/libdispatch/</path>
     <filename>dvar_8c.html</filename>
+    <includes id="netcdf_8h" name="netcdf.h" local="yes" imported="no">netcdf.h</includes>
     <member kind="function">
       <type>int</type>
       <name>nc_def_var</name>
@@ -1745,17 +1746,17 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>nc_def_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>gac9d2d8bd789b6b4a9d9928cf02b62c6e</anchor>
-      <arglist>(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int *parms)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>nc_def_var_fletcher32</name>
       <anchorfile>group__variables.html</anchorfile>
       <anchor>ga65ddd594d4c0398c10348f2750e05069</anchor>
       <arglist>(int ncid, int varid, int fletcher32)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>nc_def_var_szip</name>
+      <anchorfile>group__variables.html</anchorfile>
+      <anchor>ga1d2c0135c3f6aeb2458b470486f80e9a</anchor>
+      <arglist>(int ncid, int varid, int options_mask, int pixels_per_block)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1829,17 +1830,17 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>nc_def_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>gac9d2d8bd789b6b4a9d9928cf02b62c6e</anchor>
-      <arglist>(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int *parms)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>nc_def_var_fletcher32</name>
       <anchorfile>group__variables.html</anchorfile>
       <anchor>ga65ddd594d4c0398c10348f2750e05069</anchor>
       <arglist>(int ncid, int varid, int fletcher32)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>nc_def_var_szip</name>
+      <anchorfile>group__variables.html</anchorfile>
+      <anchor>ga1d2c0135c3f6aeb2458b470486f80e9a</anchor>
+      <arglist>(int ncid, int varid, int options_mask, int pixels_per_block)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2933,13 +2934,7 @@
     <name>dvarinq.c</name>
     <path>/Volumes/Workspace/gitprojects/netcdf-c/libdispatch/</path>
     <filename>dvarinq_8c.html</filename>
-    <member kind="define">
-      <type>#define</type>
-      <name>H5Z_FILTER_SZIP</name>
-      <anchorfile>dvarinq_8c.html</anchorfile>
-      <anchor>a421d9941c68ebb776573baeb9aa77cd2</anchor>
-      <arglist></arglist>
-    </member>
+    <includes id="netcdf_8h" name="netcdf.h" local="yes" imported="no">netcdf.h</includes>
     <member kind="function">
       <type>int</type>
       <name>nc_inq_unlimdims</name>
@@ -2955,13 +2950,6 @@
       <anchor>ga96d4a6d7b778be4c3f587e7d5b2650f1</anchor>
       <arglist>(int ncid, int varid, char *name, nc_type *xtypep, int *ndimsp, int *dimidsp, int *nattsp)</arglist>
       <docanchor file="group__variables.html" title="Example">nc_inq_var_example5</docanchor>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>NC_inq_var_all</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga92f1cd76496cbbf5f9c1aaa82e787f81</anchor>
-      <arglist>(int ncid, int varid, char *name, nc_type *xtypep, int *ndimsp, int *dimidsp, int *nattsp, int *shufflep, int *deflatep, int *deflate_levelp, int *fletcher32p, int *contiguousp, size_t *chunksizesp, int *no_fill, void *fill_valuep, int *endiannessp, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2991,13 +2979,6 @@
       <anchorfile>group__variables.html</anchorfile>
       <anchor>gaf4a2635933f4b58a5cc2025e4e2e120f</anchor>
       <arglist>(int ncid, int varid, int *no_fill, void *fill_valuep)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>nc_inq_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga03605a495d9974313ff765beb06066bd</anchor>
-      <arglist>(int ncid, int varid, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3074,13 +3055,6 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>NC_inq_var_all</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga92f1cd76496cbbf5f9c1aaa82e787f81</anchor>
-      <arglist>(int ncid, int varid, char *name, nc_type *xtypep, int *ndimsp, int *dimidsp, int *nattsp, int *shufflep, int *deflatep, int *deflate_levelp, int *fletcher32p, int *contiguousp, size_t *chunksizesp, int *no_fill, void *fill_valuep, int *endiannessp, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>nc_inq_var_chunking</name>
       <anchorfile>group__variables.html</anchorfile>
       <anchor>gac032fa5af90c7cbf0147ed745e49adad</anchor>
@@ -3107,13 +3081,6 @@
       <anchorfile>group__variables.html</anchorfile>
       <anchor>gaf4a2635933f4b58a5cc2025e4e2e120f</anchor>
       <arglist>(int ncid, int varid, int *no_fill, void *fill_valuep)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>nc_inq_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga03605a495d9974313ff765beb06066bd</anchor>
-      <arglist>(int ncid, int varid, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4364,6 +4331,7 @@
     <name>nc4dispatch.c</name>
     <path>/Volumes/Workspace/gitprojects/netcdf-c/libsrc4/</path>
     <filename>nc4dispatch_8c.html</filename>
+    <includes id="netcdf_8h" name="netcdf.h" local="yes" imported="no">netcdf.h</includes>
   </compound>
   <compound kind="file">
     <name>nc4grp.c</name>
@@ -4374,6 +4342,7 @@
     <name>nc4hdf.c</name>
     <path>/Volumes/Workspace/gitprojects/netcdf-c/libhdf5/</path>
     <filename>nc4hdf_8c.html</filename>
+    <includes id="netcdf_8h" name="netcdf.h" local="yes" imported="no">netcdf.h</includes>
   </compound>
   <compound kind="file">
     <name>nc4info.c</name>
@@ -4398,6 +4367,7 @@
     <name>nc4internal.c</name>
     <path>/Volumes/Workspace/gitprojects/netcdf-c/libsrc4/</path>
     <filename>nc4internal_8c.html</filename>
+    <includes id="netcdf_8h" name="netcdf.h" local="yes" imported="no">netcdf.h</includes>
     <member kind="variable">
       <type>size_t</type>
       <name>nc4_chunk_cache_nelems</name>
@@ -4958,6 +4928,13 @@
       <name>NC_ENODATA</name>
       <anchorfile>netcdf_8h.html</anchorfile>
       <anchor>a4d1e00ae630f418954738dfa99fc4e19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NC_ENOFILTER</name>
+      <anchorfile>netcdf_8h.html</anchorfile>
+      <anchor>ae1e1397acaf37d6b76acbacbc76a1ea6</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -6222,17 +6199,17 @@
     </member>
     <member kind="function">
       <type>EXTERNL int</type>
-      <name>nc_def_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>gac9d2d8bd789b6b4a9d9928cf02b62c6e</anchor>
-      <arglist>(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int *parms)</arglist>
-    </member>
-    <member kind="function">
-      <type>EXTERNL int</type>
       <name>nc_def_var_fletcher32</name>
       <anchorfile>group__variables.html</anchorfile>
       <anchor>ga65ddd594d4c0398c10348f2750e05069</anchor>
       <arglist>(int ncid, int varid, int fletcher32)</arglist>
+    </member>
+    <member kind="function">
+      <type>EXTERNL int</type>
+      <name>nc_def_var_szip</name>
+      <anchorfile>group__variables.html</anchorfile>
+      <anchor>ga1d2c0135c3f6aeb2458b470486f80e9a</anchor>
+      <arglist>(int ncid, int varid, int options_mask, int pixels_per_block)</arglist>
     </member>
     <member kind="function">
       <type>EXTERNL int</type>
@@ -6807,13 +6784,6 @@
       <anchorfile>group__variables.html</anchorfile>
       <anchor>gaf4a2635933f4b58a5cc2025e4e2e120f</anchor>
       <arglist>(int ncid, int varid, int *no_fill, void *fill_valuep)</arglist>
-    </member>
-    <member kind="function">
-      <type>EXTERNL int</type>
-      <name>nc_inq_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga03605a495d9974313ff765beb06066bd</anchor>
-      <arglist>(int ncid, int varid, unsigned int *idp, size_t *nparams, unsigned int *params)</arglist>
     </member>
     <member kind="function">
       <type>EXTERNL int</type>
@@ -8456,10 +8426,10 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>nc_def_var_filter</name>
+      <name>nc_def_var_szip</name>
       <anchorfile>group__variables.html</anchorfile>
-      <anchor>gac9d2d8bd789b6b4a9d9928cf02b62c6e</anchor>
-      <arglist>(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int *parms)</arglist>
+      <anchor>ga1d2c0135c3f6aeb2458b470486f80e9a</anchor>
+      <arglist>(int ncid, int varid, int options_mask, int pixels_per_block)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -9106,13 +9076,6 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>nc_inq_var_filter</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga03605a495d9974313ff765beb06066bd</anchor>
-      <arglist>(int ncid, int varid, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>nc_inq_var_szip</name>
       <anchorfile>group__variables.html</anchorfile>
       <anchor>ga980ff1fac75620f2151e696a6443d025</anchor>
@@ -9125,13 +9088,6 @@
       <anchor>ga11f93294c8a4c007f637695aa56c7223</anchor>
       <arglist>(int ncid, int *nunlimdimsp, int *unlimdimidsp)</arglist>
       <docanchor file="group__variables.html" title="Example">nc_inq_unlimdims_example</docanchor>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>NC_inq_var_all</name>
-      <anchorfile>group__variables.html</anchorfile>
-      <anchor>ga92f1cd76496cbbf5f9c1aaa82e787f81</anchor>
-      <arglist>(int ncid, int varid, char *name, nc_type *xtypep, int *ndimsp, int *dimidsp, int *nattsp, int *shufflep, int *deflatep, int *deflate_levelp, int *fletcher32p, int *contiguousp, size_t *chunksizesp, int *no_fill, void *fill_valuep, int *endiannessp, unsigned int *idp, size_t *nparamsp, unsigned int *params)</arglist>
     </member>
     <member kind="function">
       <type>int</type>

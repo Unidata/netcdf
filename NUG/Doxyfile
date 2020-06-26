@@ -837,9 +837,8 @@ INPUT                  = guide.md \
                          chunking.md \
                          netcdf_utilities_guide.md \
                          install.md \
-                         DAP2.dox \
-                         DAP4.dox \
-                         OPeNDAP.dox \
+                         DAP2.md \
+                         DAP4.md \
                          types.dox \
                          user_defined_formats.md \
                          filters.md \
