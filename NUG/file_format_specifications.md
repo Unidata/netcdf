@@ -5,8 +5,9 @@ Appendix B. File Format Specifications {#file_format_specifications}
 
 # The NetCDF Classic Format Specification {#classic_format_spec}
 
-To present the format more formally, we use a BNF grammar notation. In
-this notation:
+To present the format more formally, we use a BNF grammar notation.
+In this notation:
+
 - Non-terminals (entities defined by grammar rules) are in lower case.
 - Terminals (atomic entities in terms of which the format
 specification is written) are in upper case, and are specified
@@ -24,15 +25,14 @@ hexadecimal digit.
 - A literal single-quote character is denoted by ‘\'’, and a literal
 back-slash character is denoted by ‘\\’.
 
-Following the grammar, a few additional notes are included to specify
-format characteristics that are impractical to capture in a BNF
-grammar, and to note some special cases for implementers. Comments in
-the grammar point to the notes and special cases, and help to clarify
-the intent of elements of the format.
+Following the grammar, a few additional notes are included to specify format characteristics that are impractical to capture in a BNF
+grammar, and to note some special cases for implementers.
+Comments in the grammar point to the notes and special cases, and help to clarify the intent of elements of the format.
 
-<h1>The Format in Detail</h1>
+## The Format in Detail {#format_in_detail}
 
-<pre>
+````
+
      netcdf_file  = header  data
      header       = magic  numrecs  dim_list  gatt_list  var_list
      magic        = 'C'  'D'  'F'  VERSION
@@ -164,88 +164,41 @@ the intent of elements of the format.
      FILL_INT     = \\x80 \\x00 \\x00 \\x01       // (int) -2147483647
      FILL_FLOAT   = \\x7C \\xF0 \\x00 \\x00       // (float) 9.9692099683868690e+36
      FILL_DOUBLE  = \\x47 \\x9E \\x00 \\x00 \\x00 \\x00 \\x00 \\x00 //(double)9.9692099683868690e+36
-</pre>
+````
 
-Note on vsize: This number is the product of the dimension lengths
-(omitting the record dimension) and the number of bytes per value
-(determined from the type), increased to the next multiple of 4, for
-each variable. If a record variable, this is the amount of space per
-record (except that, for backward compatibility, it always includes
-padding to the next multiple of 4 bytes, even in the exceptional case
-noted below under “Note on padding”). The netCDF “record size” is
-calculated as the sum of the vsize's of all the record variables.
+Note on vsize: This number is the product of the dimension lengths (omitting the record dimension) and the number of bytes per value (determined from the type), increased to the next multiple of 4, for each variable.
+If a record variable, this is the amount of space per record (except that, for backward compatibility, it always includes padding to the next multiple of 4 bytes, even in the exceptional case noted below under “Note on padding”).
+The netCDF “record size” is calculated as the sum of the vsize's of all the record variables.
 
-The vsize field is actually redundant, because its value may be
-computed from other information in the header. The 32-bit vsize field
-is not large enough to contain the size of variables that require more
-than 2^32 - 4 bytes, so 2^32 - 1 is used in the vsize field for such
-variables.
+The vsize field is actually redundant, because its value may be computed from other information in the header.
+The 32-bit vsize field is not large enough to contain the size of variables that require more than 2^32 - 4 bytes, so 2^32 - 1 is used in the vsize field for such variables.
 
-Note on names: Earlier versions of the netCDF C-library reference
-implementation enforced a more restricted set of characters in
-creating new names, but permitted reading names containing arbitrary
-bytes. This specification extends the permitted characters in names to
-include multi-byte UTF-8 encoded Unicode and additional printing
-characters from the US-ASCII alphabet. The first character of a name
-must be alphanumeric, a multi-byte UTF-8 character, or '_' (reserved
-for special names with meaning to implementations, such as the
-“_FillValue” attribute). Subsequent characters may also include
-printing special characters, except for '/' which is not allowed in
-names. Names that have trailing space characters are also not
-permitted.
+> Note on names: Earlier versions of the netCDF C-library reference implementation enforced a more restricted set of characters in creating new names, but permitted reading names containing arbitrary bytes.
+This specification extends the permitted characters in names to include multi-byte UTF-8 encoded Unicode and additional printing characters from the US-ASCII alphabet.
+The first character of a name must be alphanumeric, a multi-byte UTF-8 character, or '_' (reserved for special names with meaning to implementations, such as the “_FillValue” attribute). Subsequent characters may also include printing special characters, except for '/' which is not allowed in names.
+Names that have trailing space characters are also not permitted.
 
-Implementations of the netCDF classic and 64-bit offset format must
-ensure that names are normalized according to Unicode NFC
-normalization rules during encoding as UTF-8 for storing in the file
-header. This is necessary to ensure that gratuitous differences in the
-representation of Unicode names do not cause anomalies in comparing
-files and querying data objects by name.
+Implementations of the netCDF classic and 64-bit offset format must ensure that names are normalized according to Unicode NFC normalization rules during encoding as UTF-8 for storing in the file header.
+This is necessary to ensure that gratuitous differences in the representation of Unicode names do not cause anomalies in comparing files and querying data objects by name.
 
-Note on streaming data: The largest possible record count, 2^32 - 1,
-is reserved to indicate an indeterminate number of records. This means
-that the number of records in the file must be determined by other
-means, such as reading them or computing the current number of records
-from the file length and other information in the header. It also
-means that the numrecs field in the header will not be updated as
-records are added to the file. [This feature is not yet implemented].
+> Note on streaming data: The largest possible record count, 2^32 - 1, is reserved to indicate an indeterminate number of records. This means that the number of records in the file must be determined by other means, such as reading them or computing the current number of records from the file length and other information in the header. It also means that the numrecs field in the header will not be updated as records are added to the file. [This feature is not yet implemented].
 
-Note on padding: In the special case when there is only one record
-variable and it is of type character, byte, or short, no padding is
-used between record slabs, so records after the first record do not
-necessarily start on four-byte boundaries. However, as noted above
-under “Note on vsize”, the vsize field is computed to include padding
-to the next multiple of 4 bytes. In this case, readers should ignore
-vsize and assume no padding. Writers should store vsize as if padding
-were included.
+> Note on padding: In the special case when there is only one record variable and it is of type character, byte, or short, no padding is
+used between record slabs, so records after the first record do not necessarily start on four-byte boundaries.
+However, as noted above under “Note on vsize”, the vsize field is computed to include padding to the next multiple of 4 bytes.
+In this case, readers should ignore vsize and assume no padding. Writers should store vsize as if padding were included.
 
-Note on byte data: It is possible to interpret byte data as either
-signed (-128 to 127) or unsigned (0 to 255). When reading byte data
-through an interface that converts it into another numeric type, the
-default interpretation is signed. There are various attribute
-conventions for specifying whether bytes represent signed or unsigned
-data, but no standard convention has been established. The variable
-attribute “_Unsigned” is reserved for this purpose in future
-implementations.
+> Note on byte data: It is possible to interpret byte data as either signed (-128 to 127) or unsigned (0 to 255). When reading byte data through an interface that converts it into another numeric type, the default interpretation is signed. There are various attribute conventions for specifying whether bytes represent signed or unsigned data, but no standard convention has been established. The variable attribute “_Unsigned” is reserved for this purpose in future implementations.
 
-Note on char data: Although the characters used in netCDF names must
-be encoded as UTF-8, character data may use other encodings. The
-variable attribute “_Encoding” is reserved for this purpose in future
-implementations.
+> Note on char data: Although the characters used in netCDF names must be encoded as UTF-8, character data may use other encodings.
+The variable attribute “_Encoding” is reserved for this purpose in future implementations.
 
-Note on fill values: Because data variables may be created before
-their values are written, and because values need not be written
-sequentially in a netCDF file, default “fill values” are defined for
-each type, for initializing data values before they are explicitly
-written. This makes it possible to detect reading values that were
-never written. The variable attribute “_FillValue”, if present,
-overrides the default fill value for a variable. If _FillValue is
-defined then it should be scalar and of the same type as the variable.
+> Note on fill values: Because data variables may be created before their values are written, and because values need not be written sequentially in a netCDF file, default “fill values” are defined for each type, for initializing data values before they are explicitly written.
+This makes it possible to detect reading values that were never written.
+The variable attribute “_FillValue”, if present, overrides the default fill value for a variable. If _FillValue is defined then it should be scalar and of the same type as the variable.
 
-Fill values are not required, however, because netCDF libraries have
-traditionally supported a “no fill” mode when writing, omitting the
-initialization of variable values with fill values. This makes the
-creation of large files faster, but also eliminates the possibility of
-detecting the inadvertent reading of values that haven't been written.
+Fill values are not required, however, because netCDF libraries have traditionally supported a “no fill” mode when writing, omitting the initialization of variable values with fill values.
+This makes the creation of large files faster, but also eliminates the possibility of detecting the inadvertent reading of values that haven't been written.
 
 # Notes on Computing File Offsets {#computing_offsets}
 
