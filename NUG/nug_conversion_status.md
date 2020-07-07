@@ -20,7 +20,7 @@ The list of files to be converted.
 * [x] chunking.md
 * [x] DAP2.dox (Ward)
 * [x] DAP4.dox (Ward)
-* [ ] file_format_specifications.md
+* [x] file_format_specifications.md
 * [ ] filters.md
 * [ ] guide.md
 * [ ] install.md
