@@ -806,7 +806,7 @@ description of the interfaces for mapped array access. See Write a
 Mapped Array of Values - nc_put_varm_ type.
 
 Note that, although the netCDF abstraction allows the use of
-subsampled or mapped array-section access there use is not
+subsampled or mapped array-section access, there use is not
 required. If you do not need these more general forms of access, you
 may ignore these capabilities and use single value access or regular
 array section access instead.
