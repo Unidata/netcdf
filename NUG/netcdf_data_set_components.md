@@ -226,9 +226,9 @@ The external type of an attribute is specified when it is created. The
 types permitted for attributes are the same as the netCDF external
 data types for variables. Attributes with the same name for different
 variables should sometimes be of different types. For example, the
-attribute valid_max specifying the maximum valid data value for a
-variable of type int should be of type int, whereas the attribute
-valid_max for a variable of type double should instead be of type
+attribute valid_max, specifying the maximum valid data value for a
+variable of type int, should be of type int. Whereas the attribute
+valid_max for a variable of type double, should instead be of type
 double.
 
 Attributes are more dynamic than variables or dimensions; they can be
@@ -572,7 +572,7 @@ world-premire of her smash hit "Format me baby, one more time."
 In June, 2008, netCDF-4.0 was released. Version 3.6.3, the same code
 but with netcdf-4 features turned off, was released at the same
 time. The 4.0 release uses HDF5 1.8.1 as the data storage layer for
-netcdf, and introduces many new features including groups and
+netCDF, and introduces many new features including groups and
 user-defined types. The 3.6.3/4.0 releases also introduced handling of
 UTF8-encoded Unicode names.
 
@@ -589,7 +589,7 @@ of the UDUNITS library for handling “units” attributes, and inclusion
 of libcf to assist in creating data compliant with the Climate and
 Forecast (CF) metadata conventions.
 
-In September, 2010, the Netcdf-Java/CDM (Common Data Model) version
+In September, 2010, the NetCDF-Java/CDM (Common Data Model) version
 4.2 library was declared stable and made available to users. This
 100%-Java implementation provided a read-write interface to netCDF-3
 classic format files, as well as a read-only interface to
@@ -672,7 +672,7 @@ vector.
 A mapped array section is similar to a subsampled array section except
 that an additional index mapping vector allows one to specify how data
 values associated with the netCDF variable are arranged in memory. The
-offset of each value from the reference location, is given by the sum
+offset of each value from the reference location is given by the sum
 of the products of each index (of the imaginary internal array which
 would be used if there were no mapping) by the corresponding element
 of the index mapping vector. The number of values accessed is the same
@@ -729,7 +729,7 @@ start index and some edge lengths. The start index should be (0, 1, 0,
 0) in C, because we want to start at the beginning of each of the
 time, lon, and lat dimensions, but we want to begin at the second
 value of the level dimension. The edge lengths should be (3, 1, 5, 10)
-in C, (since we want to get data for all three time values, only one
+in C, since we want to get data for all three time values, only one
 level value, all five lat values, and all 10 lon values. We should
 expect to get a total of 150 floating-point values returned (3 * 1 * 5
 * 10), and should provide enough space in our array for this many. The
@@ -772,10 +772,7 @@ variable elements and their memory addresses.
 With mapped array access, the offset (number of array elements) from
 the origin of a memory-resident array to a particular point is given
 by the inner product[1] of the index mapping vector with the point's
-coordinate offset vector. A point's coordinate offset vector gives,
-for each dimension, the offset from the origin of the containing array
-to the point.In C, a point's coordinate offset vector is the same as
-its coordinate vector.
+coordinate offset vector. A point's coordinate offset vector gives, for each dimension, the offset from the origin of the containing array to the point. In C, a point's coordinate offset vector is the same as its coordinate vector.
 
 The index mapping vector for a regular array section would have–in
 order from most rapidly varying dimension to most slowly–a constant 1,
