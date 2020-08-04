@@ -1,107 +1,61 @@
-NetCDF-4 Filter Support
-============================
-<!-- double header is needed to workaround doxygen bug -->
-
-NetCDF-4 Filter Support {#filters}
-============================
+# NetCDF-4 Filter Support {#filters}
 
 [TOC]
+\tableofcontents
 
-# Introduction {#filters_intro}
 
-The HDF5 library (1.8.11 and later) 
-supports a general filter mechanism to apply various
-kinds of filters to datasets before reading or writing. 
-The netCDF enhanced (aka netCDF-4) library inherits this
-capability since it depends on the HDF5 library.
+The HDF5 library (1.8.11 and later) supports a general filter mechanism to apply various kinds of filters to datasets before reading or writing. The netCDF enhanced (aka netCDF-4) library inherits this capability since it depends on the HDF5 library.
 
-Filters assume that a variable has chunking
-defined and each chunk is filtered before
-writing and "unfiltered" after reading and
-before passing the data to the user.
+Filters assume that a variable has chunking defined and each chunk is filtered before writing and "unfiltered" after reading and before passing the data to the user.
 
-The most common kind of filter is a compression-decompression
-filter, and that is the focus of this document.
+The most common kind of filter is a compression-decompression filter, and that is the focus of this document.
 
-HDF5 supports dynamic loading of compression filters using the following
-process for reading of compressed data.
+HDF5 supports dynamic loading of compression filters using the following process for reading of compressed data.
 
-1. Assume that we have a dataset with one or more variables that
-were compressed using some algorithm. How the dataset was compressed
-will be discussed subsequently.
+1. Assume that we have a dataset with one or more variables that were compressed using some algorithm. How the dataset was compressed will be discussed subsequently.
 
-2. Shared libraries or DLLs exist that implement the compress/decompress
-algorithm. These libraries have a specific API so that the HDF5 library
-can locate, load, and utilize the compressor.
-These libraries are expected to installed in a specific
-directory.
+2. Shared libraries or DLLs exist that implement the compress/decompress algorithm. These libraries have a specific API so that the HDF5 library can locate, load, and utilize the compressor. These libraries are expected to installed in a specific directory.
 
 # Enabling A Compression Filter {#filters_enable}
 
-In order to compress a variable, the netcdf-c library
-must be given three pieces of information:
-(1) some unique identifier for the filter to be used,
-(2) a vector of parameters for
-controlling the action of the compression filter, and
-(3) a shared library implementation of the filter.
+In order to compress a variable, the netcdf-c library must be given three pieces of information:
 
-The meaning of the parameters is, of course,
-completely filter dependent and the filter
-description [3] needs to be consulted. For
-bzip2, for example, a single parameter is provided
-representing the compression level.
-It is legal to provide a zero-length set of parameters.
-Defaults are not provided, so this assumes that
-the filter can operate with zero parameters.
+1. Some unique identifier for the filter to be used.
+2. A vector of parameters for controlling the action of the compression filter.
+3. A shared library implementation of the filter.
 
-Filter ids are assigned by the HDF group. See [4]
-for a current list of assigned filter ids.
-Note that ids above 32767 can be used for testing without
-registration.
+The meaning of the parameters is, of course, completely filter dependent and the filter description [3] needs to be consulted. For bzip2, for example, a single parameter is provided representing the compression level. It is legal to provide a zero-length set of parameters. Defaults are not provided, so this assumes that the filter can operate with zero parameters.
 
-The first two pieces of  information can be provided in one of three ways:
-using __ncgen__, via an API call, or via command line parameters to __nccopy__.
-In any case, remember that filtering also requires setting chunking, so the
-variable must also be marked with chunking information.
+Filter ids are assigned by the HDF group. See [4] for a current list of assigned filter ids. Note that ids above 32767 can be used for testing without registration.
+
+The first two pieces of  information can be provided in one of three ways: using __ncgen__, via an API call, or via command line parameters to __nccopy__. In any case, remember that filtering also requires setting chunking, so the variable must also be marked with chunking information.
 
 ## Using The API {#filters_API}
-The necessary API methods are included in __netcdf.h__ by default.
-One API method is for setting the filter to be used
-when writing a variable. The relevant signature is
-as follows.
+
+The necessary API methods are included in __netcdf.h__ by default. One API method is for setting the filter to be used when writing a variable. The relevant signature is as follows.
+
 ````
 int nc_def_var_filter(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int* parms);
 ````
-This must be invoked after the variable has been created and before
-__nc_enddef__ is invoked.
 
-A second API methods makes it possible to query a variable to
-obtain information about any associated filter using this signature.
+This must be invoked after the variable has been created and before __nc_enddef__ is invoked.
+
+A second API methods makes it possible to query a variable to obtain information about any associated filter using this signature.
+
 ````
 int nc_inq_var_filter(int ncid, int varid, unsigned int* idp, size_t* nparams, unsigned int* params);
 
 ````
-The filter id will be returned in the __idp__ argument (if non-NULL),
-the number of parameters in __nparamsp__ and the actual parameters in
-__params__.  As is usual with the netcdf API, one is expected to call
-this function twice. The first time to get __nparams__ and the
-second to get the parameters in client-allocated memory.
+
+The filter id will be returned in the __idp__ argument (if non-NULL), the number of parameters in __nparamsp__ and the actual parameters in __params__.  As is usual with the netcdf API, one is expected to call this function twice. The first time to get __nparams__ and the second to get the parameters in client-allocated memory.
 
 ## Using ncgen {#filters_NCGEN}
 
-In a CDL file, compression of a variable can be specified
-by annotating it with the following attribute:
+In a CDL file, compression of a variable can be specifiedby annotating it with the following attribute:
 
-* ''_Filter'' -- a string containing a comma separated list of
-constants specifying (1) the filter id to apply, and (2)
-a vector of constants representing the
-parameters for controlling the operation of the specified filter.
-See the section on the <a href="#Syntax">parameter encoding syntax</a>
-for the details on the allowable kinds of constants.
+* ''_Filter'' -- a string containing a comma separated list of constants specifying (1) the filter id to apply, and (2) a vector of constants representing the parameters for controlling the operation of the specified filter. See the section on the <a href="#Syntax">parameter encoding syntax</a> for the details on the allowable kinds of constants.
 
-This is a "special" attribute, which means that
-it will normally be invisible when using
-__ncdump__ unless the -s flag is specified.
+This is a "special" attribute, which means that it will normally be invisible when using __ncdump__ unless the `-s` flag is specified.
 
 ### Example CDL File (Data elided)
 
@@ -121,55 +75,43 @@ data:
 
 ## Using nccopy {#filters_NCCOPY}
 
-When copying a netcdf file using __nccopy__ it is possible
-to specify filter information for any output variable by
-using the "-F" option on the command line; for example:
+When copying a netcdf file using __nccopy__ it is possible to specify filter information for any output variable by using the "-F" option on the command line; for example:
+
 ````
 nccopy -F "var,307,9" unfiltered.nc filtered.nc
 ````
-Assume that __unfiltered.nc__ has a chunked but not bzip2 compressed
-variable named "var". This command will create that variable in
-the __filtered.nc__ output file but using filter with id 307
-(i.e. bzip2) and with parameter(s) 9 indicating the compression level.
-See the section on the <a href="#Syntax">parameter encoding syntax</a>
-for the details on the allowable kinds of constants.
 
-The "-F" option can be used repeatedly as long as the variable name
-part is different. A different filter id and parameters can be
-specified for each occurrence.
+Assume that __unfiltered.nc__ has a chunked but not bzip2 compressed variable named "var". This command will create that variable in the __filtered.nc__ output file but using filter with id 307 (i.e. bzip2) and with parameter(s) 9 indicating the compression level. See the section on the <a href="#Syntax">parameter encoding syntax</a> for the details on the allowable kinds of constants.
+
+The "-F" option can be used repeatedly as long as the variable name part is different. A different filter id and parameters can be specified for each occurrence.
 
 It can be convenient to specify that the same compression is to be
 applied to more than one variable. To support this, two additional
 *-F* cases are defined.
 
-1. ````-F *,...``` means apply the filter to all variables in the dataset.
-2. ````-F v1|v2|..,...``` means apply the filter to a multiple variables.
+1. ```-F *,...``` means apply the filter to all variables in the dataset.
+2. ```-F v1|v2|..,...``` means apply the filter to a multiple variables.
 
-Note that the characters '*' and '|' are bash reserved characters,
-so you will probably need to escape or quote the filter spec in
-that environment.
+Note that the characters '*' and '|' are bash reserved characters, so you will probably need to escape or quote the filter I would spec in that environment.
 
-As a rule, any input filter on an input variable will be applied
-to the equivalent output variable -- assuming the output file type
-is netcdf-4. It is, however, sometimes convenient to suppress
-output compression either totally or on a per-variable basis.
-Total suppression of output filters can be accomplished by specifying
-a special case of "-F", namely this.
+As a rule, any input filter on an input variable will be applied to the equivalent output variable -- assuming the output file type is netcdf-4. It is, however, sometimes convenient to suppress output compression either totally or on a per-variable basis. Total suppression of output filters can be accomplished by specifying a special case of "-F", namely this.
+
 ````
 nccopy -F none input.nc output.nc
 ````
+
 The expression ````-F *,none```` is equivalent to ````-F none````.
 
-Suppression of output filtering for a specific set of variables
-can be accomplished using these formats.
+Suppression of output filtering for a specific set of variables can be accomplished using these formats.
+
 ````
 nccopy -F "var,none" input.nc output.nc
 nccopy -F "v1|v2|...,none" input.nc output.nc
 ````
+
 where "var" and the "vi" are the fully qualified name of a variable.
 
-The rules for all possible cases of the "-F none" flag are defined
-by this table.
+The rules for all possible cases of the "-F none" flag are defined by this table.
 
 <table>
 <tr><th>-F none<th>-Fvar,...<th>Input Filter<th>Applied Output Filter
@@ -180,85 +122,46 @@ by this table.
 <tr><td>false<td>-Fvar,none<td>NA<td>unfiltered
 <tr><td>false<td>-Fvar,...<td>NA<td>use output filter
 <tr><td>false<td>unspecified<td>none<td>unfiltered
-</table> 
+</table>
 
 # Parameter Encode/Decode {#filters_paramcoding}
 
-The parameters passed to a filter are encoded internally as a vector
-of 32-bit unsigned integers. It may be that the parameters
-required by a filter can naturally be encoded as unsigned integers.
-The bzip2 compression filter, for example, expects a single
-integer value from zero thru nine. This encodes naturally as a
-single unsigned integer.
+The parameters passed to a filter are encoded internally as a vector of 32-bit unsigned integers. It may be that the parameters required by a filter can naturally be encoded as unsigned integers. The bzip2 compression filter, for example, expects a single integer value from zero thru nine. This encodes naturally as a single unsigned integer.
 
-Note that signed integers and single-precision (32-bit) float values
-also can easily be represented as 32 bit unsigned integers by
-proper casting to an unsigned integer so that the bit pattern
-is preserved. Simple integer values of type short or char
-(or the unsigned versions) can also be mapped to an unsigned
-integer by truncating to 16 or 8 bits respectively and then
-zero extending.
+Note that signed integers and single-precision (32-bit) float values also can easily be represented as 32 bit unsigned integers by proper casting to an unsigned integer so that the bit pattern is preserved. Simple integer values of type short or char (or the unsigned versions) can also be mapped to an unsigned integer by truncating to 16 or 8 bits respectively and then zero extending.
 
-Machine byte order (aka endian-ness) is an issue for passing
-some kinds of parameters. You might define the parameters when
-compressing on a little endian machine, but later do the
-decompression on a big endian machine. Byte order is not an
-issue for 32-bit values because HDF5 takes care of converting
-them between the local machine byte order and network byte
-order.
+Machine byte order (aka endian-ness) is an issue for passing some kinds of parameters. You might define the parameters when compressing on a little endian machine, but later do the decompression on a big endian machine. Byte order is not an issue for 32-bit values because HDF5 takes care of converting them between the local machine byte order and network byte order.
 
-Parameters whose size is larger than 32-bits present a byte order problem.
-This specifically includes double precision floats and (signed or unsigned)
-64-bit integers. For these cases, the machine byte order issue must be
-handled, in part, by the compression code. This is because HDF5 will treat,
-for example, an unsigned long long as two 32-bit unsigned integers
-and will convert each to network order separately. This means that
-on a machine whose byte order is different than the machine in which
-the parameters were initially created, the two integers will be separately
-endian converted. But this will be incorrect for 64-bit values.
+Parameters whose size is larger than 32-bits present a byte order problem. This specifically includes double precision floats and (signed or unsigned) 64-bit integers. For these cases, the machine byte order issue must be handled, in part, by the compression code. This is because HDF5 will treat, for example, an unsigned long long as two 32-bit unsigned integers and will convert each to network order separately. This means that on a machine whose byte order is different than the machine in which the parameters were initially created, the two integers will be separately endian converted. But this will be incorrect for 64-bit values.
 
 So, we have this situation:
 
-1. the 8 bytes come in as native machine order for the machine
-   doing the call to *nc_def_var_filter*.
-2. HDF5 divides the 8 bytes into 2 four byte pieces and ensures that each piece
-   is in network (big) endian order.
-3. When the filter is called, the two pieces are returned in the same order
-   but with the bytes in each piece consistent with the native machine order
-   for the machine executing the filter.
+1. the 8 bytes come in as native machine order for the machine doing the call to *nc_def_var_filter*.
+2. HDF5 divides the 8 bytes into 2 four byte pieces and ensures that each piece is in network (big) endian order.
+3. When the filter is called, the two pieces are returned in the same order but with the bytes in each piece consistent with the native machine order for the machine executing the filter.
 
-## Encoding Algorithms
+## Encoding Algorithms {#encoding_algorithms}
 
-In order to properly extract the correct 8-byte value, we need to ensure
-that the values stored in the HDF5 file have a known format independent of
-the native format of the creating machine.
+In order to properly extract the correct 8-byte value, we need to ensure that the values stored in the HDF5 file have a known format independent of the native format of the creating machine.
 
-The idea is to do sufficient manipulation so that HDF5
-will store the 8-byte value as a little endian value
-divided into two 4-byte integers.
-Note that little-endian is used as the standard
-because it is the most common machine format.
-When read, the filter code needs to be aware of this convention
-and do the appropriate conversions.
+The idea is to do sufficient manipulation so that HDF5 will store the 8-byte value as a little endian value divided into two 4-byte integers. Note that little-endian is used as the standard because it is the most common machine format. When read, the filter code needs to be aware of this convention and do the appropriate conversions.
 
 This leads to the following set of rules.
 
-### Encoding 
+### Encoding {#encoding_algorithms_encoding}
 
-1. Encode on little endian (LE) machine: no special action is required.
-   The 8-byte value is passed to HDF5 as two 4-byte integers. HDF5 byte
-   swaps each integer and stores it in the file.
+1. Encode on little endian (LE) machine: no special action is required. The 8-byte value is passed to HDF5 as two 4-byte integers. HDF5 byte swaps each integer and stores it in the file.
 2. Encode on a big endian (BE) machine: several steps are required:
 
    1. Do an 8-byte byte swap to convert the original value to little-endian
       format.
    2. Since the encoding machine is BE, HDF5 will just store the value.
       So it is necessary to simulate little endian encoding by byte-swapping
-      each 4-byte integer separately. 
+      each 4-byte integer separately.
    3. This doubly swapped pair of integers is then passed to HDF5 and is stored
       unchanged.
 
-### Decoding 
+### Decoding {#encoding_algorithms_decoding}
 
 1. Decode on LE machine: no special action is required.
    HDF5 will get the two 4-bytes values from the file and byte-swap each
@@ -292,7 +195,7 @@ constants (see the <a href="#ParamEncode">parameter encoding section</a>).
 
 To simplify things, various kinds of constants can be specified
 rather than just simple unsigned integers. The utilities will encode
-them properly using the rules specified in 
+them properly using the rules specified in
 the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
 
 The currently supported constants are as follows.
@@ -491,7 +394,7 @@ for use by client programs and by filter implementations.
     * nparamsp will contain the number of 4-byte parameters
     * paramsp will contain a pointer to the parsed parameters -- the caller
       must free.
-    This function can parse filter spec strings as defined in 
+    This function can parse filter spec strings as defined in
     the section on <a href="#filters_syntax">Filter Specification Syntax</a>.
     This function parses the first argument and returns several values.
 
@@ -602,4 +505,3 @@ __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu
 __Initial Version__: 1/10/2018<br>
 __Last Revised__: 2/5/2018
-
