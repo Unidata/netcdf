@@ -153,50 +153,27 @@ This leads to the following set of rules.
 1. Encode on little endian (LE) machine: no special action is required. The 8-byte value is passed to HDF5 as two 4-byte integers. HDF5 byte swaps each integer and stores it in the file.
 2. Encode on a big endian (BE) machine: several steps are required:
 
-   1. Do an 8-byte byte swap to convert the original value to little-endian
-      format.
-   2. Since the encoding machine is BE, HDF5 will just store the value.
-      So it is necessary to simulate little endian encoding by byte-swapping
-      each 4-byte integer separately.
-   3. This doubly swapped pair of integers is then passed to HDF5 and is stored
-      unchanged.
+   1. Do an 8-byte byte swap to convert the original value to little-endian format.
+   2. Since the encoding machine is BE, HDF5 will just store the value. So it is necessary to simulate little endian encoding by byte-swapping each 4-byte integer separately.
+   3. This doubly swapped pair of integers is then passed to HDF5 and is stored unchanged.
 
 ### Decoding {#encoding_algorithms_decoding}
 
-1. Decode on LE machine: no special action is required.
-   HDF5 will get the two 4-bytes values from the file and byte-swap each
-   separately. The concatenation of those two integers will be the expected
-   LE value.
-2. Decode on a big endian (BE) machine: the inverse of the encode case must
-   be implemented.
+1. Decode on LE machine: no special action is required. HDF5 will get the two 4-bytes values from the file and byte-swap each separately. The concatenation of those two integers will be the expected LE value.
+2. Decode on a big endian (BE) machine: the inverse of the encode case must be implemented.
 
    1. HDF5 sends the two 4-byte values to the filter.
    2. The filter must then byte-swap each 4-byte value independently.
-   3. The filter then must concatenate the two 4-byte values into a single
-      8-byte value. Because of the encoding rules, this 8-byte value will
-      be in LE format.
-   4. The filter must finally do an 8-byte byte-swap on that 8-byte value
-      to convert it to desired BE format.
+   3. The filter then must concatenate the two 4-byte values into a single 8-byte value. Because of the encoding rules, this 8-byte value will be in LE format.
+   4. The filter must finally do an 8-byte byte-swap on that 8-byte value to convert it to desired BE format.
 
-To support these rules, some utility programs exist and are discussed in
-<a href="#AppendixA">Appendix A</a>.
+To support these rules, some utility programs exist and are discussed in <a href="#AppendixA">Appendix A</a>.
 
 # Filter Specification Syntax {#filters_syntax}
 
-Both of the utilities
-<a href="#NCGEN">__ncgen__</a>
-and
-<a href="#NCCOPY">__nccopy__</a>
-allow the specification of filter parameters in text format.
-These specifications consist of a sequence of comma
-separated constants. The constants are converted
-within the utility to a proper set of unsigned int
-constants (see the <a href="#ParamEncode">parameter encoding section</a>).
+Both of the utilities  <a href="#NCGEN">__ncgen__</a> and <a href="#NCCOPY">__nccopy__</a> allow the specification of filter parameters in text format. These specifications consist of a sequence of comma separated constants. The constants are converted within the utility to a proper set of unsigned int constants (see the <a href="#ParamEncode">parameter encoding section</a>).
 
-To simplify things, various kinds of constants can be specified
-rather than just simple unsigned integers. The utilities will encode
-them properly using the rules specified in
-the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
+To simplify things, various kinds of constants can be specified rather than just simple unsigned integers. The utilities will encode them properly using the rules specified in the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
 
 The currently supported constants are as follows.
 <table>
@@ -215,26 +192,15 @@ The currently supported constants are as follows.
 </table>
 Some things to note.
 
-1. In all cases, except for an untagged positive integer,
-   the format tag is required and determines how the constant
-   is converted to one or two unsigned int values.
-   The positive integer case is for backward compatibility.
-2. For signed byte and short, the value is sign extended to 32 bits
-   and then treated as an unsigned int value.
-3. For double, and signed|unsigned long long, they are converted
-   as specified in the section on
-   <a href="#filters_paramcoding">parameter encode/decode</a>.
+1. In all cases, except for an untagged positive integer, the format tag is required and determines how the constant is converted to one or two unsigned int values. The positive integer case is for backward compatibility.
+2. For signed byte and short, the value is sign extended to 32 bits and then treated as an unsigned int value.
+3. For double, and signed|unsigned long long, they are converted as specified in the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
 
-Dynamic Loading Process {#filters_Process}
-==========
+# Dynamic Loading Process {#filters_Process}
 
-The documentation[1,2] for the HDF5 dynamic loading was (at the time
-this was written) out-of-date with respect to the actual HDF5 code
-(see HDF5PL.c). So, the following discussion is largely derived
-from looking at the actual code. This means that it is subject to change.
+The documentation[1,2] for the HDF5 dynamic loading was (at the time this was written) out-of-date with respect to the actual HDF5 code (see HDF5PL.c). So, the following discussion is largely derived from looking at the actual code. This means that it is subject to change.
 
-Plugin directory {#filters_Plugindir}
-----------------
+## Plugin directory {#filters_Plugindir}
 
 The HDF5 loader expects plugins to be in a specified plugin directory.
 The default directory is:
@@ -242,15 +208,12 @@ The default directory is:
    * “%ALLUSERSPROFILE%\\hdf5\\lib\\plugin” for Windows systems, although the code
      does not appear to explicitly use this path.
 
-The default may be overridden using the environment variable
-__HDF5_PLUGIN_PATH__.
+The default may be overridden using the environment variable __HDF5_PLUGIN_PATH__.
 
-Plugin Library Naming {#filters_Pluginlib}
----------------------
+## Plugin Library Naming {#filters_Pluginlib}
 
-Given a plugin directory, HDF5 examines every file in that
-directory that conforms to a specified name pattern
-as determined by the platform on which the library is being executed.
+Given a plugin directory, HDF5 examines every file in that directory that conforms to a specified name pattern as determined by the platform on which the library is being executed.
+
 <table>
 <tr halign="center"><th>Platform<th>Basename<th>Extension
 <tr halign="left"><td>Linux<td>lib*<td>.so*
@@ -259,115 +222,67 @@ as determined by the platform on which the library is being executed.
 <tr halign="left"><td>Windows<td>*<td>.dll
 </table>
 
-Plugin Verification {#filters_Pluginverify}
--------------------
-For each dynamic library located using the previous patterns,
-HDF5 attempts to load the library and attempts to obtain information
-from it. Specifically, It looks for two functions with the following
-signatures.
+## Plugin Verification {#filters_Pluginverify}
 
-1. __H5PL_type_t H5PLget_plugin_type(void)__ --
-This function is expected to return the constant value
-__H5PL_TYPE_FILTER__ to indicate that this is a filter library.
-2. __const void* H5PLget_plugin_info(void)__ --
-This function returns a pointer to a table of type __H5Z_class2_t__.
-This table contains the necessary information needed to utilize the
-filter both for reading and for writing. In particular, it specifies
-the filter id implemented by the library and if must match that id
-specified for the variable in __nc_def_var_filter__ in order to be used.
+For each dynamic library located using the previous patterns, HDF5 attempts to load the library and attempts to obtain information from it. Specifically, It looks for two functions with the following signatures.
 
-If plugin verification fails, then that plugin is ignored and
-the search continues for another, matching plugin.
+1. __H5PL_type_t H5PLget_plugin_type(void)__ -- This function is expected to return the constant value __H5PL_TYPE_FILTER__ to indicate that this is a filter library.
+2. __const void* H5PLget_plugin_info(void)__ -- This function returns a pointer to a table of type __H5Z_class2_t__. This table contains the necessary information needed to utilize the filter both for reading and for writing. In particular, it specifies the filter id implemented by the library and if must match that id specified for the variable in __nc_def_var_filter__ in order to be used.
 
-Debugging {#filters_Debug}
--------
-Debugging plugins can be very difficult. You will probably
-need to use the old printf approach for debugging the filter itself.
+If plugin verification fails, then that plugin is ignored and the search continues for another, matching plugin.
 
-One case worth mentioning is when you have a dataset that is
-using an unknown filter. For this situation, you need to
-identify what filter(s) are used in the dataset. This can
-be accomplished using this command.
+## Debugging {#filters_Debug}
+
+Debugging plugins can be very difficult. You will probably need to use the old printf approach for debugging the filter itself.
+
+One case worth mentioning is when you have a dataset that is using an unknown filter. For this situation, you need to identify what filter(s) are used in the dataset. This can be accomplished using this command.
+
 ````
 ncdump -s -h <dataset filename>
 ````
-Since ncdump is not being asked to access the data (the -h flag), it
-can obtain the filter information without failures. Then it can print
-out the filter id and the parameters (the -s flag).
 
-Test Case {#filters_TestCase}
--------
-Within the netcdf-c source tree, the directory
-__netcdf-c/nc_test4__ contains a test case (__test_filter.c__) for
-testing dynamic filter writing and reading using
-bzip2. Another test (__test_filter_misc.c__) validates
-parameter passing.  These tests are disabled if __--enable-shared__
-is not set or if __--enable-netcdf-4__ is not set.
+Since ncdump is not being asked to access the data (the -h flag), it can obtain the filter information without failures. Then it can print out the filter id and the parameters (the -s flag).
 
-Example {#filters_Example}
--------
-A slightly simplified version of the filter test case is also
-available as an example within the netcdf-c source tree
-directory __netcdf-c/examples/C. The test is called __filter_example.c__
-and it is executed as part of the __run_examples4.sh__ shell script.
-The test case demonstrates dynamic filter writing and reading.
+## Test Case {#filters_TestCase}
 
-The files __example/C/hdf5plugins/Makefile.am__
-and  __example/C/hdf5plugins/CMakeLists.txt__
-demonstrate how to build the hdf5 plugin for bzip2.
+Within the netcdf-c source tree, the directory __netcdf-c/nc_test4__ contains a test case (__test_filter.c__) for testing dynamic filter writing and reading using bzip2. Another test (__test_filter_misc.c__) validates parameter passing.  These tests are disabled if __--enable-shared__ is not set or if __--enable-netcdf-4__ is not set.
 
-Notes
-==========
+## Example {#filters_Example}
 
-Memory Allocation Issues
------------
+A slightly simplified version of the filter test case is also available as an example within the netcdf-c source tree directory __netcdf-c/examples/C. The test is called __filter_example.c__ and it is executed as part of the __run_examples4.sh__ shell script. The test case demonstrates dynamic filter writing and reading.
 
-Starting with HDF5 version 1.10.x, the plugin code MUST be
-careful when using the standard *malloc()*, *realloc()*, and
-*free()* function.
+The files __example/C/hdf5plugins/Makefile.am__ and  __example/C/hdf5plugins/CMakeLists.txt__ demonstrate how to build the hdf5 plugin for bzip2.
 
-In the event that the code is allocating, reallocating, for
-free'ing memory that either came from or will be exported to the
-calling HDF5 library, then one MUST use the corresponding HDF5
-functions *H5allocate_memory()*, *H5resize_memory()*,
-*H5free_memory()* [5] to avoid memory failures.
+# Notes {#filters_notes}
 
-Additionally, if your filter code leaks memory, then the HDF5 library
-generates a failure something like this.
+## Memory Allocation Issues {#filters_memory_allocation_issues}
+
+Starting with HDF5 version 1.10.x, the plugin code MUST be careful when using the standard *malloc()*, *realloc()*, and *free()* function.
+
+In the event that the code is allocating, reallocating, for free'ing memory that either came from or will be exported to the calling HDF5 library, then one MUST use the corresponding HDF5 functions *H5allocate_memory()*, *H5resize_memory()*, *H5free_memory()* [5] to avoid memory failures.
+
+Additionally, if your filter code leaks memory, then the HDF5 library generates a failure something like this.
+
 ````
 H5MM.c:232: H5MM_final_sanity_check: Assertion `0 == H5MM_curr_alloc_bytes_s' failed.
 ````
 
 One can look at the the code in plugins/H5Zbzip2.c and H5Zmisc.c to see this.
 
-SZIP Issues
------------
-The current szip plugin code in the HDF5 library
-has some behaviors that can catch the unwary.
-Specifically, this filter may do two things.
+## SZIP Issues {#filters_szip_issues}
 
-1. Add extra parameters to the filter parameters: going from
-   the two parameters provided by the user to four parameters
-   for internal use. It turns out that the two parameters provided
-   when calling nc_def_var_filter correspond to the first two
-   parameters of the four parameters returned by nc_inq_var_filter.
-2. Change the values of some parameters: the value of the
-   __options_mask__ argument is known to add additional flag bits,
-   and the __pixels_per_block__ parameter may be modified.
+The current szip plugin code in the HDF5 library has some behaviors that can catch the unwary. Specifically, this filter may do two things.
 
-The reason for these changes is has to do with the fact that
-the szip API provided by the underlying H5Pset_szip function
-is actually a subset of the capabilities of the real szip implementation.
+1. Add extra parameters to the filter parameters: going from the two parameters provided by the user to four parameters for internal use. It turns out that the two parameters provided when calling nc_def_var_filter correspond to the first two parameters of the four parameters returned by nc_inq_var_filter.
+2. Change the values of some parameters: the value of the __options_mask__ argument is known to add additional flag bits, and the __pixels_per_block__ parameter may be modified.
+
+The reason for these changes is has to do with the fact that the szip API provided by the underlying `H5Pset_szip()` function is actually a subset of the capabilities of the real szip implementation.
 Presumably this is for historical reasons.
 
-In any case, if the caller uses the __nc_inq_var_szip__, then
-the values returned may differ from those originally specified.
-If one used the __nc_inq_var_filter__ API calls, it may be the case that
-both the number of parameters and the values will differ from the original
-call to __nc_def_var_filter__.
+In any case, if the caller uses the __nc_inq_var_szip__, then the values returned may differ from those originally specified. If one used the __nc_inq_var_filter__ API calls, it may be the case that both the number of parameters and the values will differ from the original call to __nc_def_var_filter__.
 
-Supported Systems
------------------
+## Supported Systems {#filters_supported_systems}
+
 The current matrix of OS X build systems known to work is as follows.
 <table>
 <tr><th>Build System<th>Supported OS
@@ -375,66 +290,45 @@ The current matrix of OS X build systems known to work is as follows.
 <tr><td>Cmake<td>Linux, Cygwin, Visual Studio
 </table>
 
-Generic Plugin Build
---------------------
-If you do not want to use Automake or Cmake, the following
-has been known to work.
+## Generic Plugin Build {#filters_generic_plugin_build}
+
+If you do not want to use Automake or Cmake, the following has been known to work.
+
 ````
 gcc -g -O0 -shared -o libbzip2.so <plugin source files>  -L${HDF5LIBDIR} -lhdf5_hl -lhdf5 -L${ZLIBDIR} -lz
 ````
 
-Appendix A. Support Utilities {#filters_AppendixA}
-==========
+# Appendix A. Support Utilities {#filters_AppendixA}
 
-Two functions are exported from the netcdf-c library
-for use by client programs and by filter implementations.
+Two functions are exported from the netcdf-c library for use by client programs and by filter implementations.
 
 1. ````int NC_parsefilterspec(const char* spec, unsigned int* idp, size_t* nparamsp, unsigned int** paramsp);````
     * idp will contain the filter id value from the spec.
     * nparamsp will contain the number of 4-byte parameters
     * paramsp will contain a pointer to the parsed parameters -- the caller
       must free.
-    This function can parse filter spec strings as defined in
-    the section on <a href="#filters_syntax">Filter Specification Syntax</a>.
-    This function parses the first argument and returns several values.
+
+> This function can parse filter spec strings as defined in the section on <a href="#filters_syntax">Filter Specification Syntax</a>. This function parses the first argument and returns several values.
 
 2. ````int NC_filterfix8(unsigned char* mem8, int decode);````
     * mem8 is a pointer to the 8-byte value either to fix.
-    * decode is 1 if the function should apply the 8-byte decoding algorithm
-      else apply the encoding algorithm.
-    This function implements the 8-byte conversion algorithms.
-    Before calling *nc_def_var_filter* (unless *NC_parsefilterspec* was used),
-    the client must call this function with the decode argument set to 0.
-    Inside the filter code, this function should be called with the decode
-    argument set to 1.
+    * decode is 1 if the function should apply the 8-byte decoding algorithm else apply the encoding algorithm.
 
-Examples of the use of these functions can be seen in the test program
-*nc_test4/tst_filterparser.c*.
+> This function implements the 8-byte conversion algorithms. Before calling *nc_def_var_filter* (unless *NC_parsefilterspec* was used), the client must call this function with the decode argument set to 0. Inside the filter code, this function should be called with the decode argument set to 1.
 
-Appendix B. Programmatic Filter Definition {#filters_programmatic}
-==========
+Examples of the use of these functions can be seen in the test program *nc_test4/tst_filterparser.c*.
 
-HDF5 provides an API [6] to allow for the programmatic definition
-of filters -- as opposed to using the HDF5_PLUGIN_PATH environment variable.
-The idea is that instead of using dynamic shared libraries, the filter code
-is compiled into the application and the relevant information
-(namely an instance of *H5Z_class2_t*) is passed to the HDF5 library API.
-Because it is anticipated that in the future, other plugin formats
-will be used, this netcdf-c API is deliberately more general than
-strictly required by HDF5.
+# Appendix B. Programmatic Filter Definition {#filters_programmatic}
 
-## API Concepts
+HDF5 provides an API [6] to allow for the programmatic definition of filters -- as opposed to using the HDF5_PLUGIN_PATH environment variable. The idea is that instead of using dynamic shared libraries, the filter code is compiled into the application and the relevant information (namely an instance of *H5Z_class2_t*) is passed to the HDF5 library API. Because it is anticipated that in the future, other plugin formats will be used, this netcdf-c API is deliberately more general than strictly required by HDF5.
+
+## API Concepts {#filters_API_concepts}
 
 Three concepts are used in this API.
 
-1. Format - this is an integer defining the format of the plugin.
-   Currently, only *NC_FILTER_FORMAT_HDF5* is defined and corresponds
-   to the existing HDF5 plugin format.
-2. ID - this is an integer that is a unique identifier for the filter.
-   This value is interpreted in the context of the format, so the same
-   id might be assigned to different filters if the format is different.
-3. The structure *NC_FILTER_INFO* that provides generic information
-   to the API and has a placeholder for format-specific information.
+1. Format - this is an integer defining the format of the plugin. Currently, only *NC_FILTER_FORMAT_HDF5* is defined and corresponds to the existing HDF5 plugin format.
+2. ID - this is an integer that is a unique identifier for the filter. This value is interpreted in the context of the format, so the same id might be assigned to different filters if the format is different.
+3. The structure *NC_FILTER_INFO* that provides generic information to the API and has a placeholder for format-specific information.
 
         typedef struct NC_FILTER_INFO {
           int version; /* Of this structure */
@@ -442,36 +336,32 @@ Three concepts are used in this API.
           int id;     /* Must be unique WRT format */
           void* info; /* The filter info as defined by the format. */
         } NC_FILTER_INFO;
-    When the format is the value NC_FILTER_FORMAT_HDF5,
-    then the info field is a pointer to an instance of
-    H5Z_class2_t as define in H5Zpublic.h.
-    The use of void* is, of course, to allow for passing arbitrary objects.
 
-### NetCDF API
+> When the format is the value NC_FILTER_FORMAT_HDF5, then the info field is a pointer to an instance of H5Z_class2_t as define in H5Zpublic.h. The use of void* is, of course, to allow for passing arbitrary objects.
+
+### NetCDF API {#filters_netCDF_API}
 
 The following function signatures are provided (see *netcdf_filter.h*).
 
 1. Register a filter
 
         int nc_filter_register(NC_FILTER_INFO* filter_info);
-    Register a filter whose format and ID are specified in the 'filter_info'
-    argument.
+
+    Register a filter whose format and ID are specified in the 'filter_info' argument.
 
 2. Unregister a filter
 
         int nc_filter_unregister(int format, int id);
-    Unregister the filter specified by the id. Note that only
-    filters registered using 'nc_filter_register' can be unregistered.
+
+    Unregister the filter specified by the id. Note that only filters registered using 'nc_filter_register' can be unregistered.
 
 3. Inquire about a filter
 
         int nc_filter_inq(int format, int id, NC_FILTER_INFO* filter_info);
-    Unregister the filter specified by the id. Note that only
-    filters registered using 'nc_filter_register' can be inquired.
-    The 'filter_info' is filled with a copy of the original argument to
-    'nc_filter_register'.
 
-### Example
+    Unregister the filter specified by the id. Note that only filters registered using 'nc_filter_register' can be inquired. The 'filter_info' is filled with a copy of the original argument to 'nc_filter_register'.
+
+### Example {#filters_example}
 
     static const H5Z_class2_t H5Z_REG[1] = {
         ...
@@ -504,4 +394,4 @@ The following function signatures are provided (see *netcdf_filter.h*).
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu
 __Initial Version__: 1/10/2018<br>
-__Last Revised__: 2/5/2018
+__Last Revised__: 8/04/2020<br>
