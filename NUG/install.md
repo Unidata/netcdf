@@ -1,41 +1,25 @@
-Getting and Building netCDF {#getting_and_building_netcdf}
-=============================
+# Getting and Building netCDF {#getting_and_building_netcdf}
 
 [TOC]
+\tableofcontents
 
 This document is for getting and building the netCDF C library and utilities for the most recent released version.  Other libraries that depend on the netCDF C library, such as the Fortran, Python, Java, and C++ libraries, are available as separate distributions that can be optionally built and installed after the C library is successfully installed.  The netCDF-Java library is independent of the netCDF C library unless writing netCDF-4 files from Java is required.
 
-Getting netCDF-C {#getting}
-=========================
+# Getting netCDF-C {#getting}
 
 * For information regarding the netCDF-Fortran libraries, see \subpage building_netcdf_fortran.
-* Functionality to make it easier to build netcdf-fortran as part of   the netcdf-c build for *non-MSVC* builds may be enabled at configure time by using the following **Highly Experimental** options:
 
- * Autotools: `--enable-remote-fortran-bootstrap`
- * CMake:  `-DENABLE_REMOTE_FORTRAN_BOOTSTRAP=ON`
+## Getting pre-built netCDF-C libraries. {#sec_get_pre_built}
 
-For more details, see the <a href="https://github.com/Unidata/netcdf-c/blob/master/RELEASE_NOTES.md">draft instructions</a> in the Release Notes under the `4.3.3-rc3` section.
+The easiest way to get netCDF is through a package management program, such as rpm, yum, homebrew, macports, adept, and others. NetCDF is available from many different repositories, including the default Red Hat and Ubuntu repositories.
 
-Getting pre-built netCDF-C libraries. {#sec_get_pre_built}
--------------------------------------
-
-The easiest way to get netCDF is through a package management program,
-such as rpm, yum, homebrew, macports, adept, and others. NetCDF is
-available from many different repositories, including the default Red
-Hat and Ubuntu repositories.
-
-When getting netCDF from a software repository, you should get a
-development version that includes the netcdf.h header file. A
-development version will typically have a name such as "netcdf-devel"
-or "libnetcdf-dev".
+When getting netCDF from a software repository, you should get a development version that includes the netcdf.h header file. A development version will typically have a name such as "netcdf-devel" or "libnetcdf-dev".
 
 Instructions for installing and using pre-built libraries for Windows may be found here: \ref winbin.
 
-Getting the latest netCDF-C Source Code {#sec_get_source}
-----------------------------------------
+## Getting the latest netCDF-C Source Code {#sec_get_source}
 
 The netCDF-C source code is hosted from the <a href="http://github.com/Unidata/netcdf-c" >Unidata GitHub repository</a>.
-
 
 Two options are available for building from source:
 
@@ -44,7 +28,7 @@ Two options are available for building from source:
 
 ### The latest release {#sec_latest_release}
 
-The latest full release may be <a href="http://github.com/Unidata/netcdf-c/releases" >downloaded from GitHub</a>.
+The latest full release may be <a href="http://github.com/Unidata/netcdf-c/releases">downloaded from GitHub</a>.
 
 Source files are available in `.tar.gz` and `.zip` formats.
 
@@ -58,11 +42,10 @@ The developer snapshot may be cloned from GitHub directly by using the `git` com
 
 *The developer snapshot release contains bug-fixes and new features added since the last full release, but may also contain new bugs, as it is not tested as extensively as the full release.*
 
-Building netCDF-C {#building}
-===========================
+# Building netCDF-C {#building}
 
-The netCDF-C library and utilities require third-party libraries for
-full functionality. (See \ref architecture).
+The netCDF-C library and utilities require third-party libraries for full functionality. (See \ref architecture).
+
 * \ref build_default
 * \ref build_classic
 * \ref build_hdf4
@@ -81,35 +64,35 @@ Requirements {#netcdf_requirements}
 * For parallel I/O support on classic netCDF files
   * PnetCDF 1.6.0 or later
 
-> **Important Note**: When building netCDF-C library versions older than 4.4.1, use only HDF5 1.8.x versions.  Combining older netCDF-C versions with newer HDF5 1.10 versions will create superblock 3 files that are not readable by lots of older software.  See <a href="http://www.unidata.ucar.edu/blogs/news/entry/netcdf-4-4-1">this announcement</a> for more details.
+> **Important Note**: When building netCDF-C library versions older than 4.4.1, use only HDF5 1.8.x versions.  
+Combining older netCDF-C versions with newer HDF5 1.10 versions will create superblock 3 files that are not readable by lots of older software.  
+See <a href="http://www.unidata.ucar.edu/blogs/news/entry/netcdf-4-4-1">this announcement</a> for more details.
 
 
-CMake and Windows support {#sub}
---------------------------------
+## CMake and Windows support {#sub_cmake_windows}
 
 * \ref netCDF-CMake
 * \subpage winbin
 
-Building with netCDF-4 and the Remote Data Client {#build_default}
---------------------------------
+## Building with netCDF-4 and the Remote Data Client {#build_default}
 
-The usual way of building netCDF requires the HDF5, zlib, and curl libraries. Versions required are at least HDF5 1.8.9, zlib 1.2.5, and curl 7.18.0 or later.
+The usual way of building netCDF requires the HDF5, zlib, and curl libraries.
+Versions required are at least HDF5 1.8.9, zlib 1.2.5, and curl 7.18.0 or later.
 
-HDF5 and zlib packages are available from the <a href="http://www.hdfgroup.org/downloads/">HDF5 downloads site</a> and the <a href="http://www.zlib.net/">zlib home site</a>. If you wish to use the remote data client code, then you will also need libcurl, which can be obtained from the <a href="http://curl.haxx.se/download.html">curl website</a>.
+HDF5 and zlib packages are available from the <a href="http://www.hdfgroup.org/downloads/">HDF5 downloads site</a> and the <a href="http://www.zlib.net/">zlib home site</a>.
+If you wish to use the remote data client code, then you will also need libcurl, which can be obtained from the <a href="http://curl.haxx.se/download.html">curl website</a>.
 
 > Note that for building netCDF, it is not necessary to build the HDF5 Fortran, C++, or Java API's. Only the HDF5 C library is used, even for netCDF Fortran or C++ libraries.
 
 ### Optional: szip support {#op_szip_support}
 
-*Optionally*, you can also build netCDF-4 with the szip library (a.k.a. szlib). If building with szlib, get szip 2.0 or later. Technically, we mean that
-the HDF5 library is built with szip support. The netcdf build will then
-inherit szip support from the HDF5 library.
-If you intend to write files with szip compression, then we suggest that you
-use [libaec](https://gitlab.dkrz.de/k202009/libaec.git)
-to avoid patent problems. That library can be used as a
-drop-in replacement for the standard szip library.
-If you plan to use the standard szip library,
-then determine whether license restrictions on the use of szip apply to your situation. See the <a href="http://www.hdfgroup.org/doc_resource/SZIP/">web page on szip compression in HDF products</a>.
+*Optionally*, you can also build netCDF-4 with the szip library (a.k.a. szlib).
+If building with szlib, get szip 2.0 or later.
+Technically, we mean that the HDF5 library is built with szip support.
+The netcdf build will then inherit szip support from the HDF5 library.
+If you intend to write files with szip compression, then we suggest that you use [libaec](https://gitlab.dkrz.de/k202009/libaec.git) to avoid patent problems. That library can be used as a drop-in replacement for the standard szip library.
+If you plan to use the standard szip library, then determine whether license restrictions on the use of szip apply to your situation.
+See the <a href="http://www.hdfgroup.org/doc_resource/SZIP/">web page on szip compression in HDF products</a>.
 
 If `make check` fails for either `zlib` or `HDF5`, the problem must be resolved before the netCDF-4 installation can continue. For HDF5 problems, see the <a href="http://www.hdfgroup.org/services/support.html">HDF5 help services</a>.
 
@@ -143,7 +126,7 @@ In all cases, the installation location specified with the `--prefix` option *mu
 
 ### Building netCDF-4 and the Remote Data Client from source {#build_nc4_dap_from_source}
 
-Before building netCDF, you may need to add `${H5DIR}/lib` to the LD_LIBRARY_PATH environment variable if that lib directory is not searched by default. See the <a href="http://www.unidata.ucar.edu/netcdf/docs/faq.html#Shared%20Libraries">netCDF FAQ</a> for more details on using shared libraries.
+Before building netCDF, you may need to add `${H5DIR}/lib` to the LD_LIBRARY_PATH environment variable if that lib directory is not searched by default. See the <a href="http://www.unidata.ucar.edu/netcdf/docs faq.html#Shared%20Libraries">netCDF FAQ</a> for more details on using shared libraries.
 
 Indicate where you want to install netCDF in another shell variable, for example NCDIR. Then run the netCDF configure script, specifying where HDF5 was installed using the CPPFLAGS and LDFLAGS environment variables. For example, from the top-level netCDF source directory:
 
