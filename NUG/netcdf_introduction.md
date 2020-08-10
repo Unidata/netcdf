@@ -43,7 +43,7 @@ Starting with this version, the netCDF library can use HDF5 files as its base fo
 (Only HDF5 files created with netCDF-4 can be understood by netCDF-4).
 
 Starting from version 4.4.0, netCDF included the support of CDF-5 format.
-In order to allows defining large array variables with more than 4-billion elements, CDF-5 replaces most of the 32-bit integers used to describe metadata in file header with 64-bit integers.
+In order to allow defining large array variables with more than 4-billion elements, CDF-5 replaces most of the 32-bit integers used to describe metadata in file header with 64-bit integers.
 In addition, it supports the following new external data types: NC_UBYTE, NC_USHORT, NC_UINT, NC_INT64, and NC_UINT64.
 The CDF-5 format specifications can be found at http://cucis.ece.northwestern.edu/projects/PnetCDF/CDF-5.html.
 
@@ -107,7 +107,7 @@ Since CDF-2 format was introduced in version 3.6.0, earlier versions of the netC
 
 ##  NetCDF 64-bit Data Format (CDF-5) {#netcdf_64bit_data_format}
 
-To allow large variables with more than 4-billion array elements, 64-bit data format is develop to support such I/O requests.
+To allow large variables with more than 4-billion array elements, 64-bit data format is developed to support such I/O requests.
 
 Files with the 64-bit data are identified with a "CDF\005" at the beginning of the file.
 In this documentation this format is called CDF-5 format.
@@ -192,7 +192,7 @@ This limitation is a result of 32-bit offsets used for storing relative offsets 
 Since one of the goals of netCDF is portable data, and some file systems still can't deal with files larger than 2 GiB, it is best to keep files that must be portable below this limit.
 Nevertheless, it is possible to create and access netCDF files larger than 2 GiB on platforms that provide support for such files (see \ref large_file_support).
 
-The CDF-2 format allows large files, and makes it easy to create to create fixed variables of about 4 GiB, and record variables of about 4 GiB per record (see \ref netcdf_64bit_offset_format).
+The CDF-2 format allows large files, and makes it easy to create fixed variables of about 4 GiB, and record variables of about 4 GiB per record (see \ref netcdf_64bit_offset_format).
 However, old netCDF applications will not be able to read the 64-bit offset files until they are upgraded to at least version 3.6.0 of netCDF (i.e. the version in which 64-bit offset format was introduced).
 
 With the netCDF-4/HDF5 format, size limitations are further relaxed, and files can be as large as the underlying file system supports.

@@ -4,10 +4,10 @@
 
 ## The Chunk Cache {#chunk_cache}
 
-For good performance your chunk cache must be larger than one chunk of your data - preferably that it be large enough to hold multiple chunks of data.
+For good performance your chunk cache must be larger than one chunk of your data - preferably large enough to hold multiple chunks of data.
 
 In addition, when a file is opened (or a variable created in an open file), the netCDF-4 library checks to make sure the default chunk cache size will work for that variable.
-The cache will be large enough to hold N chunks, up to a maximum size of M bytes. (Both N and M are settable at configure time with the `–with-default-chunks-in-cache` and the `–with-max-default-cache-size` options to the configure script.
+The cache will be large enough to hold N chunks, up to a maximum size of M bytes. (Both N and M are settable at configure time with the `–with-default-chunks-in-cache` and the `–with-max-default-cache-size` options added to the configure script.
 Currently they are set to **10** and **64** MB.)
 
 To change the default chunk cache size, use the `set_chunk_cache()` function before opening the file with nc_set_chunk_cache().
