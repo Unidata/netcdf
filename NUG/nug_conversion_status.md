@@ -22,8 +22,8 @@ The list of files to be converted.
 * [x] DAP4.dox (Ward)
 * [x] file_format_specifications.md
 * [x] filters.md
-* [-] guide.md
-* [ ] install.md
+* [x] guide.md
+* [-] install.md
 * [-] netcdf_data_set_components.md (Sean)
 * [x] netcdf_introduction.md (Sean)
 * [x] netcdf_utilities_guide.md (Sean)
