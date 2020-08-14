@@ -23,7 +23,7 @@ The list of files to be converted.
 * [x] file_format_specifications.md
 * [x] filters.md
 * [x] guide.md
-* [-] install.md
+* [x] install.md
 * [-] netcdf_data_set_components.md (Sean)
 * [x] netcdf_introduction.md (Sean)
 * [x] netcdf_utilities_guide.md (Sean)
