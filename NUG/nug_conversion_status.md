@@ -24,9 +24,9 @@ The list of files to be converted.
 * [x] filters.md
 * [x] guide.md
 * [x] install.md
-* [-] netcdf_data_set_components.md (Sean)
-* [x] netcdf_introduction.md (Sean)
-* [x] netcdf_utilities_guide.md (Sean)
+* [-] netcdf_data_set_components.md
+* [x] netcdf_introduction.md
+* [x] netcdf_utilities_guide.md
 * [x] ~~OPeNDAP.dox~~ (skipping)
 * [x] types.dox
 * [x] user_defined_formats.md
