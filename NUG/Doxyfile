@@ -836,6 +836,7 @@ INPUT                  = guide.md \
                          types.dox \
                          user_defined_formats.md \
                          filters.md \
+                         nczarr.md \
                          cdl.md \
                          attribute_conventions.md \
                          file_format_specifications.md \
