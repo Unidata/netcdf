@@ -833,9 +833,10 @@ INPUT                  = guide.md \
                          install.md \
                          DAP2.md \
                          DAP4.md \
-                         types.dox \
+                         types.md \
                          user_defined_formats.md \
                          filters.md \
+                         nczarr.md \
                          cdl.md \
                          attribute_conventions.md \
                          file_format_specifications.md \
