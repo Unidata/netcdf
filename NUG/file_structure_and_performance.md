@@ -1,128 +1,69 @@
 # File Structure and Performance {#file_structure_and_performance}
 
+\tableofcontents
+
 [TOC]
 
 ## Parts of a NetCDF Classic File {#classic_file_parts}
 
-A netCDF classic dataset (including CDF-1, 2, and 5 formats) is stored as a
-single file comprising two parts:
+A netCDF classic dataset (including CDF-1, 2, and 5 formats) is stored as a single file comprising two parts:
 
-* a header, containing all the information about dimensions, attributes,
-and variables except for the variable data;
-* a data part, comprising fixed-size data, containing the data for
-variables that don't have an unlimited dimension; and variable-size
-data, containing the data for variables that have an unlimited
+* a header, containing all the information about dimensions, attributes, and variables except for the variable data;
+* a data part, comprising fixed-size data, containing the data for variables that don't have an unlimited dimension; and variable-size data, containing the data for variables that have an unlimited dimension.
+
+Both the header and data parts are represented in a machine-independent form.
+This form is very similar to XDR (eXternal Data Representation), extended to support efficient storage of arrays of non-byte data.
+
+The header at the beginning of the file contains information about the dimensions, variables, and attributes in the file, including their names, types, and other characteristics.
+The information about each variable includes the offset to the beginning of the variable's data for fixed-size variables or the relative offset of other variables within a record.
+The header also contains dimension lengths and information needed to map multidimensional indices for each variable to the appropriate offsets.
+
+By default, this header has little usable extra space; it is only as large as it needs to be for the dimensions, variables, and attributes (including all the attribute values) in the netCDF dataset, with a small amount of extra space from rounding up to the nearest disk block size.
+This has the advantage that netCDF files are compact, requiring very little overhead to store the ancillary data that makes the datasets self-describing.
+A disadvantage of this organization is that any operation on a netCDF dataset that requires the header to grow (or, less likely, to shrink), for example adding new dimensions or new variables, requires moving the data by copying it.
+This expense is incurred when the enddef function is called: nc_enddef() in C, NF_ENDDEF() in Fortran, after a previous call to the redef function: nc_redef() in C or NF_REDEF() in Fortran.
+If you create all necessary dimensions, variables, and attributes before writing data, and avoid later additions and renamings of netCDF components that require more space in the header part of the file, you avoid the cost associated with later changing the header.
+
+Alternatively, you can use an alternative version of the enddef function with two underbar characters instead of one to explicitly reserve extra space in the file header when the file is created: in C nc__enddef(), in Fortran NF__ENDDEF(), after a previous call to the redef function.
+This avoids the expense of moving all the data later by reserving enough extra space in the header to accommodate anticipated changes, such as the addition of new attributes or the extension of existing string attributes to hold longer strings.
+
+When the size of the header is changed, data in the file is moved, and the location of data values in the file changes.
+If another program is reading the netCDF dataset during redefinition, its view of the file will be based on old, probably incorrect indexes.
+If netCDF datasets are shared across redefinition, some mechanism external to the netCDF library must be provided that prevents access by readers during redefinition, and causes the readers to call nc_sync/NF_SYNC before any subsequent access.
+
+The fixed-size data part that follows the header contains all the variable data for variables that do not employ an unlimited
 dimension.
+The data for each variable is stored contiguously in this part of the file.
+If there is no unlimited dimension, this is the last part of the netCDF file.
 
-Both the header and data parts are represented in a
-machine-independent form. This form is very similar to XDR (eXternal
-Data Representation), extended to support efficient storage of arrays
-of non-byte data.
+The record-data part that follows the fixed-size data consists of a variable number of fixed-size records, each of which contains data for all the record variables. The record data for each variable is stored contiguously in each record.
 
-The header at the beginning of the file contains information about the
-dimensions, variables, and attributes in the file, including their
-names, types, and other characteristics. The information about each
-variable includes the offset to the beginning of the variable's data
-for fixed-size variables or the relative offset of other variables
-within a record. The header also contains dimension lengths and
-information needed to map multidimensional indices for each variable
-to the appropriate offsets.
-
-By default, this header has little usable extra space; it is only as
-large as it needs to be for the dimensions, variables, and attributes
-(including all the attribute values) in the netCDF dataset, with a
-small amount of extra space from rounding up to the nearest disk block
-size. This has the advantage that netCDF files are compact, requiring
-very little overhead to store the ancillary data that makes the
-datasets self-describing. A disadvantage of this organization is that
-any operation on a netCDF dataset that requires the header to grow
-(or, less likely, to shrink), for example adding new dimensions or new
-variables, requires moving the data by copying it. This expense is
-incurred when the enddef function is called: nc_enddef() in C,
-NF_ENDDEF() in Fortran, after a previous call to the redef function:
-nc_redef() in C or NF_REDEF() in Fortran. If you create all necessary
-dimensions, variables, and attributes before writing data, and avoid
-later additions and renamings of netCDF components that require more
-space in the header part of the file, you avoid the cost associated
-with later changing the header.
-
-Alternatively, you can use an alternative version of the enddef
-function with two underbar characters instead of one to explicitly
-reserve extra space in the file header when the file is created: in C
-nc__enddef(), in Fortran NF__ENDDEF(), after a previous call to the
-redef function. This avoids the expense of moving all the data later
-by reserving enough extra space in the header to accommodate
-anticipated changes, such as the addition of new attributes or the
-extension of existing string attributes to hold longer strings.
-
-When the size of the header is changed, data in the file is moved, and
-the location of data values in the file changes. If another program is
-reading the netCDF dataset during redefinition, its view of the file
-will be based on old, probably incorrect indexes. If netCDF datasets
-are shared across redefinition, some mechanism external to the netCDF
-library must be provided that prevents access by readers during
-redefinition, and causes the readers to call nc_sync/NF_SYNC before
-any subsequent access.
-
-The fixed-size data part that follows the header contains all the
-variable data for variables that do not employ an unlimited
-dimension. The data for each variable is stored contiguously in this
-part of the file. If there is no unlimited dimension, this is the last
-part of the netCDF file.
-
-The record-data part that follows the fixed-size data consists of a
-variable number of fixed-size records, each of which contains data for
-all the record variables. The record data for each variable is stored
-contiguously in each record.
-
-The order in which the variable data appears in each data section is
-the same as the order in which the variables were defined, in
-increasing numerical order by netCDF variable ID. This knowledge can
-sometimes be used to enhance data access performance, since the best
-data access is currently achieved by reading or writing the data in
-sequential order.
+The order in which the variable data appears in each data section is the same as the order in which the variables were defined, in
+increasing numerical order by netCDF variable ID.
+This knowledge can sometimes be used to enhance data access performance, since the best data access is currently achieved by reading or writing the data in sequential order.
 
 ## Parts of a NetCDF-4 HDF5 File {#parts_of_netcdf4}
 
-NetCDF-4 files are created with the HDF5 library, and are HDF5 files
-in every way, and can be read without the netCDF-4 interface. (Note
-that modifying these files with HDF5 will almost certainly make them
-unreadable to netCDF-4.)
+NetCDF-4 files are created with the HDF5 library, and are HDF5 files in every way, and can be read without the netCDF-4 interface.
+(Note that modifying these files with HDF5 will almost certainly make them unreadable to netCDF-4.)
 
-Groups in a netCDF-4 file correspond with HDF5 groups (although the
-netCDF-4 tree is rooted not at the HDF5 root, but in group “_netCDF”).
+Groups in a netCDF-4 file correspond with HDF5 groups (although the netCDF-4 tree is rooted not at the HDF5 root, but in group “_netCDF”).
 
-Variables in netCDF coorespond with identically named datasets in
-HDF5. Attributes similarly.
+Variables in netCDF correspond with identically named datasets in HDF5. Attributes similarly.
 
-Since there is more metadata in a netCDF file than an HDF5 file,
-special datasets are used to hold netCDF metadata.
+Since there is more metadata in a netCDF file than an HDF5 file, special datasets are used to hold netCDF metadata.
 
-\deprecated The _netcdf_dim_info dataset (in group _netCDF) contains the ids of
-the shared dimensions, and their length (0 for unlimited dimensions).
+\deprecated The _netcdf_dim_info dataset (in group _netCDF) contains the ids of the shared dimensions, and their length (0 for unlimited dimensions).
 
-\deprecated The _netcdf_var_info dataset (in group _netCDF) holds an array of
-compound types which contain the variable ID, and the associated
-dimension ids.
+\deprecated The _netcdf_var_info dataset (in group _netCDF) holds an array of compound types which contain the variable ID, and the associated dimension ids.
 
 ## The Extended XDR Layer {#xdr_layer}
 
-XDR is a standard for describing and encoding data and a library of
-functions for external data representation, allowing programmers to
-encode data structures in a machine-independent way. Classic
-netCDF employs an extended form of XDR for representing
-information in the header part and the data parts. This extended XDR
-is used to write portable data that can be read on any other machine
-for which the library has been implemented.
+XDR is a standard for describing and encoding data and a library of functions for external data representation, allowing programmers to encode data structures in a machine-independent way. Classic netCDF employs an extended form of XDR for representing information in the header part and the data parts. This extended XDR is used to write portable data that can be read on any other machine for which the library has been implemented.
 
-The cost of using a canonical external representation for data varies
-according to the type of data and whether the external form is the
-same as the machine's native form for that type.
+The cost of using a canonical external representation for data varies according to the type of data and whether the external form is the same as the machine's native form for that type.
 
-For some data types on some machines, the time required to convert
-data to and from external form can be significant. The worst case is
-reading or writing large arrays of floating-point data on a machine
-that does not use IEEE floating-point as its native representation.
+For some data types on some machines, the time required to convert data to and from external form can be significant. The worst case is reading or writing large arrays of floating-point data on a machine that does not use IEEE floating-point as its native representation.
 
 ## Large File Support {#large_file_support}
 
