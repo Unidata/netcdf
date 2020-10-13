@@ -67,47 +67,35 @@ For some data types on some machines, the time required to convert data to and f
 
 ## Large File Support {#large_file_support}
 
-It is possible to write netCDF files that exceed 2 GiByte on platforms
-that have "Large File Support" (LFS). Such files are
-platform-independent to other LFS platforms, but trying to open them
-on an older platform without LFS yields a "file too large" error.
+It is possible to write netCDF files that exceed 2 GiByte on platforms that have "Large File Support" (LFS).
+Such files are platform-independent to other LFS platforms, but trying to open them on an older platform without LFS yields a "file too large" error.
 
-Without LFS, no files larger than 2 GiBytes can be used. The rest of
-this section applies only to systems with LFS.
+Without LFS, no files larger than 2 GiBytes can be used.
+The rest of this section applies only to systems with LFS.
 
-The original binary format of netCDF (classic format) limits the size
-of data files by using a signed 32-bit offset within its internal
-structure. Files larger than 2 GiB can be created, with certain
-limitations. See \ref limitations.
+The original binary format of netCDF (classic format) limits the size of data files by using a signed 32-bit offset within its internal structure.
+Files larger than 2 GiB can be created, with certain limitations.
+See \ref limitations.
 
-In version 3.6.0, netCDF included its first-ever variant of the
-underlying data format. The new format introduced in 3.6.0 uses 64-bit
-file offsets in place of the 32-bit offsets. The new format is also referred as
-CDF-2 format as it bears a signature string of "CDF2" in the file header.
-There are still some
-limits on the sizes of variables, but the new format can create very
-large datasets. See \ref netcdf_64bit_offset_format.
+In version 3.6.0, netCDF included its first-ever variant of the underlying data format.
+The new format introduced in 3.6.0 uses 64-bit file offsets in place of the 32-bit offsets.
+The new format is also referred as CDF-2 format as it bears a signature string of "CDF2" in the file header.
+There are still some limits on the sizes of variables, but the new format can create very large datasets.
+See \ref netcdf_64bit_offset_format.
 
-Starting from version 4.4.0, netCDF included the support of CDF-5 format.  In
-order to allows defining large array variables with more than 4-billion
-elements, CDF-5 replaces most of the 32-bit integers used to describe metadata
-with 64-bit integers. In addition, it supports the following new external data
-types: NC_UBYTE, NC_USHORT, NC_UINT, NC_INT64, and NC_UINT64. The CDF-5 format
-specifications can be found in
-(http://cucis.ece.northwestern.edu/projects/PnetCDF/CDF-5.html).
+Starting from version 4.4.0, netCDF included the support of CDF-5 format.  
+In order to allows defining large array variables with more than 4-billion elements, CDF-5 replaces most of the 32-bit integers used to describe metadata with 64-bit integers.
+In addition, it supports the following new external data types: NC_UBYTE, NC_USHORT, NC_UINT, NC_INT64, and NC_UINT64.
+The CDF-5 format specifications can be found in (http://cucis.ece.northwestern.edu/projects/PnetCDF/CDF-5.html).
 
-NetCDF-4 variables and files can be any size supported by the
-underlying file system.
+NetCDF-4 variables and files can be any size supported by the underlying file system.
 
-The original data format (netCDF classic), is still the default data
-format for the netCDF library.
+The original data format (netCDF classic), is still the default data format for the netCDF library.
 
-The following table summarizes the size limitations of various
-permutations of LFS support, netCDF version, and data format. Note
-that 1 GiB = 2^30 bytes or about 1.07e+9 bytes, 1 EiB = 2^60 bytes or
-about 1.15e+18 bytes. Note also that all sizes are really 4 bytes less
-than the ones given below. For example the maximum size of a fixed
-variable in netCDF 3.6 classic format is really 2 GiB - 4 bytes.
+The following table summarizes the size limitations of various permutations of LFS support, netCDF version, and data format.
+Note that 1 GiB = 2^30 bytes or about 1.07e+9 bytes, 1 EiB = 2^60 bytes or about 1.15e+18 bytes.
+Note also that all sizes are really 4 bytes less than the ones given below.
+For example the maximum size of a fixed variable in netCDF 3.6 classic format is really 2 GiB - 4 bytes.
 
 Limits                                     | No LFS     |  v3.5   |  v3.6/classic |  v3.6/64-bit offset |    v4.0/netCDF-4 and CDF-5
 -------------------------------------------|------------|---------|---------------|---------------------|-----------------
@@ -117,59 +105,38 @@ Max Record Vars w/ Rec Size > 2 GiB        |     0      | 1 (last)|  1 (last)   
 Max Size of Fixed/Record Size of Record Var| 2 GiB      | 2 GiB   |  2 GiB        |  4 GiB              | unlimited
 Max Record Size                            | 2 GiB/nrecs| 4 GiB   |  8 EiB/nrecs  |  8 EiB/nrecs        | unlimited
 
-For more information about the different file formats of netCDF see
-\ref select_format "How to Select the Format".
+For more information about the different file formats of netCDF see \ref select_format "How to Select the Format".
 
 ## NetCDF 64-bit Offset Format Limitations {#offset_format_limitations}
 
-Although the 64-bit offset format (CDF-2) allows the creation of much larger
-netCDF files than was possible with the classic format, there are
+Although the 64-bit offset format (CDF-2) allows the creation of much larger netCDF files than was possible with the classic format, there are
 still some restrictions on the size of variables.
 
-It's important to note that without Large File Support (LFS) in the
-operating system, it's impossible to create any file larger than 2
-GiBytes. Assuming an operating system with LFS, the following
-restrictions apply to the CDF-2 format.
+It's important to note that without Large File Support (LFS) in the operating system, it's impossible to create any file larger than 2 GiBytes.
+Assuming an operating system with LFS, the following restrictions apply to the CDF-2 format.
 
-No fixed-size variable can require more than 2^32 - 4 bytes (i.e. 4GiB
-minus 4 bytes, or 4,294,967,292 bytes) of storage for its data, unless
-it is the last fixed-size variable and there are no record
-variables. When there are no record variables, the last fixed-size
-variable can be any size supported by the file system, e.g. terabytes.
+No fixed-size variable can require more than 2^32 - 4 bytes (i.e. 4GiB minus 4 bytes, or 4,294,967,292 bytes) of storage for its data, unless it is the last fixed-size variable and there are no record variables.
+When there are no record variables, the last fixed-size variable can be any size supported by the file system, e.g. terabytes.
 
-A CDF-2 file can have up to 2^32 - 1 fixed sized
-variables, each under 4GiB in size. If there are no record variables
-in the file the last fixed variable can be any size.
+A CDF-2 file can have up to 2^32 - 1 fixed sized variables, each under 4GiB in size.
+If there are no record variables in the file the last fixed variable can be any size.
 
-No record variable can require more than 2^32 - 4 bytes of storage for
-each record's worth of data, unless it is the last record variable. A
-CDF-2 file can have up to 2^32 - 1 records, of
-up to 2^32 - 1 variables, as long as the size of one record's data for
-each record variable except the last is less than 4 GiB - 4.
+No record variable can require more than 2^32 - 4 bytes of storage for each record's worth of data, unless it is the last record variable.
+A CDF-2 file can have up to 2^32 - 1 records, of up to 2^32 - 1 variables, as long as the size of one record's data for each record variable except the last is less than 4 GiB - 4.
 
-Note also that all netCDF variables and records are padded to 4 byte
-boundaries.
+Note also that all netCDF variables and records are padded to 4 byte boundaries.
 
 ## NetCDF Classic Format Limitations {#classic_format_limitations}
 
-There are important constraints on the structure of large netCDF
-classic files that result from the 32-bit relative offsets that are
-part of the netCDF classic file format (CDF-1):
+There are important constraints on the structure of large netCDF classic files that result from the 32-bit relative offsets that are part of the netCDF classic file format (CDF-1):
 
-The maximum size of a record in the classic format in versions 3.5.1
-and earlier is 2^32 - 4 bytes, or about 4 GiB. In versions 3.6.0 and
-later, there is no such restriction on total record size for the
-classic formats.
+The maximum size of a record in the classic format in versions 3.5.1 and earlier is 2^32 - 4 bytes, or about 4 GiB. In versions 3.6.0 and later, there is no such restriction on total record size for the classic formats.
 
-If you don't use the unlimited dimension, only one variable can exceed
-2 GiB in size, but it can be as large as the underlying file system
-permits. It must be the last variable in the dataset, and the offset
-to the beginning of this variable must be less than about 2 GiB.
+If you don't use the unlimited dimension, only one variable can exceed 2 GiB in size, but it can be as large as the underlying file system permits.
+It must be the last variable in the dataset, and the offset to the beginning of this variable must be less than about 2 GiB.
 
-The limit is really 2^31 - 4. If you were to specify a variable size
-of 2^31 -3, for example, it would be rounded up to the nearest
-multiple of 4 bytes, which would be 2^31, which is larger than the
-largest signed integer, 2^31 - 1.
+The limit is really 2^31 - 4.
+If you were to specify a variable size of 2^31 -3, for example, it would be rounded up to the nearest multiple of 4 bytes, which would be 2^31, which is larger than the largest signed integer, 2^31 - 1.
 
 For example, the structure of the data might be something like:
 
@@ -187,10 +154,8 @@ For example, the structure of the data might be something like:
          }
 \endcode
 
-If you use the unlimited dimension, record variables may exceed 2 GiB
-in size, as long as the offset of the start of each record variable
-within a record is less than 2 GiB - 4. For example, the structure of
-the data in a 2.4 Tbyte file might be something like:
+If you use the unlimited dimension, record variables may exceed 2 GiB in size, as long as the offset of the start of each record variable within a record is less than 2 GiB - 4.
+For example, the structure of the data in a 2.4 Tbyte file might be something like:
 
 \code
      netcdf bigfile2 {
@@ -213,76 +178,44 @@ the data in a 2.4 Tbyte file might be something like:
 
 ## The NetCDF-3 I/O Layer {#netcdf_3_io}
 
-The following discussion applies only to netCDF classic files (i.e. CDF-1, 2,
-and 5 formats). For netCDF-4 files, the I/O layer is the HDF5 library.
+The following discussion applies only to netCDF classic files (i.e. CDF-1, 2, and 5 formats).
+For netCDF-4 files, the I/O layer is the HDF5 library.
 
-For netCDF classic offset files, an I/O layer implemented
-much like the C standard I/O (stdio) library is used by netCDF to read
-and write portable data to netCDF datasets. Hence an understanding of
-the standard I/O library provides answers to many questions about
-multiple processes accessing data concurrently, the use of I/O
-buffers, and the costs of opening and closing netCDF files. In
-particular, it is possible to have one process writing a netCDF
-dataset while other processes read it.
+For netCDF classic offset files, an I/O layer implemented much like the C standard I/O (stdio) library is used by netCDF to read and write portable data to netCDF datasets.
+Hence an understanding of the standard I/O library provides answers to many questions about multiple processes accessing data concurrently, the use of I/O buffers, and the costs of opening and closing netCDF files.
+In particular, it is possible to have one process writing a netCDF dataset while other processes read it.
 
-Data reads and writes are no more atomic than calls to stdio fread()
-and fwrite(). An nc_sync/NF_SYNC call is analogous to the fflush call
-in the C standard I/O library, writing unwritten buffered data so
-other processes can read it; The C function nc_sync(), or
-the Fortran function NF_SYNC(), also brings header changes
-up-to-date (for example, changes to attribute values). Opening the
-file with the NC_SHARE (in C) or the NF_SHARE (in Fortran) is
-analogous to setting a stdio stream to be unbuffered with the _IONBF
-flag to setvbuf.
+Data reads and writes are no more atomic than calls to stdio fread() and fwrite().
+An nc_sync/NF_SYNC call is analogous to the fflush call in the C standard I/O library, writing unwritten buffered data so other processes can read it; The C function nc_sync(), or the Fortran function NF_SYNC(), also brings header changes up-to-date (for example, changes to attribute values).
+Opening the file with the NC_SHARE (in C) or the NF_SHARE (in Fortran) is analogous to setting a stdio stream to be unbuffered with the _IONBF flag to setvbuf.
 
-As in the stdio library, flushes are also performed when "seeks" occur
-to a different area of the file. Hence the order of read and write
-operations can influence I/O performance significantly. Reading data
-in the same order in which it was written within each record will
-minimize buffer flushes.
+As in the stdio library, flushes are also performed when "seeks" occur to a different area of the file. Hence the order of read and write operations can influence I/O performance significantly.
+Reading data in the same order in which it was written within each record will minimize buffer flushes.
 
-You should not expect netCDF classic format data
-access to work with multiple writers having the same file open for
-writing simultaneously.
+You should not expect netCDF classic format data access to work with multiple writers having the same file open for writing simultaneously.
 
-It is possible to tune an implementation of netCDF for some platforms
-by replacing the I/O layer with a different platform-specific I/O
-layer. This may change the similarities between netCDF and standard
-I/O, and hence characteristics related to data sharing, buffering, and
-the cost of I/O operations.
+It is possible to tune an implementation of netCDF for some platforms by replacing the I/O layer with a different platform-specific I/O layer.
+This may change the similarities between netCDF and standard I/O, and hence characteristics related to data sharing, buffering, and the cost of I/O operations.
 
-The distributed netCDF implementation is meant to be
-portable. Platform-specific ports that further optimize the
-implementation for better I/O performance are practical in some cases.
+The distributed netCDF implementation is meant to be portable.
+Platform-specific ports that further optimize the implementation for better I/O performance are practical in some cases.
 
 ## Parallel Access with NetCDF-4 {# parallel_access}
 
-Use the special parallel open (or create) calls to open (or create) a
-file, and then to use parallel I/O to read or write that file (see
-nc_open_par()).
+Use the special parallel open (or create) calls to open (or create) a file, and then to use parallel I/O to read or write that file (see nc_open_par()).
 
-Note that the chunk cache is turned off if a file is opened for
-parallel I/O in read/write mode. Open the file in read-only mode to
-engage the chunk cache.
+Note that the chunk cache is turned off if a file is opened for parallel I/O in read/write mode. Open the file in read-only mode to engage the chunk cache.
 
-NetCDF uses the HDF5 parallel programming model for parallel I/O with
-netCDF-4/HDF5 files. The HDF5 tutorial
-(http://hdfgroup.org/HDF5//HDF5/Tutor) is a good reference.
+NetCDF uses the HDF5 parallel programming model for parallel I/O with netCDF-4/HDF5 files. The HDF5 tutorial (http://hdfgroup.org/HDF5//HDF5/Tutor) is a good reference.
 
-For classic files, netCDF uses the PnetCDF library from Argonne National
-Labs/Northwestern University. For parallel access of files in classic formats,
-netCDF must be configured with the --with-pnetcdf option at build time. See the
-PnetCDF site for more information (https://parallel-netcdf.github.io).
-Addition information and example programs can be found in
-(http://cucis.ece.northwestern.edu/projects/PnetCDF/#InteroperabilityWithNetCDF4)
+For classic files, netCDF uses the PnetCDF library from Argonne National Labs/Northwestern University. For parallel access of files in classic formats, netCDF must be configured with the --with-pnetcdf option at build time. See the PnetCDF site for more information (https://parallel-netcdf.github.io). Addition information and example programs can be found in (http://cucis.ece.northwestern.edu/projects/PnetCDF/#InteroperabilityWithNetCDF4)
 
 ## Interoperability with HDF5 {#interoperability_with_hdf5}
 
-To create HDF5 files that can be read by netCDF-4, use the latest in
-the HDF5 1.8.x or 1.10.x series.
+To create HDF5 files that can be read by netCDF-4, use the latest in the HDF5 1.8.x or 1.10.x series.
 
-HDF5 has some features that will not be supported by netCDF-4, and
-will cause problems for interoperability:
+HDF5 has some features that will not be supported by netCDF-4, and will cause problems for interoperability:
+
   - HDF5 allows a Group to be both an ancestor and a descendant of
     another Group, creating cycles in the subgroup graph. HDF5 also
     permits multiple parents for a Group. In the netCDF-4 data model,
@@ -302,18 +235,11 @@ will cause problems for interoperability:
     attribute). This limitation will be removed in a future release of
     netCDF.
 
-These are fairly easy requirements to meet, but there is one relating
-to shared dimensions which is a little more challenging. Every HDF5
-dataset must have a dimension scale attached to each dimension.
+These are fairly easy requirements to meet, but there is one relating to shared dimensions which is a little more challenging.
+Every HDF5 dataset must have a dimension scale attached to each dimension.
 
-Dimension scales are a new feature for HF 1.8, which allow
-specification of shared dimensions.
+Dimension scales are a new feature for HF 1.8, which allow specification of shared dimensions.
 
-Without creation order in the HDF5 file, the files will still be
-readable to netCDF-4, it's just that netCDF-4 will number the
-variables in alphabetical, rather than creation, order.
+Without creation order in the HDF5 file, the files will still be readable to netCDF-4, it's just that netCDF-4 will number the variables in alphabetical, rather than creation, order.
 
-Interoperability is a complex task, and all of this is in the alpha
-release stage. It is tested in libsrc4/tst_interops.c, which contains
-some examples of how to create HDF5 files, modify them in netCDF-4,
-and then verify them in HDF5. (And vice versa).
+Interoperability is a complex task, and all of this is in the alpha release stage. It is tested in libsrc4/tst_interops.c, which contains some examples of how to create HDF5 files, modify them in netCDF-4, and then verify them in HDF5. (And vice versa).
