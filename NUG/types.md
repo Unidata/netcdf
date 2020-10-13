@@ -167,8 +167,7 @@ If the netCDF external type for a variable is char, only character data represen
 No automatic conversion of text data to a different representation is supported.
 
 If the type is numeric, however, the netCDF library allows you to access the variable data as a different type and provides automatic conversion between the numeric data in memory and the data in the netCDF variable.
-For example, if you write a program that deals with all numeric data as double-precision floating point values, you can
-read netCDF data into double-precision arrays without knowing or caring what the external type of the netCDF variables are.
+For example, if you write a program that deals with all numeric data as double-precision floating point values, you can read netCDF data into double-precision arrays without knowing or caring what the external type of the netCDF variables are.
 On reading netCDF data, integers of various sizes and single-precision floating-point values will all be converted to double-precision, if you use the data access interface for double-precision values.
 Of course, you can avoid automatic numeric conversion by using the netCDF interface for a value type that corresponds to the external data type of each netCDF variable, where such value types exist.
 

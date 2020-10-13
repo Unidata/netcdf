@@ -833,7 +833,7 @@ INPUT                  = guide.md \
                          install.md \
                          DAP2.md \
                          DAP4.md \
-                         types.dox \
+                         types.md \
                          user_defined_formats.md \
                          filters.md \
                          nczarr.md \

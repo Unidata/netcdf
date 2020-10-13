@@ -5,8 +5,9 @@ Documentation of types.
 
 \tableofcontents
 
-Data in a netCDF file may be one of the \ref external_types, or may be
-a user-defined data type (see \ref user_defined_types).
+[TOC]
+
+Data in a netCDF file may be one of the \ref external_types, or may be a user-defined data type (see \ref user_defined_types).
 
 \section external_types External Data Types
 
