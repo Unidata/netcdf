@@ -39,6 +39,7 @@ A user may encounter an incompatibility if any of the following appears in user 
 * Some auxilliary functions for parsing textual filter specifications have been moved to __netcdf_aux.h__.
   See <a href="#filters_appendixa">Appendix A</a>.
 * All of the "filterx" functions have been removed. This is unlikely to cause problems because they had limited visibility.
+* The undocumented function "nc_filter_remove" no longer exists.
 
 For additional information, see <a href="#filters_appendixb">Appendix B</a>.
 
