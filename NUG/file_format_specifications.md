@@ -70,7 +70,7 @@ Comments in the grammar point to the notes and special cases, and help to clarif
                                   // special2 chars are recently permitted in
                                   // names (and require escaping in CDL).
                                   // Note: '/' is not permitted.
-     special2     = ' ' | '!' | '"' | '#'  | '$' | '%' | '&' | '\'' |
+     special2     = ' ' | '!' | '"' | '#'  | '$' | '\%' | '&' | '\'' |
                     '(' | ')' | '*' | ','  | ':' | ';' | '<' | '='  |
                     '>' | '?' | '[' | '\\' | ']' | '^' | '`' | '{'  |
                     '|' | '}' | '~'
