@@ -319,10 +319,10 @@ There are several options relevant to NCZarr support and to Amazon S3 support.
 These are as follows.
 
 1. _--enable-nczarr_ -- enable the NCZarr support. If disabled, then all of the following options are disabled or irrelevant.
-2. _--enable-s3-sdk_ -- enable the use of the aws s3 sdk.
-2. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
+3. _--enable-nczarr-s3_ -- Enable NCZarr S3 support.
+4. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
 <!--
-3. '--enable-xarray-dimension' -- this enables the xarray support described in the section on <a href="#nczarr_compatibility">compatibility</a>.
+5. '--enable-xarray-dimension' -- this enables the xarray support described in the section on <a href="#nczarr_compatibility">compatibility</a>.
 -->
 
 A note about using S3 with Automake. Automake does not handle C++ libraries, so if S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
@@ -340,7 +340,7 @@ Note also that if S3 support is enabled, then you need to have a C++ compiler in
 The necessary CMake flags are as follows (with defaults)
 
 1. -DENABLE_NCZARR=on -- equivalent to the Automake _--enable-nczarr_ option.
-2. -DENABLE_S3_SDK=off -- quivalent to the Automake _--enable-s3-sdk_ option.
+2. -DENABLE_NCZARR_S3=off -- equivalent to the Automake _--enable-nczarr-s3_ option.
 3. -DENABLE_NCZARR_S3_TESTS=off -- equivalent to the Automake _--enable-nczarr-s3-tests_ option.
 
 Note that unlike Automake, CMake can properly locate C++ libraries, so it should not be necessary to specify _-laws-cpp-sdk-s3_ assuming that the aws s3 libraries are installed in the default location.

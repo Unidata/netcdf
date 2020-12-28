@@ -440,6 +440,7 @@ Currently, a limited set of client parameters is recognized. Parameters not list
 - "noprefetch" - This disables prefetch of small variables.
 - "fillmismatch" - This enables _FillValue/Variable type mismatch.
 - "nofillmismatch" - This disables _FillValue/Variable type mismatch (default).
+- "encode=path|query|all|none" - This parameter causes the netCDF code apply URL encoding (%xx) to parts of the URL to be sent to the server. Currently, the two parts that can be encoded (or not) are the path part and the query part. The default is "encode=query", so that only the query part is encoded.
 
 # Notes on Debugging OPeNDAP Access {#dap2_dap2_debug}
 
@@ -554,6 +555,12 @@ HTTP.SSL.CAPATH
 
 Additionally, for ESG, the _HTTP.SSL.CERTIFICATE_ and _HTTP.SSL.KEY_ entries should have same value, which is the file path for the certificate produced by MyProxyLogon.
 The HTTP.SSL.CAPATH entry should be the path to the "certificates" directory produced by MyProxyLogon.
+
+# Notes on Building DAP2 Support
+
+* If libcurl is built from scratch, and it is being built on Windows
+  for Visual Studio, then is is important that the option
+  ````-DCMAKE_USE_WINSSL=ON```` be used to provide SSL support.
 
 # Point of Contact {#dap2_poc}
 
