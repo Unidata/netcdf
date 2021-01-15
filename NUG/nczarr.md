@@ -255,7 +255,6 @@ netcdf specific information.
 
 In order to accomodate existing implementations, certain mode tags are provided to tell the NCZarr code to look for information used by specific implementations.
 
-<!--
 ## XArray
 
 The Xarray
@@ -263,10 +262,11 @@ The Xarray
 Zarr implementation uses its own mechanism for
 specifying shared dimensions. It uses a special
 attribute named ''_ARRAY_DIMENSIONS''.
-The value of this attribute is a list of dimension names (strings), for example ````["time", "lon", "lat"]````.
+The value of this attribute is a list of dimension names (strings), for example ````["time", "lon", "lat"]````. It is essentially equivalent to the
+````.nczvar/dimrefs list````, but stored as a specific variable attribute.
+It will be read/written iff the mode value "xarray" is specified.
 If enabled and detected, then these dimension names are used
-to define shared dimensions.
--->
+to define shared dimensions. 
 
 # Examples {#nczarr_examples}
 
@@ -320,10 +320,7 @@ These are as follows.
 
 1. _--enable-nczarr_ -- enable the NCZarr support. If disabled, then all of the following options are disabled or irrelevant.
 2. _--enable-s3-sdk_ -- enable the use of the aws s3 sdk.
-2. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
-<!--
-3. '--enable-xarray-dimension' -- this enables the xarray support described in the section on <a href="#nczarr_compatibility">compatibility</a>.
--->
+3. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
 
 A note about using S3 with Automake. Automake does not handle C++ libraries, so if S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
 
