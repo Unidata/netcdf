@@ -438,9 +438,9 @@ Currently, a limited set of client parameters is recognized. Parameters not list
 - "cachecount=NN" - Specify the maximum number of entries in the cache.
 - "prefetch" - This enables prefetch of small variables (default).
 - "noprefetch" - This disables prefetch of small variables.
-- "fillmismatch" - This enables _FillValue/Variable type mismatch.
-- "nofillmismatch" - This disables _FillValue/Variable type mismatch (default).
 - "encode=path|query|all|none" - This parameter causes the netCDF code apply URL encoding (%xx) to parts of the URL to be sent to the server. Currently, the two parts that can be encoded (or not) are the path part and the query part. The default is "encode=query", so that only the query part is encoded.
+- "fillmismatch" - This enables _FillValue/Variable type mismatch. As of 4.8.0, the default enables fillmismatch (default).
+- "nofillmismatch" - This disables _FillValue/Variable type mismatch.
 
 # Notes on Debugging OPeNDAP Access {#dap2_dap2_debug}
 
