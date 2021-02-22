@@ -396,7 +396,7 @@ Here are a couple of examples using the _ncgen_ and _ncdump_ utilities.
     ```
 1. Create an nczarr file using S3 as storage.
     ```
-    ncgen -4 -lb -o "s3://s3.uswest-1.amazonaws.com/datasetbucket" dataset.cdl
+    ncgen -4 -lb -o "s3://s3.us-west-1.amazonaws.com/datasetbucket" dataset.cdl
     ```
 1. Create an nczarr file using S3 as storage and keeping to the pure
 zarr format.
@@ -475,30 +475,27 @@ They will be run if __--enable-nczarr-s3-tests_ is on.
 Currently, by default, testing of S3 with NCzarr is supported only for Unidata members of the NetCDF Development Group.
 This is because it uses a specific bucket on a specific internal S3 appliance that is inaccessible to the general user.
 
-<!--
-However, an untested mechanism exists by which others may be able to run the tests.
-If someone else wants to attempt these tests, then they need to define the environment variable name _NCS3PATH_.
-The form of this variable is as follows:
-````
-NCS3PATH="https://<host>/<bucket>/<prefix>
-````
+However, an untested mechanism exists by which others may be
+able to run the tests.  If someone else wants to attempt these
+tests, then they need to define the following environment variables:
+
+* NCZARR_S3_TEST_HOST=\<host\>
+* NCZARR_S3_TEST_BUCKET=\<bucket-name\>
 
 This assumes a Path Style address (see above) where
-
 * host -- the complete host part of the url
 * bucket -- a bucket in which testing can occur without fear of
 damaging anything.
-* prefix - prefix of the key; the actual root, typically _test_,
-is appended to this to get the root key used by the test.
 
-Example:
+_Example:_
 
 ````
-s3.us-west.amazonaws.com/testingbucket/segment1/segment2
+NCZARR_S3_TEST_HOST=s3.us-west-1.amazonaws.com
+NCZARR_S3_TEST_BUCKET=testbucket
 ````
 
-If anyone tries to use this mechanism, it would be appreciated it any difficulties were reported to Unidata.
--->
+If anyone tries to use this mechanism, it would be appreciated
+it any difficulties were reported to Unidata as a Github issue.
 
 # Appendix B. Building aws-sdk-cpp {#nczarr_s3sdk}
 
