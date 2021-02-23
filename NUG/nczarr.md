@@ -387,7 +387,7 @@ It is essentially equivalent to the
 ````.nczvar/dimrefs list````, but stored as a specific variable attribute.
 It will be read/written if and only if the mode value "xarray" is specified.
 If enabled and detected, then these dimension names are used
-to define shared dimensions. 
+to define shared dimensions. Note that xarray implies pure zarr format.
 
 # Examples {#nczarr_examples}
 
