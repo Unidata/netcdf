@@ -205,7 +205,8 @@ implementation.
 ## Zmap Implementatons
 
 The primary zmap implementation is _s3_ (i.e. _mode=nczarr,s3_)
-and indicates that the Amazon S3 cloud storage is to be used.
+and indicates that the Amazon S3 cloud storage
+-- or some related applicance -- is to be used.
 Another storage format uses a file system tree of directories and
 files (_mode=nczarr,file_).
 A third storage format uses a zip file (_mode=nczarr,zip_).
@@ -222,6 +223,12 @@ file:///xxx/yyy/testdata.file#mode=nczarr,file
 file:///xxx/yyy/testdata.zip#mode=nczarr,zip
 ````
 
+Note that the extension (e.g. ".file" in "testdata.file")
+is arbitraty, so this would be equally acceptable.
+````
+file:///xxx/yyy/testdata.anyext#mode=nczarr,file
+````
+
 As with other URLS (e.g. DAP), these kind of URLS can be passed
 as the path argument to __ncdump__, for example.
 
@@ -230,6 +237,8 @@ as the path argument to __ncdump__, for example.
 The NCZARR format extends the pure Zarr format by adding extra objects such as _.nczarr_ and _.ncvar_.
 It is possible to suppress the use of these extensions so that the netcdf library can read and write a pure zarr formatted file.
 This is controlled by using _mode=nczarr,zarr_ combination.
+The primary effects of using pure zarr are described
+in the [Translation Section](@ref nczarr_translation).
 
 # Notes on Debugging NCZarr Access {#nczarr_debug}
 
@@ -354,20 +363,17 @@ Constructing the set of "shared dimensions" is carried out
 by walking all the variables in the whole dataset and collecting
 the set of unique integer shapes for the variables.
 For each such dimension length, a top level dimension is created
-named  ".zdim<len>" where len is the integer length. The name
+named  ".zdim_<len>" where len is the integer length. The name
 is subject to change.
 2. _.nczvar_ -- The dimrefs are inferred by using the shape
 in _.zarray_ and creating references to the simulated shared dimension.
 netcdf specific information.
 3. _.nczattr_ -- The type of each attribute is inferred by trying to parse the first attribute value string.
 
-<!--
 # Compatibility {#nczarr_compatibility}
 
 In order to accomodate existing implementations, certain mode tags are provided to tell the NCZarr code to look for information used by specific implementations.
--->
 
-<!--
 ## XArray
 
 The Xarray
@@ -375,12 +381,13 @@ The Xarray
 Zarr implementation uses its own mechanism for
 specifying shared dimensions. It uses a special
 attribute named ''_ARRAY_DIMENSIONS''.
-The value of this attribute is a list of dimension names (strings), for example ````["time", "lon", "lat"]````. It is essentially equivalent to the
+The value of this attribute is a list of dimension names (strings).
+An example might be ````["time", "lon", "lat"]````.
+It is essentially equivalent to the
 ````.nczvar/dimrefs list````, but stored as a specific variable attribute.
-It will be read/written iff the mode value "xarray" is specified.
+It will be read/written if and only if the mode value "xarray" is specified.
 If enabled and detected, then these dimension names are used
 to define shared dimensions. 
--->
 
 # Examples {#nczarr_examples}
 
@@ -416,7 +423,7 @@ zarr format.
 
 # Appendix A. Building NCZarr Support {#nczarr_build}
 
-Currently only the following build cases are supported.
+Currently the following build cases are known to work.
 
 <table>
 <tr><td><u>Operating System</u><td><u>Build System</u><td><u>NCZarr</u><td><u>S3 Support</u>
@@ -438,12 +445,8 @@ These are as follows.
 1. _--enable-nczarr_ -- enable the NCZarr support. If disabled, then all of the following options are disabled or irrelevant.
 3. _--enable-nczarr-s3_ -- Enable NCZarr S3 support.
 4. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
-<!--
-5. '--enable-xarray-dimension' -- this enables the xarray support described in the section on <a href="#nczarr_compatibility">compatibility</a>.
--->
 
 A note about using S3 with Automake. If S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
-
 ````
 LDFLAGS="$LDFLAGS -L/usr/local/lib -laws-cpp-sdk-s3"
 ````
@@ -467,12 +470,25 @@ For CMake with Visual Studio, the default location is here:
 C:/Program Files (x86)/aws-cpp-sdk-all
 ````
 
+It is possible to install the sdk library in another location.
+In this case, one must add the following flag to the cmake command.
+````
+cmake ... -DAWSSDK_DIR=\<awssdkdir\>
+````
+where "awssdkdir" is the path to the sdk installation.
+For example, this might be as follows.
+````
+cmake ... -DAWSSDK_DIR="c:\tools\aws-cpp-sdk-all"
+````
+This can be useful if blanks in path names cause problems
+in your build environment.
+
 ## Testing S3 Support {#nczarr_testing_S3_support}
 
 The relevant tests for S3 support are in _nczarr_test__.
 They will be run if __--enable-nczarr-s3-tests_ is on.
 
-Currently, by default, testing of S3 with NCzarr is supported only for Unidata members of the NetCDF Development Group.
+Currently, by default, testing of S3 with NCZarr is supported only for Unidata members of the NetCDF Development Group.
 This is because it uses a specific bucket on a specific internal S3 appliance that is inaccessible to the general user.
 
 However, an untested mechanism exists by which others may be
@@ -513,6 +529,9 @@ The expected set of installed libraries are as follows:
 * aws-cpp-sdk-s3
 * aws-cpp-sdk-core
 
+This library depends on libcurl, so you may to install that
+before building the sdk library.
+
 # Appendix C. Amazon S3 Imposed Limits {#nczarr_s3limits}
 
 The Amazon S3 cloud storage imposes some significant limits that are inherited by NCZarr (and Zarr also, for that matter).
@@ -548,9 +567,22 @@ Specifically, Thredds servers support such access using the HttpServer access me
 https://thredds-test.unidata.ucar.edu/thredds/fileServer/irma/metar/files/METAR_20170910_0000.nc#bytes
 ````
 
+## Byte-Range Authorization
+
+If using byte-range access, it may be necessary to tell the netcdf-c
+library about the so-called secretid and accessid values.
+These are usually stored in the file ````~/.aws/config````
+and/or  ````~/.aws/credentials````. In the latter file, this
+might look like this.
+````
+    [default]
+    aws_access_key_id=XXXXXXXXXXXXXXXXXXXX
+    aws_secret_access_key=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+````
+
 # __Point of Contact__ {#nczarr_poc}
 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 4/10/2020<br>
-__Last Revised__: 1/23/2021
+__Last Revised__: 2/22/2021
