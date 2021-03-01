@@ -7,11 +7,11 @@
 # NCZarr Introduction {#nczarr_introduction}
 
 Beginning with netCDF version 4.8.0, the Unidata NetCDF group has extended the netcdf-c library to provide access to cloud storage (e.g. Amazon S3 <a href="#ref_aws">[1]</a> ) by providing a mapping from a subset of the full netCDF Enhanced (aka netCDF-4) data model to a variant of the Zarr <a href="#ref_zarrv2">[4]</a> data model that already has mappings to key-value pair cloud storage systems.
-The NetCDF version of this storage format is called NCZarr <a href="#ref_nczarr">[2]</a>.
+The NetCDF version of this storage format is called NCZarr <a href="#ref_nczarr">[4]</a>.
 
 # The NCZarr Data Model {#nczarr_data_model}
 
-NCZarr uses a data model <a href="#ref_nczarr">[2]</a> that is, by design, similar to, but not identical with the Zarr Version 2 Specification <a href="#ref_zarrv2">[4]</a>.  
+NCZarr uses a data model <a href="#ref_nczarr">[4]</a> that is, by design, similar to, but not identical with the Zarr Version 2 Specification <a href="#ref_zarrv2">[6]</a>.  
 Briefly, the data model supported by NCZarr is netcdf-4 minus the user-defined types and the String type.
 As with netcdf-4 it supports chunking.
 Eventually it will also support filters in a manner similar to the way filters are supported in netcdf-4.
@@ -53,8 +53,9 @@ In this case, it is indicated by the URL path.
 The URL is the usual scheme:://host:port/path?query#fragment format. There are some details that are important.
 - Scheme: this should be _https_ or _s3_,or _file_.
   The _s3_ scheme is equivalent
-  to "https" plus setting "mode=nczarr" (see below).
-  Specifying "file" is mostly used for testing.
+  to "https" plus setting "mode=nczarr,s3" (see below).
+  Specifying "file" is mostly used for testing, but is used to support
+  directory tree or zipfile format storage.
 - Host: Amazon S3 defines two forms: _Virtual_ and _Path_.
   + _Virtual_: the host includes the bucket name as in
     __bucket.s3.&lt;region&gt;.amazonaws.com__
@@ -73,67 +74,185 @@ The URL is the usual scheme:://host:port/path?query#fragment format. There are s
 The fragment part of a URL is used to specify information that is interpreted to specify what data format is to be used, as well as additional controls for that data format.
 For NCZarr support, the following _key=value_ pairs are allowed.
 
-- mode=nczarr|zarr|s3|nz4|nzf... -- The mode key specifies
+- mode=nczarr|zarr|s3|file|zip... -- The mode key specifies
   the particular format to be used by the netcdf-c library for
   interpreting the dataset specified by the URL. Using _mode=nczarr_
   causes the URL to be interpreted as a reference to a dataset
-  that is stored in NCZarr format. The modes _s3_, _nz4_, and _nzf_
+  that is stored in NCZarr format. The modes _s3_, _file_, and _zip_
   tell the library what storage driver to use. The _s3_ is default]
-  and indicates using Amazon S3 or some equivalent. The other two,
-  _nz4_ and _nzf_ are again for testing. The _zarr_ mode tells the
+  and indicates using Amazon S3 or some equivalent. The _file_ format
+  stores data in a directory tree. The __zip__ format stores data
+  in a local zip file. It should be the case that zipping a __file__
+  format directory tree will produce a file readable by the __zip__
+  storage format. The _zarr_ mode tells the
   library to use NCZarr, but to restrict its operation to operate on
   pure Zarr Version 2 datasets.
+
+<!--
 - log=&lt;output-stream&gt;: this control turns on logging output,
   which is useful for debugging and testing. If just _log_ is used
   then it is equivalent to _log=stderr_.
+-->
 
 # NCZarr Map Implementation {#nczarr_mapimpl}
 
 Internally, the nczarr implementation has a map abstraction that allows different storage formats to be used.
-This is closely patterned on the same approach used in the Python Zarr implementation, which relies on the Python _MutableMap_ <a href="#ref_python">[3]</a> class.
+This is closely patterned on the same approach used in the Python Zarr implementation, which relies on the Python _MutableMap_ <a href="#ref_python">[5]</a> class.
+
 In NCZarr, the corresponding type is called _zmap_.
+The __zmap__ API essentially implements a simplified variant
+of the Amazon S3 API. 
 
-The zmap model is a set of keys where each key maps to an _object_ that can hold arbitrary data.
-The keys are assumed to have following BNF grammar.
+As with Amazon S3, __keys__ are utf8 strings with a specific structure:
+that of a path similar to those of a Unix path with '/' as the
+separator for the segments of the path.
 
+As with Unix, all keys have this BNF syntax:
 ````
-key:   '/' segment
-     | key '/' segment
-     ;
+key: '/' | keypath ;
+keypath: '/' segment | keypath '/' segment ;
+segment: <sequence of UTF-8 characters except control characters and '/'>
 ````
-This key structure induces a tree structure where each segment matches a node in the tree.  
-This key/tree duality deliberately matches that of a typical file system path in e.g. linux.
-The key '/' is the root of the tree.
 
-## Datasets
+Obviously, one can infer a tree structure from this key structure.
+A containment relationship is defined by key prefixes.
+Thus one key is "contained" (possibly transitively)
+by another if one key is a prefix (in the string sense) of the other.
+So in this sense the key "/x/y/z" is contained by the key  "/x/y".
 
-Within the key induced tree, each dataset (in the netCDF sense) has a root which is specified by a specific key.
-All objects making up the dataset (see the section on <a href="#nczarr_purezarr">NCZarr vs Zarr </a>) reside in objects (keys) below that dataset root key.
-One restriction is that datasets cannot be nested in that no dataset root key can be a prefix of another dataset root key.
+In this model all keys "exist" but only some keys refer to
+objects containing content -- _content bearing_.
+An important restriction is placed on the structure of the tree,
+namely that keys are only defined for content-bearing objects.
+Further, all the leaves of the tree are these content-bearing objects.
+This means that the key for one content-bearing object should not
+be a prefix of any other key.
+
+There several other concepts of note.
+1. __Dataset__ - a dataset is the complete tree contained by the key defining
+the root of the dataset. Technically, the root of the tree is the key <dataset>/.nczarr, where .nczarr can be considered the _superblock_ of the dataset.
+2. __Object__ - equivalent of the S3 object; Each object has a unique key
+and "contains" data in the form of an arbitrary sequence of 8-bit bytes.
+
+The zmap API defined here isolates the key-value pair mapping
+code from the Zarr-based implementation of NetCDF-4.  It wraps
+an internal C dispatch table manager for implementing an
+abstract data structure implementing the zmap key/object model.
+
+__Search__: The search function has two purposes:
+1. Support reading of pure zarr datasets (because they do not explicitly
+      track their contents).
+2. Debugging to allow raw examination of the storage. See zdump
+      for example.
+
+The search function takes a prefix path which has a key syntax
+(see above).  The set of legal keys is the set of keys such that
+the key references a content-bearing object -- e.g. /x/y/.zarray
+or /.zgroup. Essentially this is the set of keys pointing to the
+leaf objects of the tree of keys constituting a dataset. This
+set potentially limits the set of keys that need to be examined
+during search.
+
+The search function returns a limited set of names, where the
+set of names are immediate suffixes of a given prefix path.
+That is, if _\<prefix\>_ is the prefix path, then search returns
+all _\<name\>_ such that _\<prefix>/\<name\>_ is itself a prefix
+of a "legal" key.  This can be used to implement glob style
+searches such as "/x/y/*" or "/x/y/**"
+
+This semantics was chosen because it appears to be the minimum required to implement all other kinds of search using recursion. It was also chosen
+to limit the number of names returned from the search. Specifically
+1. Avoid returning keys that are not a prefix of some legal key.
+2. Avoid returning all the legal keys in the dataset because that set may be very large; although the implementation may still have to examine all legal keys to get the desired subset.
+3. Allow for use of partial read mechanisms such as iterators, if available. This can support processing a limited set of keys for each iteration. This is a straighforward tradeoff of space over time.
+
+As a side note, S3 supports this kind of search using common
+prefixes with a delimiter of '/', although the implementation is
+a bit tricky. For the file system zmap implementation, the legal
+search keys can be obtained one level at a time, which directly
+implements the search semantics. For the zip file
+implementation, this semantics is not possible, so the whole
+tree must be obtained and searched.
+
+__Issues:__
+
+1. S3 limits key lengths to 1024 bytes. Some deeply nested netcdf files
+will almost certainly exceed this limit.
+2. Besides content, S3 objects can have an associated small set
+of what may be called tags, which are themselves of the form of
+key-value pairs, but where the key and value are always text. As
+far as it is possible to determine, Zarr never uses these tags,
+so they are not included in the zmap data structure.
+
+__A Note on Error Codes:__
+
+The zmap API returns two distinguished error code:
+1. NC_NOERR if a operation succeeded
+2. NC_EEMPTY is returned when accessing a key that has no content.
+
+Note that NC_EEMPTY is a new error code to signal to that the
+caller asked for non-content-bearing key.
+
+This does not preclude other errors being returned such
+NC_EACCESS or NC_EPERM or NC_EINVAL if there are permission
+errors or illegal function arguments, for example.  It also does
+not preclude the use of other error codes internal to the zmap
+implementation. So zmap_file, for example, uses NC_ENOTFOUND
+internally because it is possible to detect the existence of
+directories and files.  This does not propagate outside the zmap_file
+implementation.
 
 ## Zmap Implementatons
 
-The primary zmap implementation is _s3_ (i.e. _mode=nczarr,s3_) and indicates that the Amazon S3 cloud storage is to be used.
-Other storage formats use a structured NetCDF-4 file format (_mode=nczarr,nz4_), or a directory tree (_mode=nczarr,nzf_).
-The latter two are used mostly for debugging and testing.
-However, the _nzf_ format is important because it is intended to match a corresponding storage format used by the Python Zarr implementation.
-Hence it should serve to provide interoperability between NCZarr and the Python Zarr.
+The primary zmap implementation is _s3_ (i.e. _mode=nczarr,s3_)
+and indicates that the Amazon S3 cloud storage
+-- or some related applicance -- is to be used.
+Another storage format uses a file system tree of directories and
+files (_mode=nczarr,file_).
+A third storage format uses a zip file (_mode=nczarr,zip_).
+The latter two are used mostly for
+debugging and testing.  However, the _file_ and _zip_ formats
+are important because they is intended to match corresponding
+storage formats used by the Python Zarr implementation.  Hence
+it should serve to provide interoperability between NCZarr and
+the Python Zarr. This has not been tested.
+
+Examples of the typical URL form for _file_ and _zip_ are as follows.
+````
+file:///xxx/yyy/testdata.file#mode=nczarr,file
+file:///xxx/yyy/testdata.zip#mode=nczarr,zip
+````
+
+Note that the extension (e.g. ".file" in "testdata.file")
+is arbitraty, so this would be equally acceptable.
+````
+file:///xxx/yyy/testdata.anyext#mode=nczarr,file
+````
+
+As with other URLS (e.g. DAP), these kind of URLS can be passed
+as the path argument to __ncdump__, for example.
 
 # NCZarr versus Pure Zarr. {#nczarr_purezarr}
 
 The NCZARR format extends the pure Zarr format by adding extra objects such as _.nczarr_ and _.ncvar_.
 It is possible to suppress the use of these extensions so that the netcdf library can read and write a pure zarr formatted file.
 This is controlled by using _mode=nczarr,zarr_ combination.
+The primary effects of using pure zarr are described
+in the [Translation Section](@ref nczarr_translation).
 
 # Notes on Debugging NCZarr Access {#nczarr_debug}
 
-The NCZarr support has a logging facility.
-Turning on this logging can sometimes give important information.
-Logging can be enabled by using the client parameter "log" or "log=filename",or by setting the environment variable NCLOGGING.
-The first case will send log output to standard error and the second will send log output to the specified file.
-The environment variable is equivalent to _log_.
+The NCZarr support has a trace facility.
+Enabling this can sometimes give important information.
+Tracing can be enabled by setting the environment variable NCTRACING=n,
+where _n_ indicates the level of tracing. A good value of _n_ is 9.
 
-# Amazon S3 Storage {#nczarr_debug}
+# Zip File Support {#nczarr_zip}
+
+In order to use the _zip_ storage format, the libzip [3]
+library must be installed. Note that this is different from zlib.
+
+# Amazon S3 Storage {#nczarr_s3}
 
 The Amazon AWS S3 storage driver currently uses the Amazon AWS S3 Software Development Kit for C++ (aws-s3-sdk-cpp).
 In order to use it, the client must provide some configuration information.
@@ -170,8 +289,9 @@ The reason for this is that the bucket name forms the initial segment in the key
 
 ## Data Model
 
-The NCZarr storage format is almost identical to that of the the standard Zarr version 2 format.
-The data model differs as follows.
+The NCZarr storage format is almost identical to that of the the
+standard Zarr version 2 format.  The data model differs as
+follows.
 
 1. Zarr supports filters -- NCZarr as yet does not
 2. Zarr only supports anonymous dimensions -- NCZarr supports
@@ -184,7 +304,7 @@ characterized as of type string.
 Consider both NCZarr and Zarr, and assume S3 notions of bucket and object.
 In both systems, Groups and Variables (Array in Zarr) map to S3 objects.
 Containment is modeled using the fact that the container's key is a prefix of the variable's key.
-So for example, if variable _v1_ is contained int top level group g1 -- _/g1 -- then the key for _v1_ is _/g1/v_.
+So for example, if variable _v1_ is contained in top level group g1 -- _/g1 -- then the key for _v1_ is _/g1/v_.
 Additional information is stored in special objects whose name start with ".z".
 
 In Zarr, the following special objects exist.
@@ -235,7 +355,7 @@ The former case, nczarr reading zarr is also possible if the nczarr can simulate
 As a rule this can be done as follows.
 
 1. _.nczgroup_ -- The list of contained variables and sub-groups
-can be computed using the S3 list operation to list the keys
+can be computed using the search API to list the keys
 "contained" in the key for a group. By looking for occurrences
 of _.zgroup_, _.zattr_, _.zarray to infer the keys for the
 contained groups, attribute sets, and arrays (variables).
@@ -243,9 +363,8 @@ Constructing the set of "shared dimensions" is carried out
 by walking all the variables in the whole dataset and collecting
 the set of unique integer shapes for the variables.
 For each such dimension length, a top level dimension is created
-named  ".zdim<len>" where len is the integer length. The name
+named  ".zdim_<len>" where len is the integer length. The name
 is subject to change.
-
 2. _.nczvar_ -- The dimrefs are inferred by using the shape
 in _.zarray_ and creating references to the simulated shared dimension.
 netcdf specific information.
@@ -255,18 +374,20 @@ netcdf specific information.
 
 In order to accomodate existing implementations, certain mode tags are provided to tell the NCZarr code to look for information used by specific implementations.
 
-<!--
 ## XArray
 
 The Xarray
-<a href="#ref_xarray">[5]</a>
+<a href="#ref_xarray">[7]</a>
 Zarr implementation uses its own mechanism for
 specifying shared dimensions. It uses a special
 attribute named ''_ARRAY_DIMENSIONS''.
-The value of this attribute is a list of dimension names (strings), for example ````["time", "lon", "lat"]````.
+The value of this attribute is a list of dimension names (strings).
+An example might be ````["time", "lon", "lat"]````.
+It is essentially equivalent to the
+````.nczvar/dimrefs list````, but stored as a specific variable attribute.
+It will be read/written if and only if the mode value "xarray" is specified.
 If enabled and detected, then these dimension names are used
-to define shared dimensions.
--->
+to define shared dimensions. Note that xarray implies pure zarr format.
 
 # Examples {#nczarr_examples}
 
@@ -274,42 +395,45 @@ Here are a couple of examples using the _ncgen_ and _ncdump_ utilities.
 
 1. Create an nczarr file using a local directory tree as storage.
     ```
-    ncgen -4 -lb -o "file:///home/user/dataset.nzf#mode=nczarr,nzf" dataset.cdl
+    ncgen -4 -lb -o "file:///home/user/dataset.file#mode=nczarr,file" dataset.cdl
     ```
 1. Display the content of an nczarr file using a local directory tree as storage.
     ```
-    ncdump "file:///home/user/dataset.nzf#mode=nczarr,nzf"
+    ncdump "file:///home/user/dataset.zip#mode=nczarr,zip"
     ```
 1. Create an nczarr file using S3 as storage.
     ```
-    ncgen -4 -lb -o "s3://datasetbucket" dataset.cdl
+    ncgen -4 -lb -o "s3://s3.us-west-1.amazonaws.com/datasetbucket" dataset.cdl
     ```
 1. Create an nczarr file using S3 as storage and keeping to the pure
 zarr format.
     ```
-    ncgen -4 -lb -o "s3://datasetbucket#mode=zarr" dataset.cdl
+    ncgen -4 -lb -o "s3://s3.uswest-1.amazonaws.com/datasetbucket#mode=zarr" dataset.cdl
     ```
 
 # References {#nczarr_bib}
 
 <a name="ref_aws">[1]</a> [Amazon Simple Storage Service Documentation](https://docs.aws.amazon.com/s3/index.html)<br>
-<a name="ref_nczarr">[2]</a> [NetCDF ZARR Data Model Specification](https://www.unidata.ucar.edu/blogs/developer/en/entry/netcdf-zarr-data-model-specification)<br>
-<a name="ref_python">[3]</a> [Python Documentation: 8.3. collections — High-performance container datatypes](https://docs.python.org/2/library/collections.html)<br>
-<a name="ref_zarrv2">[4]</a> [Zarr Version 2 Specification](https://zarr.readthedocs.io/en/stable/spec/v2.html)<br>
-<a name="ref_xarray">[5]</a> [XArray Zarr Encoding Specification](http://xarray.pydata.org/en/latest/internals.html#zarr-encoding-specification)<br>
+<a name="ref_awssdk">[2]</a> [Amazon Simple Storage Service Library](https://github.com/aws/aws-sdk-cpp)<br>
+<a name="ref_libzip">[3]</a> [The LibZip Library](https://libzip.org/)<br>
+<a name="ref_nczarr">[4]</a> [NetCDF ZARR Data Model Specification](https://www.unidata.ucar.edu/blogs/developer/en/entry/netcdf-zarr-data-model-specification)<br>
+<a name="ref_python">[5]</a> [Python Documentation: 8.3. collections — High-performance container datatypes](https://docs.python.org/2/library/collections.html)<br>
+<a name="ref_zarrv2">[6]</a> [Zarr Version 2 Specification](https://zarr.readthedocs.io/en/stable/spec/v2.html)<br>
+<a name="ref_xarray">[7]</a> [XArray Zarr Encoding Specification](http://xarray.pydata.org/en/latest/internals.html#zarr-encoding-specification)<br>
 
 # Appendix A. Building NCZarr Support {#nczarr_build}
 
-Currently only the following build cases are supported.
+Currently the following build cases are known to work.
 
-Operating System | Build System | NCZarr       | S3 Support
------------------------------------------------------------
-Linux            | Automake     | yes          | yes
-Linux            | CMake        | yes          | yes
-Cygwin           | Automake     | yes          | no
-OSX              | Automake     | unknown      | unknown
-OSX              | CMake        | unknown      | unknown
-Visual Studio    | CMake        | yes          | tests fail
+<table>
+<tr><td><u>Operating System</u><td><u>Build System</u><td><u>NCZarr</u><td><u>S3 Support</u>
+<tr><td>Linux            <td> Automake     <td> yes          <td> yes
+<tr><td>Linux            <td> CMake        <td> yes          <td> yes
+<tr><td>Cygwin           <td> Automake     <td> yes          <td> no
+<tr><td>OSX              <td> Automake     <td> unknown      <td> unknown
+<tr><td>OSX              <td> CMake        <td> unknown      <td> unknown
+<tr><td>Visual Studio    <td> CMake        <td> yes          <td> tests fail
+</table>
 
 Note: S3 support includes both compiling the S3 support code as well as running the S3 tests.
 
@@ -319,14 +443,10 @@ There are several options relevant to NCZarr support and to Amazon S3 support.
 These are as follows.
 
 1. _--enable-nczarr_ -- enable the NCZarr support. If disabled, then all of the following options are disabled or irrelevant.
-2. _--enable-s3-sdk_ -- enable the use of the aws s3 sdk.
-2. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
-<!--
-3. '--enable-xarray-dimension' -- this enables the xarray support described in the section on <a href="#nczarr_compatibility">compatibility</a>.
--->
+3. _--enable-nczarr-s3_ -- Enable NCZarr S3 support.
+4. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
 
-A note about using S3 with Automake. Automake does not handle C++ libraries, so if S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
-
+A note about using S3 with Automake. If S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
 ````
 LDFLAGS="$LDFLAGS -L/usr/local/lib -laws-cpp-sdk-s3"
 ````
@@ -340,7 +460,7 @@ Note also that if S3 support is enabled, then you need to have a C++ compiler in
 The necessary CMake flags are as follows (with defaults)
 
 1. -DENABLE_NCZARR=on -- equivalent to the Automake _--enable-nczarr_ option.
-2. -DENABLE_S3_SDK=off -- quivalent to the Automake _--enable-s3-sdk_ option.
+2. -DENABLE_NCZARR_S3=off -- equivalent to the Automake _--enable-nczarr-s3_ option.
 3. -DENABLE_NCZARR_S3_TESTS=off -- equivalent to the Automake _--enable-nczarr-s3-tests_ option.
 
 Note that unlike Automake, CMake can properly locate C++ libraries, so it should not be necessary to specify _-laws-cpp-sdk-s3_ assuming that the aws s3 libraries are installed in the default location.
@@ -350,37 +470,48 @@ For CMake with Visual Studio, the default location is here:
 C:/Program Files (x86)/aws-cpp-sdk-all
 ````
 
+It is possible to install the sdk library in another location.
+In this case, one must add the following flag to the cmake command.
+````
+cmake ... -DAWSSDK_DIR=\<awssdkdir\>
+````
+where "awssdkdir" is the path to the sdk installation.
+For example, this might be as follows.
+````
+cmake ... -DAWSSDK_DIR="c:\tools\aws-cpp-sdk-all"
+````
+This can be useful if blanks in path names cause problems
+in your build environment.
+
 ## Testing S3 Support {#nczarr_testing_S3_support}
 
-The relevant tests for S3 support are _nczarr_test/run_ut_mapapi.sh_ and _nczarr_test/run_it_test2.sh_.
+The relevant tests for S3 support are in _nczarr_test__.
+They will be run if __--enable-nczarr-s3-tests_ is on.
 
-Currently, by default, testing of S3 with NCzarr is supported only for Unidata members of the NetCDF Development Group.
+Currently, by default, testing of S3 with NCZarr is supported only for Unidata members of the NetCDF Development Group.
 This is because it uses a specific bucket on a specific internal S3 appliance that is inaccessible to the general user.
-This is controlled by the _--enable_s3_tests_ option.
 
-However, an untested mechanism exists by which others may be able to run the tests.
-If someone else wants to attempt these tests, then they need to define the environment variable name _NCS3PATH_.
-The form of this variable is as follows:
+However, an untested mechanism exists by which others may be
+able to run the tests.  If someone else wants to attempt these
+tests, then they need to define the following environment variables:
 
-````
-NCS3PATH="https://<host>/<bucket>/<prefix>
-````
+* NCZARR_S3_TEST_HOST=\<host\>
+* NCZARR_S3_TEST_BUCKET=\<bucket-name\>
 
 This assumes a Path Style address (see above) where
-
 * host -- the complete host part of the url
 * bucket -- a bucket in which testing can occur without fear of
 damaging anything.
-* prefix - prefix of the key; the actual root, typically _test_,
-is appended to this to get the root key used by the test.
 
-Example:
+_Example:_
 
 ````
-s3.us-west.amazonaws.com/testingbucket/segment1/segment2
+NCZARR_S3_TEST_HOST=s3.us-west-1.amazonaws.com
+NCZARR_S3_TEST_BUCKET=testbucket
 ````
 
-If anyone tries to use this mechanism, it would be appreciated it any difficulties were reported to Unidata.
+If anyone tries to use this mechanism, it would be appreciated
+it any difficulties were reported to Unidata as a Github issue.
 
 # Appendix B. Building aws-sdk-cpp {#nczarr_s3sdk}
 
@@ -397,6 +528,9 @@ The expected set of installed libraries are as follows:
 
 * aws-cpp-sdk-s3
 * aws-cpp-sdk-core
+
+This library depends on libcurl, so you may to install that
+before building the sdk library.
 
 # Appendix C. Amazon S3 Imposed Limits {#nczarr_s3limits}
 
@@ -433,9 +567,22 @@ Specifically, Thredds servers support such access using the HttpServer access me
 https://thredds-test.unidata.ucar.edu/thredds/fileServer/irma/metar/files/METAR_20170910_0000.nc#bytes
 ````
 
+## Byte-Range Authorization
+
+If using byte-range access, it may be necessary to tell the netcdf-c
+library about the so-called secretid and accessid values.
+These are usually stored in the file ````~/.aws/config````
+and/or  ````~/.aws/credentials````. In the latter file, this
+might look like this.
+````
+    [default]
+    aws_access_key_id=XXXXXXXXXXXXXXXXXXXX
+    aws_secret_access_key=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+````
+
 # __Point of Contact__ {#nczarr_poc}
 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 4/10/2020<br>
-__Last Revised__: 6/8/2020
+__Last Revised__: 2/22/2021

@@ -79,7 +79,28 @@ Parameter Name Legal Values Semantics
   fail to make sure that the type of the "_FillValue" attribute of a variable
   is the same as the type of the containing variable. Setting this tag
   caused the netcdf translation to attempt to fix this mismatch. If not set,
-  then an error will occur.
+  then an error will occur. This defaults to allowing mismatch.
+
+# DAP4 Fetch Process {#dap4_fetch}
+
+When a DAP4 client is given a URL, it operates as follows.
+
+1. The URL is used by client program to fetch the DMR.
+   This avoids reading possibly large amounts of data until
+   absolutely necessary. It also means that, for example,
+   "ncdump -h" will operate reasonably fast.
+2. The first time a client program actually requests data
+   -- using the "nc_get_vara()" procedure, for example --
+   the data is fetched from the server and stored locally.
+3. Subsequent requests for data will extract it from the data
+   retrieved in step 2, so no new server requests are needed.
+
+One must be careful about step 2. As a rule, the URL should
+specify a constraint. Otherwise, the initial fetch will fetch
+all of the data associated with the dataset. This can be quite large.
+This means that it will be slow. Additionally, many servers limit how
+much data can be returned and attempts to read more than that limit
+will result in an error.
 
 # Notes on Debugging DAP4 Access {#dap4_debug}
 
