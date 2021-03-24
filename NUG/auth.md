@@ -524,6 +524,22 @@ what you changed to the author so this document can be updated.
     done
     exit
 
+# Appendix D. Amazon S3 Credentials Support {#auth_s3creds}
+
+NetCDF Amazon AWS S3 support currently uses the Amazon AWS S3 Software Development Kit for C++ (aws-s3-sdk-cpp).
+In order to use it, the client must provide some configuration information.
+Specifically, the `~/.aws/config` file should contain something like this.
+
+```
+[default]
+output = json
+aws_access_key_id=XXXX...
+aws_secret_access_key=YYYY...
+```
+
+The access key and secret key are needed when accessing protected
+buckets.
+
 # Point of Contact
 
 __Author__: Dennis Heimbigner<br>
