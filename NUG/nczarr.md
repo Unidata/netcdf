@@ -74,19 +74,41 @@ The URL is the usual scheme:://host:port/path?query#fragment format. There are s
 The fragment part of a URL is used to specify information that is interpreted to specify what data format is to be used, as well as additional controls for that data format.
 For NCZarr support, the following _key=value_ pairs are allowed.
 
-- mode=nczarr|zarr|s3|file|zip... -- The mode key specifies
-  the particular format to be used by the netcdf-c library for
-  interpreting the dataset specified by the URL. Using _mode=nczarr_
-  causes the URL to be interpreted as a reference to a dataset
-  that is stored in NCZarr format. The modes _s3_, _file_, and _zip_
-  tell the library what storage driver to use. The _s3_ is default]
-  and indicates using Amazon S3 or some equivalent. The _file_ format
-  stores data in a directory tree. The __zip__ format stores data
-  in a local zip file. It should be the case that zipping a __file__
-  format directory tree will produce a file readable by the __zip__
-  storage format. The _zarr_ mode tells the
-  library to use NCZarr, but to restrict its operation to operate on
-  pure Zarr Version 2 datasets.
+- mode=nczarr|zarr|s3|xarray|file|zip
+
+The mode key specifies the particular format to be used by the
+netcdf-c library for interpreting the dataset specified by the
+URL.
+
+Using _mode=nczarr_ causes the URL to be interpreted as a
+reference to a dataset that is stored in NCZarr format.
+
+The modes _s3_, _file_, and _zip_ tell the library what storage
+driver to use.
+* The _s3_ driver is the default and indicates using Amazon S3 or some equivalent.
+* The _file_ format stores data in a directory tree.
+* The _zip_ format stores data in a local zip file.
+
+Note that It should be the case that zipping a _file_
+format directory tree will produce a file readable by the
+_zip_ storage format, and vice-versa.
+
+The _zarr_ mode tells the library to
+use NCZarr, but to restrict its operation to operate on pure
+Zarr Version 2 datasets.
+
+The _xarray_ mode tells the library
+to support the XArray _\_ARRAY\_DIMENSIONS_ convention.
+
+The netcdf-c library is capable of inferring additional mode flags
+based on the flags it finds. Currently we have the following
+inferences.
+
+- _xarray_ => _zarr_
+- _zarr_ => _nczarr_
+
+So for example: ````...#mode=xarray,zip```` is equivalent to
+````...#mode=nczarr,zarr,xarray,zip````.
 
 <!--
 - log=&lt;output-stream&gt;: this control turns on logging output,
