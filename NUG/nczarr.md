@@ -11,10 +11,10 @@ The NetCDF version of this storage format is called NCZarr <a href="#ref_nczarr"
 
 # The NCZarr Data Model {#nczarr_data_model}
 
-NCZarr uses a data model <a href="#ref_nczarr">[4]</a> that is, by design, similar to, but not identical with the Zarr Version 2 Specification <a href="#ref_zarrv2">[6]</a>.  
-Briefly, the data model supported by NCZarr is netcdf-4 minus the user-defined types and the String type.
-As with netcdf-4 it supports chunking.
-Eventually it will also support filters in a manner similar to the way filters are supported in netcdf-4.
+NCZarr uses a data model <a href="#ref_nczarr">[4]</a> that is, by design, a superset of the Zarr Version 2 Specification <a href="#ref_zarrv2">[6]</a>. __Note Carefully__: an uncompressed legal _Zarr_ dataset is also a legal _NCZarr_ dataset. If the _Zarr_ implementation ignores unrecognized objects whose name starts with a "." (e.g. ".nczarray" or ".nczattr"), then the _NCZarr_ dataset is a legal _Zarr_ dataset and should be readable by any _Zarr_ implementation. This assumes, of course, that the actual storage format in which the dataset is stored -- a zip file, for example -- can be read by the _Zarr_ implementation.
+
+Briefly, the data model supported by NCZarr is netcdf-4 minus the user-defined types and the String type. As with netcdf-4 chunking is supported.
+Eventually it will also support filters in a manner similar to the way filters are supported in netcdf-4. When this is implemented, then many compressed _Zarr_ datasets will be readable by _NCZarr_.
 
 Specifically, the model supports the following.
 - "Atomic" types: char, byte, ubyte, short, ushort, int, uint, int64, uint64.
@@ -358,7 +358,7 @@ to verify that a given key is the root of a dataset.
     These lists allow walking the NCZarr dataset without having to use
     the potentially costly S3 list operation.
 
-3. _.nczvar_ -- this is a parallel object to _.zarray_ and contains
+3. _.nczarray_ -- this is a parallel object to _.zarray_ and contains
 netcdf specific information. Specifically it contains the following.
 
     * dimrefs -- the names of the shared dimensions referenced by the variable.
@@ -387,7 +387,7 @@ the set of unique integer shapes for the variables.
 For each such dimension length, a top level dimension is created
 named  ".zdim_<len>" where len is the integer length. The name
 is subject to change.
-2. _.nczvar_ -- The dimrefs are inferred by using the shape
+2. _.nczarray_ -- The dimrefs are inferred by using the shape
 in _.zarray_ and creating references to the simulated shared dimension.
 netcdf specific information.
 3. _.nczattr_ -- The type of each attribute is inferred by trying to parse the first attribute value string.
@@ -406,10 +406,10 @@ attribute named ''_ARRAY_DIMENSIONS''.
 The value of this attribute is a list of dimension names (strings).
 An example might be ````["time", "lon", "lat"]````.
 It is essentially equivalent to the
-````.nczvar/dimrefs list````, but stored as a specific variable attribute.
-It will be read/written if and only if the mode value "xarray" is specified.
-If enabled and detected, then these dimension names are used
-to define shared dimensions. Note that xarray implies pure zarr format.
+````.nczarray/dimrefs list````, but stored as a specific variable attribute.
+
+As of _netcdf-c_ version 4.8.1, The Xarray ''_ARRAY_DIMENSIONS'' attribute is supported. This attribute will be read/written if and only if the mode value "xarray" is specified. If enabled and detected, then these dimension names are used
+to define shared dimensions. Note that "xarray" implies pure zarr format.
 
 # Examples {#nczarr_examples}
 
