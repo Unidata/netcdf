@@ -517,6 +517,10 @@ it any difficulties were reported to Unidata as a Github issue.
 
 In order to use the S3 storage driver, it is necessary to install the Amazon [aws-sdk-cpp library](https://github.com/aws/aws-sdk-cpp.git).
 
+At the moment, only the following branches/releases are supported:
+* 1.7.9
+* version1.8
+
 As a starting point, here are the CMake options used by Unidata to build that library.
 It assumes that it is being executed in a build directory, `build` say, and that `build/../CMakeLists.txt exists`.
 
