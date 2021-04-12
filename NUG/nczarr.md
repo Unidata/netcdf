@@ -519,7 +519,6 @@ In order to use the S3 storage driver, it is necessary to install the Amazon [aw
 
 At the moment, only the following branches/releases are supported:
 * 1.7.9
-* version1.8
 
 As a starting point, here are the CMake options used by Unidata to build that library.
 It assumes that it is being executed in a build directory, `build` say, and that `build/../CMakeLists.txt exists`.
