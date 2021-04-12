@@ -1,0 +1,50 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+  - title: Sidebar
+    product: NetCDF Users Guide - Abstract Specifications
+    folders:
+
+      - title: Overview
+        output: web, pdf
+        folderitems:
+
+          - title: NetCDF and The NetCDF Users Guide
+            url: /index.html
+            output: web, pdf
+
+          - title: NetCDF Overview
+            url: /netcdf_overview.html
+            output: web, pdf
+
+      - title: NetCDF Data Models
+        output: web, pdf
+        folderitems:
+
+          - title: NetCDF Data Models
+            url: /data_models.html
+            output: web, pdf
+
+      - title: NetCDF File Formats
+        output: web, pdf
+        folderitems:
+
+          - title: NetCDF File Formats
+            url: /file_formats.html
+            output: web, pdf
+
+      - title: Conventions
+        output: web, pdf
+        folderitems:
+          -
+          - title: Attribute Conventions
+            url: /attribute_conventions.html
+            output: web, pdf
+
+          - title: External Conventions
+            url: /external_conventions.html
+            output: web, pdf
+
+      - title: Best Practices
+        url: /best_practices.html
+        output: web, pdf
