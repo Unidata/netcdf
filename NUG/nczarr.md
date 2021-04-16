@@ -394,6 +394,8 @@ In order to accomodate existing implementations, certain mode tags are provided 
 
 ## XArray
 
+> XArray support is introduced in netCDF-C version `4.8.1`.
+
 The Xarray
 <a href="#ref_xarray">[7]</a>
 Zarr implementation uses its own mechanism for
