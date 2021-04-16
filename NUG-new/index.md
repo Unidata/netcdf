@@ -1,5 +1,5 @@
 ---
-title: NetCDF Users Guide - Abstract/Conceptual Specification
+title: NUG - Specifications and Best Practices
 last_updated: 2021-04-06
 sidebar: nnug_sidebar
 permalink: index.html
@@ -17,7 +17,7 @@ netCDF programming interfaces for C, C++, Java, and Fortran.
 Programming interfaces are also available
 for Python, IDL, MATLAB, R, Ruby, and Perl.
 
-## What is the NetCDF Users Guide?
+## NetCDF Users Guide
 
 The NetCDF Users Guide - Abstract Specification
 describes the netCDF data models and file formats

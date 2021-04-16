@@ -2,14 +2,14 @@
 
 entries:
   - title: Sidebar
-    product: NetCDF Users Guide - Abstract Specifications
+    product: NetCDF Users Guide - Specifications and Best Practices
     folders:
 
-      - title: Overview
+      - title: NetCDF and NUG Overview
         output: web, pdf
         folderitems:
 
-          - title: NetCDF and The NetCDF Users Guide
+          - title: The NetCDF Users Guide (NUG)
             url: /index.html
             output: web, pdf
 
@@ -25,7 +25,27 @@ entries:
             url: /data_models.html
             output: web, pdf
 
-      - title: NetCDF File Formats
+          - title: NetCDF Classic Data Model
+            url: /classic_data_models.html
+            output: web, pdf
+
+          - title: NetCDF Enhanced Data Model
+            url: /enhanced_data_model.html
+            output: web, pdf
+
+      - title: Describing NetCDF Datasets - CDL and NcML
+        output: web, pdf
+        folderitems:
+
+          - title: CDL (netCDF Common Data Language)
+            url: /cdl.html
+            output: web, pdf
+
+          - title: NcML (NetCDF Markup Language)
+            url: /ncml.html
+            output: web, pdf
+
+      - title: NetCDF File Formats, Encodings, and Mappings
         output: web, pdf
         folderitems:
 
@@ -33,10 +53,22 @@ entries:
             url: /file_formats.html
             output: web, pdf
 
+          - title: NetCDF Classic File Formats (CDF-1, -2, and -5)
+            url: /classic_file_formats.html
+            output: web, pdf
+
+          - title: NetCDF-4 (HDF5) File Format
+            url: /nc4_file_format.html
+            output: web, pdf
+
+          - title: ncZarr (NetCDF Data Model with Zarr)
+            url: /nczarr.html
+            output: web, pdf
+
       - title: Conventions
         output: web, pdf
         folderitems:
-          -
+
           - title: Attribute Conventions
             url: /attribute_conventions.html
             output: web, pdf
@@ -47,4 +79,8 @@ entries:
 
       - title: Best Practices
         url: /best_practices.html
+        output: web, pdf
+
+      - title: NUG Roadmap
+        url: /Roadmap.html
         output: web, pdf
