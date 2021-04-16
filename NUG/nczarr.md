@@ -107,14 +107,9 @@ inferences.
 - _xarray_ => _zarr_
 - _zarr_ => _nczarr_
 
-So for example: ````...#mode=xarray,zip```` is equivalent to
-````...#mode=nczarr,zarr,xarray,zip````.
+So for example: ```...#mode=xarray,zip``` is equivalent to
+``...#mode=nczarr,zarr,xarray,zip```.
 
-<!--
-- log=&lt;output-stream&gt;: this control turns on logging output,
-  which is useful for debugging and testing. If just _log_ is used
-  then it is equivalent to _log=stderr_.
--->
 
 # NCZarr Map Implementation {#nczarr_mapimpl}
 
@@ -123,18 +118,19 @@ This is closely patterned on the same approach used in the Python Zarr implement
 
 In NCZarr, the corresponding type is called _zmap_.
 The __zmap__ API essentially implements a simplified variant
-of the Amazon S3 API. 
+of the Amazon S3 API.
 
 As with Amazon S3, __keys__ are utf8 strings with a specific structure:
 that of a path similar to those of a Unix path with '/' as the
 separator for the segments of the path.
 
 As with Unix, all keys have this BNF syntax:
-````
+
+```
 key: '/' | keypath ;
 keypath: '/' segment | keypath '/' segment ;
 segment: <sequence of UTF-8 characters except control characters and '/'>
-````
+```
 
 Obviously, one can infer a tree structure from this key structure.
 A containment relationship is defined by key prefixes.
@@ -240,16 +236,16 @@ it should serve to provide interoperability between NCZarr and
 the Python Zarr. This has not been tested.
 
 Examples of the typical URL form for _file_ and _zip_ are as follows.
-````
+```
 file:///xxx/yyy/testdata.file#mode=nczarr,file
 file:///xxx/yyy/testdata.zip#mode=nczarr,zip
-````
+```
 
 Note that the extension (e.g. ".file" in "testdata.file")
 is arbitraty, so this would be equally acceptable.
-````
+```
 file:///xxx/yyy/testdata.anyext#mode=nczarr,file
-````
+```
 
 As with other URLS (e.g. DAP), these kind of URLS can be passed
 as the path argument to __ncdump__, for example.
@@ -404,9 +400,9 @@ Zarr implementation uses its own mechanism for
 specifying shared dimensions. It uses a special
 attribute named ''_ARRAY_DIMENSIONS''.
 The value of this attribute is a list of dimension names (strings).
-An example might be ````["time", "lon", "lat"]````.
+An example might be ```["time", "lon", "lat"]```.
 It is essentially equivalent to the
-````.nczarray/dimrefs list````, but stored as a specific variable attribute.
+```.nczarray/dimrefs list```, but stored as a specific variable attribute.
 
 As of _netcdf-c_ version 4.8.1, The Xarray ''_ARRAY_DIMENSIONS'' attribute is supported. This attribute will be read/written if and only if the mode value "xarray" is specified. If enabled and detected, then these dimension names are used
 to define shared dimensions. Note that "xarray" implies pure zarr format.
@@ -469,9 +465,9 @@ These are as follows.
 4. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
 
 A note about using S3 with Automake. If S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
-````
+```
 LDFLAGS="$LDFLAGS -L/usr/local/lib -laws-cpp-sdk-s3"
-````
+```
 
 The above assumes that these libraries were installed in '/usr/local/lib', so the above requires modification if they were installed elsewhere.
 
@@ -488,20 +484,20 @@ The necessary CMake flags are as follows (with defaults)
 Note that unlike Automake, CMake can properly locate C++ libraries, so it should not be necessary to specify _-laws-cpp-sdk-s3_ assuming that the aws s3 libraries are installed in the default location.
 For CMake with Visual Studio, the default location is here:
 
-````
+```
 C:/Program Files (x86)/aws-cpp-sdk-all
-````
+```
 
 It is possible to install the sdk library in another location.
 In this case, one must add the following flag to the cmake command.
-````
+```
 cmake ... -DAWSSDK_DIR=\<awssdkdir\>
-````
+```
 where "awssdkdir" is the path to the sdk installation.
 For example, this might be as follows.
-````
+```
 cmake ... -DAWSSDK_DIR="c:\tools\aws-cpp-sdk-all"
-````
+```
 This can be useful if blanks in path names cause problems
 in your build environment.
 
@@ -527,10 +523,10 @@ damaging anything.
 
 _Example:_
 
-````
+```
 NCZARR_S3_TEST_HOST=s3.us-west-1.amazonaws.com
 NCZARR_S3_TEST_BUCKET=testbucket
-````
+```
 
 If anyone tries to use this mechanism, it would be appreciated
 it any difficulties were reported to Unidata as a Github issue.
@@ -571,38 +567,38 @@ This remote "file" can be randomly accessed using the HTTP Byte-Range header.
 
 In the Amazon S3 context, a copy of a dataset, a netcdf-3 or netdf-4 file, is uploaded into a single object in some bucket.
 Then using the key to this object, it is possible to tell the netcdf-c library to treat the object as a remote file and to use the HTTP Byte-Range protocol to access the contents of the object.
-The dataset object is referenced using a URL with the trailing fragment containing the string ````#mode=bytes````.
+The dataset object is referenced using a URL with the trailing fragment containing the string ```#mode=bytes```.
 
 An examination of the test program _nc_test/test_byterange.sh_ shows simple examples using the _ncdump_ program.
 One such test is specified as follows:
 
-````
+```
 https://s3.us-east-1.amazonaws.com/noaa-goes16/ABI-L1b-RadC/2017/059/03/OR_ABI-L1b-RadC-M3C13_G16_s20170590337505_e20170590340289_c20170590340316.nc#mode=bytes
-````
+```
 
 Note that for S3 access, it is expected that the URL is in what is called "path" format where the bucket, _noaa-goes16_ in this case, is part of the URL path instead of the host.
 
 The _#mode=byterange_ mechanism generalizes to work with most servers that support byte-range access.  
 Specifically, Thredds servers support such access using the HttpServer access method as can be seen from this URL taken from the above test program.
 
-````
+```
 https://thredds-test.unidata.ucar.edu/thredds/fileServer/irma/metar/files/METAR_20170910_0000.nc#bytes
-````
+```
 
 ## Byte-Range Authorization
 
 If using byte-range access, it may be necessary to tell the netcdf-c
 library about the so-called secretid and accessid values.
-These are usually stored in the file ````~/.aws/config````
-and/or  ````~/.aws/credentials````. In the latter file, this
+These are usually stored in the file ```~/.aws/config```
+and/or  ```~/.aws/credentials```. In the latter file, this
 might look like this.
-````
+```
     [default]
     aws_access_key_id=XXXXXXXXXXXXXXXXXXXX
     aws_secret_access_key=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-````
+```
 
-# __Point of Contact__ {#nczarr_poc}
+# Point of Contact {#nczarr_poc}
 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
