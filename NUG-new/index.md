@@ -7,6 +7,7 @@ toc: false
 ---
 
 ## NetCDF
+<!-- From netCDF home page: https://www.unidata.ucar.edu/software/netcdf/ --> 
 NetCDF (Network Common Data Form) is a set of
 machine-independent data formats and software libraries
 that support the creation, access, and sharing
@@ -17,12 +18,15 @@ netCDF programming interfaces for C, C++, Java, and Fortran.
 Programming interfaces are also available
 for Python, IDL, MATLAB, R, Ruby, and Perl.
 
+<!-- Look at pulling from "Purpose of netCDF" in NUG/guide.md -->
+
 ## NetCDF Users Guide
 
 The NetCDF Users Guide - Abstract Specification
 describes the netCDF data models and file formats
 independent of the various software implementations.
 
+<!-- From draft text in Roadmap.md -->
 NUG is a document that describes netCDF to any user of netCDF,
 independent of which library/tool they use. Including
 

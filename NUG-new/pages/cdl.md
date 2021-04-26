@@ -13,7 +13,20 @@ CDL can also be easily read and produced by machines
 with utilities available to generate a CDL description given a netCDF file (ncdump)
 and to generate a netCDF file given a CDL description (ncgen).
 
+<!--
+  Do we need to differentiate between syntax for the Classic and the Enhanced Data Model?
+  Need to suss out the syntax for Enhanced DM. The "Attributes" section in NUG/netcdf_data_set_components.md says
+      "See ncdump output or the reference documentation for ncgen for details of the extended CDL syntax."
+  And NUG/netcdf_utilities_guide.md says
+      "The ncgen man page should be consulted for more detailed information."
+  See https://github.com/Unidata/netcdf-c/blob/master/ncgen/ncgen.1
+-->
+
 ## Simple CDL Example
+
+<!--
+  From 2012 workshop CDL page: https://www.unidata.ucar.edu/software/netcdf/workshops/most-recent/nc3model/Cdl.html
+-->
 Below is an example that specifies a netCDF dataset
 with two dimensions (lon and lat), three variable (lon, lat, and rh),
 two variable attributes for each variable (units and long_name),
@@ -48,6 +61,9 @@ netcdf example {   // example of CDL notation
 ````
 
 ##  CDL Syntax
+
+<!-- From current NUG's CDL page -->
+
 All CDL statements are terminated by a semicolon.
 Spaces, tabs, and newlines can be used freely for readability.
 Comments may follow the double slash characters '//' on any line.
@@ -119,6 +135,11 @@ All meaningful type conversions among primitive types are supported.
 A special notation for fill values is supported: the ‘_’ character designates a fill value for variables.
 
 #### Dimension order in variable declarations
+
+<!--
+  Should we pull out something on dimension variables in variable declaration)
+-->
+
 [[From above]]
 For multidimensional arrays, the last dimension in a CDL shape varies fastest.
 
@@ -126,6 +147,8 @@ For multidimensional arrays, the last dimension in a CDL shape varies fastest.
 An unlimited dimension, if there is one, must be the first dimension in a CDL shape
 
 ### CDL Data Types {#cdl_data_types}
+
+<!--  From current NUG's CDL page -->
 
 The CDL primitive data types for the classic model are:
 - char Characters.
