@@ -184,12 +184,20 @@ The string type holds variable length strings.
 
 ### CDL Notation for Data Constants {#cdl_notations_for_data_constants}
 
+<!-- 
+We recommend (in Best Practices?) that bytes should be numeric, not characters.
+But the byte constants listed here are character like.
+What about numeric byte constants that are not single quoted (e.g., "0b")
+    a:valid_range = 0b, 25b ;
+-->
+
 This section describes the CDL notation for constants.
 
 Attributes are initialized in the variables section of a CDL description by providing a list of constants that determines the attribute's length and type (if primitive and not explicitly declared).
 CDL defines a syntax for constant values that permits distinguishing among different netCDF primitive types.
 The syntax for CDL constants is similar to C syntax, with type suffixes appended to bytes, shorts, and floats to distinguish them from ints and doubles.
 
+#### `byte` Data Type
 A byte constant is represented by a single character or multiple character escape sequence enclosed in single quotes. For example:
 
 ````
@@ -203,6 +211,7 @@ A byte constant is represented by a single character or multiple character escap
 
 ````
 
+#### `char` Data Type
 Character constants are enclosed in double quotes.
 A character array may be represented as a string enclosed in double quotes. Multiple strings are concatenated into a single array of characters, permitting long character arrays to appear on multiple lines.
 To support multiple variable-length string values, a conventional delimiter such as ',' may be used, but interpretation of any such convention for a string delimiter must be implemented in software above the netCDF library layer.
@@ -217,6 +226,7 @@ example:
 
 ````
 
+#### `short` Data Type
 The form of a short constant is an integer constant with an 's' or 'S' appended.
 If a short constant begins with '0', it is interpreted as octal.
 When it begins with '0x', it is interpreted as a hexadecimal constant.
@@ -229,6 +239,7 @@ For example:
 
 ````
 
+#### `int` Data Type
 The form of an int constant is an ordinary integer constant. If an int constant begins with '0', it is interpreted as octal. When it begins with '0x', it is interpreted as a hexadecimal constant. Examples of valid int constants include:
 
 ````
@@ -240,6 +251,7 @@ The form of an int constant is an ordinary integer constant. If an int constant 
 
 ````
 
+#### `float` Data Type
 The float type is appropriate for representing data with about seven significant digits of precision.
 The form of a float constant is the same as a C floating-point constant with an 'f' or 'F' appended.
 A decimal point is required in a CDL float to distinguish it from an integer.]
@@ -253,6 +265,7 @@ For example, the following are all acceptable float constants:
 
 ````
 
+#### `double` Data Type
 The double type is appropriate for representing floating-point data with about 16 significant digits of precision.
 The form of a double constant is the same as a C floating-point constant.
 An optional 'd' or 'D' may be appended.
@@ -267,5 +280,35 @@ For example, the following are all acceptable double constants:
      1.d
 
 ````
+
+### Pull in other content from ncgen.1
+<!-- https://github.com/Unidata/netcdf-c/blob/master/ncgen/ncgen.1 -->
+For instance, constants for enhanced data model types are in there but not in NUG.
+#### `ubyte` Data Type
+````
+10ub
+100bu
+````
+10U, 100su, 100000ul, or 1000000llu
+#### `ushort` Data Type
+````
+10us
+100su
+````
+#### `uint` Data Type
+````
+10u
+100U
+````
+#### `int64` Data Type
+````
+2.0ll
+````
+#### `uint64` Data Type
+````
+10ull
+100llU
+````
+#### `string` Data Type
 
 ### CDL Extensions and Reserved Attributes

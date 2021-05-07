@@ -61,6 +61,10 @@ entries:
             url: /nc4_file_format.html
             output: web, pdf
 
+          - title: OPeNDAP DAP-2 and DAP-4
+            url: /dap.html
+            output: web, pdf
+
           - title: ncZarr (NetCDF Data Model with Zarr)
             url: /nczarr.html
             output: web, pdf
@@ -69,8 +73,8 @@ entries:
         output: web, pdf
         folderitems:
 
-          - title: Attribute Conventions
-            url: /attribute_conventions.html
+          - title: NUG Conventions
+            url: /nug_conventions.html
             output: web, pdf
 
           - title: External Conventions
@@ -79,6 +83,10 @@ entries:
 
       - title: Best Practices
         url: /best_practices.html
+        output: web, pdf
+
+      - title: NetCDF History (in NUG or should this be elsewhere?)
+        url: /nc_history.html
         output: web, pdf
 
       - title: NUG Roadmap
