@@ -18,13 +18,15 @@ They can be used to organize large numbers of variables.
 ![Enhanced NetCDF Data Model](images/nc4-model.png "Enhanced NetCDF Data Model")
 
 Each group acts as an entire netCDF dataset in the classic model.
-That is, each group may have attributes, dimensions, and variables, as well as other groups.
+That is, each group may have attributes, dimensions, user-defined types, and variables, as well as other groups.
 
 The default group is the root group, which allows the classic netCDF data model to fit neatly into the new model.
 
-Dimensions are scoped such that they can be seen in all descendant groups. That is, dimensions can be shared between variables in different groups, if they are defined in a parent group.
+Dimensions are scoped such that they can be referenced in all other groups. That is, dimensions can be shared between variables in different groups.
 
 In netCDF-4 files, the user may also define a type. For example a compound type may hold information from an array of C structures, or a variable length type allows the user to read and write arrays of variable length values.
+
+Types are also scoped such that they can be referenced in all other groups. That means, for example, that variables in different groups can have the same type.
 
 Variables, groups, and types share a namespace. Within the same group, variables, groups, and types must have unique names. (That is, a type and variable may not have the same name within the same group, and similarly for sub-groups of that group.)
 
