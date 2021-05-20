@@ -1,3 +1,11 @@
+---
+title: NUG Roadmap
+last_updated: 2021-04-06
+sidebar: nnug_sidebar
+toc: false
+permalink: Roadmap.html
+---
+
 # NUG Roadmap
 
 Discussed during 17 Sept 2020 call -- Ward, Dennis, Doug, Ryan, Sean, Ethan
@@ -31,6 +39,9 @@ Discussed during 17 Sept 2020 call -- Ward, Dennis, Doug, Ryan, Sean, Ethan
 * Data Models
   * Classic Data Model
   * Enhanced Data model
+  * ??? CDF-5 (classic plus int64 and unsigned byte, short, int, and int64)
+    * --- use text from ---> NUG 1.2.4 and [FAQ "How many netCDF formats are there ..."](https://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-many-netCDF-formats-are-there-and-what-are-the-differences-among-them)
+  * ??? Zarr (classic adds String Group and CDF-5 new types)
 * File Formats
   * Nc-3, 64-bit, CDF5, nc-4, ncZarr, ncstream?
     * Each one’s relationship with data models

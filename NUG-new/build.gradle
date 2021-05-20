@@ -1,0 +1,10 @@
+plugins {
+    id 'edu.ucar.unidata.site.jekyll' version '0.0.3'
+}
+unidataJekyll {
+    sourceDirectory = file('.')
+}
+tasks.named('wrapper') {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = '6.8.3'
+}

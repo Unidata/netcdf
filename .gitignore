@@ -1,1 +1,10 @@
 *~
+\#*#
+.#*
+
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# gradle stuff
+.gradle/
+build/
