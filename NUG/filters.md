@@ -2,7 +2,7 @@ NetCDF-4 Filter Support
 ============================
 <!-- double header is needed to workaround doxygen bug -->
 
-NetCDF-4 Filter Support {#filters}
+NetCDF-4 and NCZarr Filter Support {#filters}
 ============================
 
 [TOC]
@@ -13,45 +13,30 @@ kinds of filters to datasets before reading or writing.
 The netCDF enhanced (aka netCDF-4) library inherits this capability since it depends on the HDF5 library.
 The HDF5 library (1.8.11 and later) supports filters, and netCDF is based closely on that underlying HDF5 mechanism.
 
-Filters assume that a variable has chunking defined and each chunk is filtered before writing and "unfiltered" after reading and before passing the data to the user.
+The NCZarr/Zarr implementation also supports filters.
+It utilizes the HDF5-style filters as its implementation, but extends
+them to support the NumCodecs JSON-based format as an alternate to the
+HDF5 unsigned integer format.
 
-In the event that multiple filters are defined on a variable, they are applied in first-defined order on writing and on the reverse order when reading.
+In all cases, filters assume that a variable has chunking
+defined and each chunk is filtered before writing and
+"unfiltered" after reading and before passing the data to the
+user.
+
+In the event that multiple filters are defined on a variable,
+they are applied in first-defined order on writing and on the
+reverse order when reading.
 
 The most common kind of filter is a compression-decompression filter, and that is the focus of this document.
 
-For now, this document is strongly influenced by the HDF5 mechanism.
-When other implementations (e.g. Zarr) support filters, this document will have multiple sections: one for each mechanism.
-
-# A Warning on Backward Compatibility {#filters_compatibility}
-
-The API defined in this document should accurately reflect
-the current state of filters in the netCDF-c library.
-Be aware that there was a short period in which the filter code was undergoing some revision and extension.
-Those extensions have largely been reverted.
-Unfortunately, some users may experience some compilation problems for previously working code because of these reversions.
-In that case, please revise your code to adhere to this document. Apologies are extended for any inconvenience. 
-
-A user may encounter an incompatibility if any of the following appears in user code.
-
-* The function _nc_inq_var_filter_ was returning the error value _NC_ENOFILTER_   if a variable had no associated filters.
-  It has been reverted to the previous case where it returned _NC_NOERR_ and the returned filter id was set to zero if the variable had no filters.
-* The function _nc_inq_var_filterids_ was renamed to _nc_inq_var_filter_ids_.
-* Some auxilliary functions for parsing textual filter specifications have been moved to __netcdf_aux.h__.
-  See <a href="#filters_appendixa">Appendix A</a>.
-* All of the "filterx" functions have been removed. This is unlikely to cause problems because they had limited visibility.
-* The undocumented function "nc_filter_remove" no longer exists.
-
-For additional information, see <a href="#filters_appendixb">Appendix B</a>.
+This document first covers the HDF5-style filters and then the NCZarr-style filters.
 
 # Enabling A HDF5 Compression Filter {#filters_enable}
 
 HDF5 supports dynamic loading of compression filters using the following process for reading of compressed data.
 
-1. Assume that we have a dataset with one or more variables that were compressed using some algorithm.
-  How the dataset was compressed will be discussed subsequently.
-2. Shared libraries or DLLs exist that implement the compress/decompress algorithm.
-  These libraries have a specific API so that the HDF5 library can locate, load, and utilize the compressor.
-  These libraries are expected to installed in a specific directory.
+1. Assume that we have a dataset with one or more variables that were compressed using some algorithm. How the dataset was compressed will be discussed subsequently.
+2. Shared libraries or DLLs exist that implement the compress/decompress algorithm. These libraries have a specific API so that the HDF5 library can locate, load, and utilize the compressor. These libraries are expected to installed in a specific directory.
 
 In order to compress a variable with an HDF5 compliant filter, the netcdf-c library must be given three pieces of information:
 
@@ -72,111 +57,6 @@ The first two pieces of  information can be provided in one of three ways: using
 In any case, remember that filtering also requires setting chunking, so the variable must also be marked with chunking information.
 If compression is set for a non-chunked variable, the variable will forcibly be
 converted to chunked using a default chunking algorithm.
-
-## Using The API {#filters_API}
-The necessary API methods are included in _netcdf_filter.h_ by default.
-These functions implicitly use the HDF5 mechanisms and may produce an error if applied to a file format that is not compatible with the HDF5 mechanism.
-
-1. Add a filter to the set of filters to be used when writing a variable.
-
-    This must be invoked after the variable has been created and before __nc_enddef__ is invoked.
-````
-int nc_def_var_filter(int ncid, int varid, unsigned int id, size_t nparams, const unsigned int* params);
-
-Arguments:
-* ncid -- File and group ID.
-* varid -- Variable ID.
-* id -- Filter ID.
-* nparams --  Number of filter parameters.
-* params -- Filter parameters.
-
-Return codes:
-* NC_NOERR -- No error.
-* NC_ENOTNC4 -- Not a netCDF-4 file.
-* NC_EBADID -- Bad ncid or bad filter id
-* NC_ENOTVAR -- Invalid variable ID.
-* NC_EINDEFINE -- called when not in define mode
-* NC_ELATEDEF -- called after variable was created
-* NC_EINVAL -- Scalar variable, or parallel enabled and parallel filters not supported or nparams or params invalid.
-````
-
-2. Query a variable to obtain a list of all filters associated with that variable.
-
-    The number of filters associated with the variable is stored in __nfiltersp__ (it may be zero).
-    The set of filter ids will be returned in __filterids__.
-    As is usual with the netcdf API, one is expected to call this function twice.
-    The first time to set __nfiltersp__ and the second to get the filter ids in client-allocated memory.
-    Any of these arguments can be NULL, in which case no value is returned.
-````
-int nc_inq_var_filter_ids(int ncid, int varid, size_t* nfiltersp, unsigned int* filterids);
-
-Arguments:
-* ncid -- File and group ID.
-* varid -- Variable ID.
-* nfiltersp -- Stores number of filters found; may be zero.
-* filterids --  Stores set of filter ids.
-
-Return codes:
-* NC_NOERR -- No error.
-* NC_ENOTNC4 -- Not a netCDF-4 file.
-* NC_EBADID -- Bad ncid
-* NC_ENOTVAR -- Invalid variable ID.
-````
-
-3. Query a variable to obtain information about a specific filter associated with the variable.
-
-    The __id__ indicates the filter of interest.
-    The actual parameters are stored in __params__.
-    The number of parameters is returned in __nparamsp__.
-    As is usual with the netcdf API, one is expected to call this function twice.
-    The first time to set __nparamsp__ and the second to get the parameters in client-allocated memory.
-    Any of these arguments can be NULL, in which case no value is returned.
-    If the specified id is not attached to the variable, then NC_ENOFILTER is returned.
-````
-int nc_inq_var_filter_info(int ncid, int varid, unsigned int id,  size_t* nparamsp, unsigned int* params);
-
-Arguments:
-* ncid -- File and group ID.
-* varid -- Variable ID.
-* id -- The filter id of interest.
-* nparamsp -- Stores number of parameters.
-* params -- Stores set of filter parameters.
-
-Return codes:
-* NC_NOERR -- No error.
-* NC_ENOTNC4 -- Not a netCDF-4 file.
-* NC_EBADID -- Bad ncid
-* NC_ENOTVAR -- Invalid variable ID.
-* NC_ENOFILTER -- Filter not defined for the variable.
-````
-
-4. Query a variable to obtain information about the first filter associated with the variable.
-
-    When netcdf-c was modified to support multiple filters per variable, the utility of this function became redundant since it returns info only about the first defined filter for the variable.
-    Internally, it is implemented using the functions __nc_inq_var_filter_ids__ and __nc_inq_filter_info__.
-
-    In any case, the filter id will be returned in the __idp__ argument.
-    If there are not filters, then zero is stored in this argument.
-    Otherwise, the number of parameters is stored in __nparamsp__ and the actual parameters in __params__.
-    As is usual with the netcdf API, one is expected to call this function twice.
-    The first time to get __nparamsp__ and the second to get the parameters in client-allocated memory.
-    Any of these arguments can be NULL, in which case no value is returned.
-````
-int nc_inq_var_filter(int ncid, int varid, unsigned int* idp, size_t* nparamsp, unsigned int* params);
-
-Arguments:
-* ncid -- File and group ID.
-* varid -- Variable ID.
-* idp -- Stores the id of the first found filter, set to zero if variable has no filters.
-* nparamsp -- Stores number of parameters.
-* params -- Stores set of filter parameters.
-
-Return codes:
-* NC_NOERR -- No error.
-* NC_ENOTNC4 -- Not a netCDF-4 file.
-* NC_EBADID -- Bad ncid
-* NC_ENOTVAR -- Invalid variable ID.
-````
 
 ## Using ncgen {#filters_NCGEN}
 
@@ -328,12 +208,10 @@ This leads to the following set of rules.
     Because of the encoding rules, this 8-byte value will be in LE format.
    4. The filter must finally do an 8-byte byte-swap on that 8-byte value to convert it to desired BE format.
 
-To support these rules, some utility programs exist and are discussed in <a href="#filters_appendixa">Appendix A</a>.
-
 # Filter Specification Syntax {#filters_syntax}
 
 The utilities <a href="#NCGEN">ncgen</a> and <a href="#NCCOPY">nccopy</a>, and also the output of __ncdump__, support the specification of filter ids, formats, and parameters in text format.
-The BNF specification is defined in <a href="#filters_appendixc">Appendix C</a>.
+The BNF specification is defined in <a href="#filters_appendixa">Appendix A</a>.
 Basically, These specifications consist of a filter id, a comma, and then a sequence of
 comma separated constants representing the parameters.
 The constants are converted within the utility to a proper set of unsigned int constants (see the <a href="#ParamEncode">parameter encoding section</a>).
@@ -360,20 +238,21 @@ The currently supported constants are as follows.
 Some things to note.
 
 1. In all cases, except for an untagged positive integer, the format tag is required and determines how the constant is converted to one or two unsigned int values.
-1. For an untagged positive integer, the constant is treated as of the smallest type into which it fits (i.e. 8,16,32, or 64 bit).
-1. For signed byte and short, the value is sign extended to 32 bits and then treated as an unsigned int value, but maintaining the bit-pattern.
-1. For double, and signed|unsigned long long, they are converted as specified in the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
-1. In order to support mutiple filters, the argument to ''_Filter'' may be a pipeline separated  (using '|') to specify a list of filters specs.
+2. For an untagged positive integer, the constant is treated as of the smallest type into which it fits (i.e. 8,16,32, or 64 bit).
+3. For signed byte and short, the value is sign extended to 32 bits and then treated as an unsigned int value, but maintaining the bit-pattern.
+4. For double, and signed|unsigned long long, they are converted as specified in the section on <a href="#filters_paramcoding">parameter encode/decode</a>.
+5. In order to support mutiple filters, the argument to ''_Filter'' may be a pipeline separated  (using '|') to specify a list of filters specs.
 
-Dynamic Loading Process {#filters_Process}
-==========
+# NCZarr/Zarr Filter Support {#filters_nczarr}
+
+
+# Dynamic Loading Process {#filters_Process}
 
 Each filter is assumed to be compiled into a separate dynamically loaded library.
 For HDF5 conformant filters, these filter libraries are assumed to be in some specific location.
 The details for writing such a filter are defined in the HDF5 documentation[1,2].
 
-Plugin directory {#filters_Plugindir}
-----------------
+## Plugin directory {#filters_Plugindir}
 
 The HDF5 loader expects plugins to be in a specified plugin directory.
 The default directory is:
@@ -382,8 +261,7 @@ The default directory is:
 
 The default may be overridden using the environment variable __HDF5_PLUGIN_PATH__.
 
-Plugin Library Naming {#filters_Pluginlib}
----------------------
+## Plugin Library Naming {#filters_Pluginlib}
 
 Given a plugin directory, HDF5 examines every file in that directory that conforms to a specified name pattern as determined by the platform on which the library is being executed.
 <table>
@@ -394,104 +272,39 @@ Given a plugin directory, HDF5 examines every file in that directory that confor
 <tr halign="left"><td>Windows<td>*<td>.dll
 </table>
 
-Plugin Verification {#filters_Pluginverify}
--------------------
-For each dynamic library located using the previous patterns, HDF5 attempts to load the library and attempts to obtain information from it.
-Specifically, It looks for two functions with the following signatures.
+# Notes
 
-1. __H5PL_type_t H5PLget_plugin_type(void)__ &mdash; This function is expected to return the constant value __H5PL_TYPE_FILTER__ to indicate that this is a filter library.
-2. __const void* H5PLget_plugin_info(void)__ &mdash; This function returns a pointer to a table of type __H5Z_class2_t__.
-    This table contains the necessary information needed to utilize the filter both for reading and for writing.
-    In particular, it specifies the filter id implemented by the library and it must match that id specified for the variable in __nc_def_var_filter__ in order to be used.
+## Order of Invocation for Multiple Filters 
 
-If plugin verification fails, then that plugin is ignored and the search continues for another, matching plugin.
-
-Debugging {#filters_Debug}
--------
-Debugging plugins can be very difficult. You will probably need to use the old printf approach for debugging the filter itself.
-
-One case worth mentioning is when you have a dataset that is using an unknown filter.
-For this situation, you need to identify what filter(s) are used in the dataset.
-This can be accomplished using this command.
-````
-ncdump -s -h <dataset filename>
-````
-Since ncdump is not being asked to access the data (the -h flag), it can obtain the filter information without failures.
-Then it can print out the filter id and the parameters (the -s flag).
-
-Test Cases {#filters_TestCase}
--------
-Within the netcdf-c source tree, the directory __netcdf-c/nc_test4__ contains a number of test cases for testing dynamic filter writing and reading.
-These include
-* __test_filter.c__ &mdash; tests simple compression/decompression using the bzip2 compressor in the directory __plugins__.
-* __test_filterparser.c__ &mdash; validates parameter passing.
-* __test_multifilter.c__ &mdash; tests applying multiple filters to a single variable: bzip2, deflate(zip), and szip (if enabled).
-* __test_filter.sh__ &mdash; test driver to execute the above tests.
-
-These tests are disabled if __--disable-shared__ or if __--disable-hdf5__ is specified.
-
-Example {#filters_Example}
--------
-A slightly simplified version of the filter test case is also available as an example within the netcdf-c source tree directory __netcdf-c/examples/C__.
-The test is called __filter_example.c__ and it is executed as part of the __run_examples4.sh__ shell script.
-The test case demonstrates dynamic filter writing and reading.
-
-The files __example/C/hdf5plugins/Makefile.am__ and  __example/C/hdf5plugins/CMakeLists.txt__ demonstrate how to build the hdf5 plugin for bzip2.
-
-Notes
-==========
-
-Order of Invocation for Multiple Filters 
------------
-
-When multiple filters are defined on a variable, the order of application, when writing data to the file, is same as the order in which _nc_def_var_filter_ is called.
-When reading a file the order of application is of necessity the reverse.
+When multiple filters are defined on a variable, the order of application, when writing data to the file, is same as the order in which the filters are associated with the variable. When reading a file the order of application is of necessity the reverse.
 
 There are some special cases.
 
 1. The fletcher32 filter is always applied first, if enabled.
-1. If _nc_def_var_filter_ or _nc_def_var_deflate_ or _nc_def_var_szip_ is called multiple times with the same filter id, but possibly with different sets of parameters, then the position of that filter in the sequence of applictions does not change.
+2. If the same filter id is used, but possibly with different sets of parameters, then the position of that filter in the sequence of applictions does not change.
     However the last set of parameters specified is used when actually writing the dataset.
-1. Deflate and shuffle &mdash; these two are inextricably linked in the current API, but have quite different semantics.
-    If you call _nc_def_var_deflate_ multiple times, then the previous rule applies with respect to deflate.
+3. Deflate and shuffle &mdash; these two are inextricably linked in the current API, but have quite different semantics.
+    If you apply deflation multiple times, then the previous rule applies with respect to deflate.
     However, the shuffle filter, if enabled, is ''always'' applied before applying any other filters, except fletcher32.
-1. Once a filter is defined for a variable, it cannot be removed nor can its position in the filter order be changed.
+4. Once a filter is defined for a variable, it cannot be removed nor can its position in the filter order be changed.
 
-Memory Allocation Issues
------------
+## SZIP Issues
 
-Starting with HDF5 version 1.10.*, the plugin code MUST be careful when using the standard *malloc()*, *realloc()*, and *free()* function.
-
-In the event that the code is allocating, reallocating, for
-free'ing memory that either came from or will be exported to the
-calling HDF5 library, then one MUST use the corresponding HDF5
-functions *H5allocate_memory()*, *H5resize_memory()*,
-*H5free_memory()* [5] to avoid memory failures.
-
-Additionally, if your filter code leaks memory, then the HDF5 library generates a failure something like this.
-````
-H5MM.c:232: H5MM_final_sanity_check: Assertion `0 == H5MM_curr_alloc_bytes_s' failed.
-````
-
-One can look at the the code in plugins/H5Zbzip2.c and H5Zmisc.c as illustrations.
-
-SZIP Issues
------------
 The current szip plugin code in the HDF5 library has some behaviors that can catch the unwary.
 These are handled internally to (mostly) hide them so that they should not affect users.
 Specifically, this filter may do two things.
 
 1. Add extra parameters to the filter parameters: going from the two parameters provided by the user to four parameters for internal use.
-    It turns out that the two parameters provided when calling nc_def_var_filter correspond to the first two parameters of the four parameters returned by nc_inq_var_filter.
+    It turns out that the two parameters provided when defining the filter correspond to the first two parameters of the four parameters.
 2. Change the values of some parameters: the value of the __options_mask__ argument is known to add additional flag bits, and the __pixels_per_block__ parameter may be modified.
 
 The reason for these changes is has to do with the fact that the szip API provided by the underlying H5Pset_szip function is actually a subset of the capabilities of the real szip implementation.
 Presumably this is for historical reasons.
 
-In any case, if the caller uses the __nc_inq_var_szip__ or the __nc_inq_var_filter__ functions, then the parameter values returned may differ from those originally specified.
+In any case, if the caller applies or queries the szip filter, then the parameter values returned may differ from those originally specified.
 
-Supported Systems
------------------
+## Supported Systems
+
 The current matrix of OS X build systems known to work is as follows.
 <table>
 <tr><th>Build System<th>Supported OS
@@ -499,81 +312,7 @@ The current matrix of OS X build systems known to work is as follows.
 <tr><td>Cmake<td>Linux, Cygwin, OSX, Visual Studio
 </table>
 
-Generic Plugin Build
---------------------
-If you do not want to use Automake or Cmake, the following has been known to work.
-````
-gcc -g -O0 -shared -o libbzip2.so <plugin source files>  -L${HDF5LIBDIR} -lhdf5_hl -lhdf5 -L${ZLIBDIR} -lz
-````
-
-Appendix A. Support Utilities {#filters_appendixa}
-==========
-
-Several functions are exported from the netcdf-c library for use by client programs and by filter implementations.
-They are defined in the header file __netcdf_aux.h__.
-The h5 tag indicates that they assume that the result of the parse is a set of unsigned integers &mdash; the format used by HDF5.
-
-1. ````int ncaux_h5filterspec_parse(const char* txt, unsigned int* idp. size_t* nparamsp, unsigned int** paramsp);````
-    * txt contains the text of a sequence of comma separated constants
-    * idp will contain the first constant &mdash; the filter id
-    * nparamsp will contain the number of params 
-    * paramsp will contain a vector of params &mdash; the caller must free
-    This function can parse single filter spec strings as defined in the section on <a href="#filters_syntax">Filter Specification Syntax</a>.
-
-2. ````int ncaux_h5filterspec_parselist(const char* txt, int* formatp, size_t* nspecsp, struct NC_H5_Filterspec*** vectorp);````
-    * txt contains the text of a sequence '|' separated filter specs.
-    * formatp currently always returns 0.
-    * nspecsp will return the number of filter specifications.
-    * vectorp will return a pointer to a vector of pointers to filter specification instances &mdash; the caller must free.
-    This function parses a sequence of filter specifications each separated by a '|' character.
-    The text between '|' separators must be parsable by __ncaux_h5filterspec_parse__.
-
-3. ````void ncaux_h5filterspec_free(struct NC_H5_Filterspec* f);````
-    * f is a pointer to an instance of ````struct NC_H5_Filterspec````
-      Typically this was returned as an element of the vector returned
-      by __ncaux_h5filterspec_parselist__.   
-   This reclaims the parameters of the filter spec object as well as the object itself.
-
-4. ````int ncaux_h5filterspec_fix8(unsigned char* mem8, int decode);````
-    * mem8 is a pointer to the 8-byte value either to fix.
-    * decode is 1 if the function should apply the 8-byte decoding algorithm
-      else apply the encoding algorithm.
-    This function implements the 8-byte conversion algorithms for HDF5.
-     Before calling *nc_def_var_filter* (unless *NC_parsefilterspec* was used), the client must call this function with the decode argument set to 0.
-    Inside the filter code, this function should be called with the decode argument set to 1.
-
-Examples of the use of these functions can be seen in the test program *nc_test4/tst_filterparser.c*.
-
-Some of the above functions use a C struct defined in _netcdf_filter.h_.
-The definition of that struct is as follows.
-````
-typedef struct NC_H5_Filterspec {
-    unsigned int filterid; /* ID for arbitrary filter. */
-    size_t nparams;        /* nparams for arbitrary filter. */
-    unsigned int* params;  /* Params for arbitrary filter. */
-} NC_H5_Filterspec;
-````
-This struct in effect encapsulates all of the information about and HDF5 formatted filter &mdash; the id, the number of parameters, and the parameters themselves. 
-
-Appendix B. Build Flags for Detecting the Filter Mechanism {#filters_appendixb}
-==========
-
-The include file _netcdf_meta.h contains the following definition.
-````
-#define NC_HAS_MULTIFILTERS   1
-````
-
-This, in conjunction with the error code _NC_ENOFILTER_ in _netcdf.h_ can be used to see what filter mechanism is in place as described in the section on <a href="#filters_compatibility">incompatibities</a>.
-
-1. !defined(NC_ENOFILTER) && !defined(NC_HAS_MULTIFILTERS) &mdash; indicates that the old pre-4.7.4 mechanism is in place.
-    It does not support multiple filters.
-2. defined(NC_ENOFILTER) && !defined(NC_HAS_MULTIFILTERS) &mdash; indicates that the 4.7.4 mechanism is in place.
-    It does support multiple filters, but the error return codes for _nc_inq_var_filter_ are different and the filter spec parser functions are in a different location with different names.
-3. defined(NC_ENOFILTER) && defined(NC_HAS_MULTIFILTERS) &mdash; indicates that the multiple filters are supported, and that _nc_inq_var_filter_ returns a filterid of zero to indicate that a variable has no filters.
-    Also, the filter spec parsers have the names and signatures described in this document and are define in _netcdf_aux.h_.
-
-Appendix C. BNF for Specifying Filters in Utilities {#filters_appendixc}
-==========
+# Appendix A. BNF for Specifying Filters in Utilities {#filters_appendixa}
 
 ````
 speclist:   spec
@@ -602,9 +341,9 @@ unsigned32: <32 bit unsigned integer>
 5. https://support.hdfgroup.org/HDF5/doc/RM/RM_H5.html
 6. https://confluence.hdfgroup.org/display/HDF5/Filters
 
-# Point of Contact
+# Point of Contact {#filters_poc}
 
 __Author__: Dennis Heimbigner<br>
 __Email__: dmh at ucar dot edu<br>
 __Initial Version__: 1/10/2018<br>
-__Last Revised__: 10/14/2020
+__Last Revised__: 7/15/2021

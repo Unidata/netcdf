@@ -107,8 +107,9 @@ inferences.
 - _xarray_ => _zarr_
 - _zarr_ => _nczarr_
 
-So for example: ```...#mode=xarray,zip``` is equivalent to
-``...#mode=nczarr,zarr,xarray,zip```.
+So for example: ```...#mode=xarray,zip``` is equivalent to this.
+``...#mode=nczarr,zarr,xarray,zip
+```
 
 
 # NCZarr Map Implementation {#nczarr_mapimpl}
@@ -417,15 +418,15 @@ Here are a couple of examples using the _ncgen_ and _ncdump_ utilities.
     ```
     ncgen -4 -lb -o "file:///home/user/dataset.file#mode=nczarr,file" dataset.cdl
     ```
-1. Display the content of an nczarr file using a local directory tree as storage.
+2. Display the content of an nczarr file using a local directory tree as storage.
     ```
     ncdump "file:///home/user/dataset.zip#mode=nczarr,zip"
     ```
-1. Create an nczarr file using S3 as storage.
+3. Create an nczarr file using S3 as storage.
     ```
     ncgen -4 -lb -o "s3://s3.us-west-1.amazonaws.com/datasetbucket" dataset.cdl
     ```
-1. Create an nczarr file using S3 as storage and keeping to the pure
+4. Create an nczarr file using S3 as storage and keeping to the pure
 zarr format.
     ```
     ncgen -4 -lb -o "s3://s3.uswest-1.amazonaws.com/datasetbucket#mode=zarr" dataset.cdl
@@ -463,8 +464,8 @@ There are several options relevant to NCZarr support and to Amazon S3 support.
 These are as follows.
 
 1. _--enable-nczarr_ -- enable the NCZarr support. If disabled, then all of the following options are disabled or irrelevant.
-3. _--enable-nczarr-s3_ -- Enable NCZarr S3 support.
-4. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
+2. _--enable-nczarr-s3_ -- Enable NCZarr S3 support.
+3. _--enable-nczarr-s3-tests_ -- the NCZarr S3 tests are currently only usable by Unidata personnel, so they are disabled by default.
 
 A note about using S3 with Automake. If S3 support is desired, and using Automake, then LDFLAGS must be properly set, namely to this.
 ```
