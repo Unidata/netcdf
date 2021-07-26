@@ -1,0 +1,15 @@
+theme: unidata-jekyll-theme
+
+# these are defaults used for the frontmatter for these file types
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      sidebar: nnug_sidebar
+
+sidebars:
+  - nnug_sidebar

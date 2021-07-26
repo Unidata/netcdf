@@ -1,0 +1,94 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+  - title: Sidebar
+    product: NetCDF Users Guide - Specifications and Best Practices
+    folders:
+
+      - title: NetCDF and NUG Overview
+        output: web, pdf
+        folderitems:
+
+          - title: The NetCDF Users Guide (NUG)
+            url: /index.html
+            output: web, pdf
+
+          - title: NetCDF Overview
+            url: /netcdf_overview.html
+            output: web, pdf
+
+      - title: NetCDF Data Models
+        output: web, pdf
+        folderitems:
+
+          - title: NetCDF Data Models
+            url: /data_models.html
+            output: web, pdf
+
+          - title: NetCDF Classic Data Model
+            url: /classic_data_models.html
+            output: web, pdf
+
+          - title: NetCDF Enhanced Data Model
+            url: /enhanced_data_model.html
+            output: web, pdf
+
+      - title: Describing NetCDF Datasets - CDL and NcML
+        output: web, pdf
+        folderitems:
+
+          - title: CDL (netCDF Common Data Language)
+            url: /cdl.html
+            output: web, pdf
+
+          - title: NcML (NetCDF Markup Language)
+            url: /ncml.html
+            output: web, pdf
+
+      - title: NetCDF File Formats, Encodings, and Mappings
+        output: web, pdf
+        folderitems:
+
+          - title: NetCDF File Formats
+            url: /file_formats.html
+            output: web, pdf
+
+          - title: NetCDF Classic File Formats (CDF-1, -2, and -5)
+            url: /classic_file_formats.html
+            output: web, pdf
+
+          - title: NetCDF-4 (HDF5) File Format
+            url: /nc4_file_format.html
+            output: web, pdf
+
+          - title: OPeNDAP DAP-2 and DAP-4
+            url: /dap.html
+            output: web, pdf
+
+          - title: ncZarr (NetCDF Data Model with Zarr)
+            url: /nczarr.html
+            output: web, pdf
+
+      - title: Conventions
+        output: web, pdf
+        folderitems:
+
+          - title: NUG Conventions
+            url: /nug_conventions.html
+            output: web, pdf
+
+          - title: External Conventions
+            url: /external_conventions.html
+            output: web, pdf
+
+      - title: Best Practices
+        url: /best_practices.html
+        output: web, pdf
+
+      - title: NetCDF History (in NUG or should this be elsewhere?)
+        url: /nc_history.html
+        output: web, pdf
+
+      - title: NUG Roadmap
+        url: /Roadmap.html
+        output: web, pdf
