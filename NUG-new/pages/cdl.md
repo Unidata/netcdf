@@ -6,28 +6,28 @@ toc: false
 permalink: cdl.html
 ---
 
-NetCDF CDL (Common Data Language) is a text notation
-for describing/representing/communicating/ the structure and data of a binary netCDF file
-in a manner that a human can read (and edit).
-CDL can also be easily read and produced by machines
-with utilities available to generate a CDL description given a netCDF file (ncdump)
-and to generate a netCDF file given a CDL description (ncgen).
+NetCDF CDL (Common Data form Language) is a text notation for representing the structure and data of a binary netCDF dataset.
+CDL can be read (and edited) by a human. It can also be read and produced by machines. For instance, a CDL description can be generated, given a netCDF file, by the `ncdump` utility and a netCDF file can be generated, given a CDL desription, by the `ncgen` utility.
 
-<!--
-  Do we need to differentiate between syntax for the Classic and the Enhanced Data Model?
-  Need to suss out the syntax for Enhanced DM. The "Attributes" section in NUG/netcdf_data_set_components.md says
-      "See ncdump output or the reference documentation for ncgen for details of the extended CDL syntax."
-  And NUG/netcdf_utilities_guide.md says
-      "The ncgen man page should be consulted for more detailed information."
-  See https://github.com/Unidata/netcdf-c/blob/master/ncgen/ncgen.1
+<!-- TODO: The following text was taken from the NUG CDL document (NUG/cdl.md) and needs to be updated with the more current ncgen man page (Unidata/netcdf-c - ncgen/ncgen.1).
+
+However, the ncgen man page is focused on full enhanced data model. The NUG should probably describe CDL in terms of both the Classic and Enhanced data models.
+-->
+<!-- TODO: Clarify what is supported in classic data model and what is supported in the enhanced data model (after incorporate ncgen.1).
+-->
+<!-- TODO: Need to include CDL example that uses Enhanced Data model constructs.
+There is an example CDL ncgen.1. I can't get 'ncgen -4 -o foo.nc foo.cdl' to build. I get
+"ncgen: foo.cdl line 50: Enumconstant associated with a non-econst type"
 -->
 
-## Simple CDL Example
 
-<!--
-  From 2012 workshop CDL page: https://www.unidata.ucar.edu/software/netcdf/workshops/most-recent/nc3model/Cdl.html
+##  CDL Syntax
+
+### CDL Example: Classic Data Model
+
+<!-- NOTE: From 2012 workshop CDL page: https://www.unidata.ucar.edu/software/netcdf/workshops/most-recent/nc3model/Cdl.html
 -->
-Below is an example that specifies a netCDF dataset
+Below is an example that specifies a netCDF classic dataset
 with two dimensions (lon and lat), three variable (lon, lat, and rh),
 two variable attributes for each variable (units and long_name),
 one global attribute (title), and some data values for the variable.
@@ -60,9 +60,8 @@ netcdf example {   // example of CDL notation
 }
 ````
 
-##  CDL Syntax
-
-<!-- From current NUG's CDL page -->
+<!-- NOTE: Text from NUG/cdl.md
+-->
 
 All CDL statements are terminated by a semicolon.
 Spaces, tabs, and newlines can be used freely for readability.
@@ -73,17 +72,32 @@ dimensions, variables, and data.
 The variable part may contain variable declarations and attribute assignments.
 For the enhanced model supported by netCDF-4, a CDL description may also include groups, subgroups, and user-defined types.
 
+### Dimensions
+<!-- TODO: All but the last sentence of this paragraph is already covered in Data Model page(s). Does it need to be repeated here. (Similar in following paragraphs.)
+-->
 A dimension is used to define the shape of one or more of the multidimensional variables described by the CDL description.
 A dimension has a name and a length.
 At most one dimension in a classic CDL description can have the unlimited length, which means a variable using this dimension can grow to any length (like a record number in a file).
 Any number of dimensions can be declared of unlimited length in CDL for an enhanced model file.
 
+CDL dimension declarations may appear on one or more lines following the CDL keyword dimensions.
+Multiple dimension declarations on the same line may be separated by commas.
+Each declaration is of the form `name = length`.
+Use the “/” character to include group information (netCDF-4 output only).
+
+### Variables
 A variable represents a multidimensional array of values of the same type.
 A variable has a name, a data type, and a shape described by its list of dimensions.
 Each variable may also have associated attributes (see below) as well as data values.
 The name, data type, and shape of a variable are specified by its declaration in the variable section of a CDL description.
 A variable may have the same name as a dimension; by convention such a variable contains coordinates of the dimension it names.
 
+CDL variable declarations may appear on one or more lines following the CDL keyword `variables`.
+Multiple variable declarations on the same line may be separated by commas.
+Each declaration is of the form `name = length`.
+Use the “/” character to include group information (netCDF-4 output only).
+
+### Attributes
 An attribute contains information about a variable or about the whole netCDF dataset or containing group.
 Attributes may be used to specify such properties as units, special values, maximum and minimum valid values, and packing parameters.
 Attribute information is represented by single values or one-dimensional arrays of values.
@@ -104,6 +118,9 @@ Multiple values are assigned to non-character attributes by separating the value
 All values assigned to an attribute must be of the same type.
 In the netCDF-4 enhanced model, attributes may be declared to be of user-defined type, like variables.
 
+### Names of NetCDF Objects
+<!-- TODO: The next two or three paragraphs have same info as in data_models.md#netcdf_object_names. Update text to reference that section instead.
+-->
 In CDL, just as for netCDF, the names of dimensions, variables and attributes (and, in netCDF-4 files, groups, user-defined types, compound member names, and enumeration symbols) consist of arbitrary sequences of alphanumeric characters, underscore '_', period '.', plus '+', hyphen '-', or at sign '@', but beginning with a letter or underscore.
 However names commencing with underscore are reserved for system use. Case is significant in netCDF names. A zero-length name is not allowed.
 Some widely used conventions restrict names to only alphanumeric characters or underscores.
@@ -112,17 +129,19 @@ Names that have trailing space characters are also not permitted.
 Beginning with versions `3.6.3` and `4.0`, names may also include UTF-8 encoded Unicode characters as well as other special characters, exceptfor the character '/', which may not appear in a name (because it is reserved for path names of nested groups).
 In CDL, most special characters are escaped with a backslash '\' character, but that character is not actually part of the netCDF name. The special characters that do not need to be escaped in CDL names are underscore '_', period '.', plus '+', hyphen '-', or at sign '@'.
 For the formal specification of CDL name syntax See \ref classic_format_spec.
+<!-- TODO: May need to expand on that sentence. Not sure file format BNF is enough.
+-->
 
 > Note that by using special characters in names, you may make your data not compliant with conventions that have more stringent requirements on valid names for netCDF components, for example the CF Conventions.
 
 The names for the primitive data types are reserved words in CDL, so names of variables, dimensions, and attributes must not be primitive type names.
 
+### Data
 The optional data section of a CDL description is where netCDF variables may be initialized.
 The syntax of an initialization is simple:
 
 ````
      variable = value_1, value_2, ...;
-
 ````
 
 The comma-delimited list of constants may be separated by spaces, tabs, and newlines.
@@ -131,24 +150,24 @@ Thus, row-order rather than column order is used for matrices.
 If fewer values are supplied than are needed to fill a variable, it is extended with the fill value.
 The types of constants need not match the type declared for a variable; coercions are done to convert integers to floating point, for example.
 All meaningful type conversions among primitive types are supported.
+<!-- TODO: Last two sentences are true for `ncdump` and ncgen`. Or is it really a part of the CDL specification?
+-->
 
 A special notation for fill values is supported: the ‘_’ character designates a fill value for variables.
 
 #### Dimension order in variable declarations
 
-<!--
-  Should we pull out something on dimension variables in variable declaration)
+<!-- TODO: Should we pull out something on dimension order in variable declaration?
+From above:
+  For multidimensional arrays, the last dimension in a CDL shape varies fastest.
+From data model section:
+  An unlimited dimension, if there is one, must be the first dimension in a CDL shape
 -->
 
-[[From above]]
-For multidimensional arrays, the last dimension in a CDL shape varies fastest.
-
-[[Some mention in data model section]]
-An unlimited dimension, if there is one, must be the first dimension in a CDL shape
-
-### CDL Data Types {#cdl_data_types}
-
-<!--  From current NUG's CDL page -->
+### CDL Data Types
+<!-- TODO: Don't need most of this. Reference Data Model section instead.
+Maybe move section on the values that the different types can contain to NUG-new/pages/data_models.md#netcdf_data_types 
+-->
 
 The CDL primitive data types for the classic model are:
 - char Characters.
@@ -185,10 +204,12 @@ The string type holds variable length strings.
 ### CDL Notation for Data Constants {#cdl_notations_for_data_constants}
 
 <!-- 
+TODO: [[This is addressed/clarified in the more up to date ncgen man page docs.]] 
 We recommend (in Best Practices?) that bytes should be numeric, not characters.
 But the byte constants listed here are character like.
 What about numeric byte constants that are not single quoted (e.g., "0b")
     a:valid_range = 0b, 25b ;
+ 
 -->
 
 This section describes the CDL notation for constants.
@@ -201,15 +222,14 @@ The syntax for CDL constants is similar to C syntax, with type suffixes appended
 A byte constant is represented by a single character or multiple character escape sequence enclosed in single quotes. For example:
 
 ````
-
      'a'     // ASCII a
      '\0'    // a zero byte
      '\n'    // ASCII newline character
      '\33'   // ASCII escape character (33 octal)
      '\x2b'  // ASCII plus (2b hex)
      '\376'  // 377 octal = -127 (or 254) decimal
-
 ````
+
 
 #### `char` Data Type
 Character constants are enclosed in double quotes.
@@ -281,9 +301,6 @@ For example, the following are all acceptable double constants:
 
 ````
 
-### Pull in other content from ncgen.1
-<!-- https://github.com/Unidata/netcdf-c/blob/master/ncgen/ncgen.1 -->
-For instance, constants for enhanced data model types are in there but not in NUG.
 #### `ubyte` Data Type
 ````
 10ub

@@ -26,7 +26,7 @@ entries:
             output: web, pdf
 
           - title: NetCDF Classic Data Model
-            url: /classic_data_models.html
+            url: /classic_data_model.html
             output: web, pdf
 
           - title: NetCDF Enhanced Data Model

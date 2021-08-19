@@ -7,8 +7,10 @@ toc: false
 ---
 
 ## NetCDF
-<!-- From netCDF home page: https://www.unidata.ucar.edu/software/netcdf/ -->
-<!-- Self-describing and portable bit from "Purpose of netCDF" in NUG/guide.md -->
+<!-- NOTE:
+Text mainly from [netCDF home page](https://www.unidata.ucar.edu/software/netcdf/),
+self-describing and portable bit from NUG/guide.md#netcdf_purpose
+-->
 
 NetCDF (Network Common Data Form) is a set of
 machine-independent data formats and interfaces
@@ -19,6 +21,7 @@ in a form that is both portable and self-describing.
 "Portable" means that the data in a dataset is represented in a form that can be accessed
 by computers with different ways of storing integers, characters, and floating-point numbers.
 NetCDF is also a community standard for sharing scientific data.
+
 The Unidata Program Center supports and maintains freely distributed
 netCDF programming interfaces for C, C++, Java, and Fortran.
 Programming interfaces are also available
@@ -34,7 +37,10 @@ describes the netCDF data models and file formats
 independent of the various software implementations.
 It contains information about netCDF that is of interest across specific implementations.
 
-<!-- From draft text in Roadmap.md -->
+<!-- NOTE:
+Text from Roadmap.md
+-->
+
 NUG is a document that describes netCDF to any user of netCDF,
 independent of which library/tool they use. Including
 
@@ -54,4 +60,3 @@ on a netCDF implementation
 based on one of the formats
 (e.g. netCDF-4 based on HDF5 for h5netcdf,
 ncZarr based on Zarr for netCDF-java)
-
