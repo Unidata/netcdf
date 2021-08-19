@@ -47,6 +47,13 @@ Both NASA and the Open Geospatial Consortium (OGC) have approved/accepted the ne
 - the NASA netCDF-4 page: https://earthdata.nasa.gov/esdis/eso/standards-and-references/netcdf-4hdf5-file-format
 - the OGC netCDF standards page: https://www.ogc.org/standards/netcdf
 
+Used by CMIP - reference?
+NOAA use for GOES data, reference?
+Also WMO efforts?
+
+Other references:
+- G. Davis and R. Rew, "Data Management: NetCDF: an Interface for Scientific Data Access" in IEEE Computer Graphics and Applications, vol. 10, no. 04, pp. 76-82, 1990. https://doi.org/10.1109/38.56302
+
 ## Applications that use this media type:
 - scientific data sharing
 - multidimensional arrays of numerical data
