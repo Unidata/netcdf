@@ -65,9 +65,9 @@ Other references:
 - Deprecated alias names for this type:
   - application/x-netcdf
 - Magic number(s):
-  - ‘C’, ‘D’, ‘F’, ‘\x01’ at start of file - classic format (CDF-1)
-  - ‘C’, ‘D’, ‘F’, ‘\x02’ at start of file - 64-bit offset format (CDF-2)
-  - ‘C’, ‘D’, ‘F’, ‘\x05’ at start of file - 64-bit data format (CDF-5)
+  - ‘C’, ‘D’, ‘F’, ‘\001’ at start of file - classic format (CDF-1)
+  - ‘C’, ‘D’, ‘F’, ‘\002’ at start of file - 64-bit offset format (CDF-2)
+  - ‘C’, ‘D’, ‘F’, ‘\005’ at start of file - 64-bit data format (CDF-5)
   - ‘\211’, ‘H’, ‘D’, ‘F’, ‘\r’, ‘\n’, ‘\032’, ‘\n’
     at start of file (?) - netCDF-4/HDF5
 - File extension(s): .nc, .cdf, .nc3, .nc4
