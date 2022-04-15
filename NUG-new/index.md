@@ -7,6 +7,7 @@ toc: false
 ---
 
 ## NetCDF
+
 <!-- NOTE:
 Text mainly from [netCDF home page](https://www.unidata.ucar.edu/software/netcdf/),
 self-describing and portable bit from NUG/guide.md#netcdf_purpose
@@ -30,9 +31,9 @@ for Python, IDL, MATLAB, R, Ruby, and Perl.
 Reference documentation for the Unidata maintained implementations
 are available at the main Unidata netCDF web page (https://www.unidata.ucar.edu/software/netcdf/).
 
-## NetCDF Users Guide
+## NetCDF User's Guide
 
-The "NetCDF Users Guide - Specification & Best Practices"
+The "NetCDF User's Guide - Specification & Best Practices"
 describes the netCDF data models and file formats
 independent of the various software implementations.
 It contains information about netCDF that is of interest across specific implementations.

@@ -30,7 +30,7 @@
      }
 
 ````
-<!--
+<!-- NOTE:
 The strikethrough text in this section has been moved to NUG-new/pages/cdl.md
 -->
 

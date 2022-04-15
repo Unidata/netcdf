@@ -12,17 +12,14 @@ Two main sources of text were used for this page:
 - "Developing Conventions for netCDF-4\" article by Rew and Caron - https://www.unidata.ucar.edu/software/netcdf/papers/nc4_conventions.html
 More details in notes below.
 -->
+[//]: # (TODO: Review other possible source of content.)
+[//]: # (      - Unidata's Common Data Model (CDM) - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/common_data_model_overview.html)
+[//]: # (      - CDM NetCDF Mapping - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/cdm_netcdf_mapping.html)
 
-<!-- TODO: Other possible sources to review:
-- Unidata's Common Data Model (CDM) - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/common_data_model_overview.html
-- CDM NetCDF Mapping - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/cdm_netcdf_mapping.html
--->
 
-<!-- TODO: Decide ...
-  Where should we put "Limitations of NetCDF" section in NUG/netcdf_introduction.md ?
-  - Is the "2 GiBytes size limit" in CDF-1 part of the data model?
-  - Is the "only one unlimited dimension" limitation in CDF-1, 2, and -5 part of the data model?
--->
+[//]: # (TODO: Decide where should we put "Limitations of NetCDF" section in NUG/netcdf_introduction.md ?)
+[//]: # (      - Is the "2 GiBytes size limit" in CDF-1 part of the data model?)
+[//]: # (      - Is the "only one unlimited dimension" limitation in CDF-1, 2, and -5 part of the data model?)
 
 NetCDF has two main data models. 
 * The netCDF Classic Data Model, which represents a dataset with named variables, dimensions, and attributes.
@@ -204,31 +201,34 @@ More generally, if data require ancillary data to describe them, are multidimens
 
 ### Atomic Data Types
 
-<!-- TODO: The current NUG uses "atomic", "primitive", and "external" to describe these data types somewhat interchangably. Decide on one to use throughout. Probably not "external" (i.e., external to the software, e.g., independent of C or Fortran types) since this is the data model and so already independent of programming languages.
--->
+[//]: # (TODO: Decide whether to use "atomic", "primitive", and "external" for these data types.)
+[//]: # (      The current NUG uses these terms somewhat interchangeable.)
+[//]: # (      The term "external" is in reference to these types being external to the)
+[//]: # (      programming language data types used in each particular library.)
+[//]: # (      So, "external" isn't appropriate for data types in the netCDF data model.)
 
 |---
 | CDL | netCDF-C | netCDF-Java | Description | Availability
 |:-|:-|:-|:-|:-
-| char   | NC_CHAR   | CHAR   | 8-bit character                      | All
-| byte   | NC_BYTE   | BYTE   | 8-bit signed integer                 | All
-| short  | NC_SHORT  | SHORT  | 16-bit signed integer                | All
-| int    | NC_INT    | INT    | 32-bit signed integer                | All
+| char   | NC_CHAR   | CHAR   | 8-bit character                      | Classic, Enhanced, CDF&#x2011;5
+| byte   | NC_BYTE   | BYTE   | 8-bit signed integer                 | Classic, Enhanced, CDF&#x2011;5
+| short  | NC_SHORT  | SHORT  | 16-bit signed integer                | Classic, Enhanced, CDF&#x2011;5
+| int    | NC_INT    | INT    | 32-bit signed integer                | Classic, Enhanced, CDF&#x2011;5
 | long   | NC_LONG   | ---    | **Deprecated**: synonymous with int  | ---
-| float  | NC_FLOAT  | FLOAT  | IEEE single-precision floating point (32 bits) | All
+| float  | NC_FLOAT  | FLOAT  | IEEE single-precision floating point (32 bits) | Classic, Enhanced, CDF&#x2011;5
 | real   | ---       | ---    | **Deprecated**: Synonymous with float | ---
-| double | NC_DOUBLE | DOUBLE | IEEE double-precision floating point (64 bits) | All
-| ubyte  | NC_UBYTE  | UBYTE  | Unsigned 8-bit integer               | E, 5
-| ushort | NC_USHORT | USHORT | Unsigned 16-bit integer              | E, 5
-| uint   | NC_UINT   | UINT   | Unsigned 32-bit integer              | E, 5
-| int64  | NC_INT64  | LONG   | 64-bit signed integer                | E, 5
-| uint64 | NC_UINT64 | ULONG  | Unsigned 64-bit signed integer       | E, 5
-| string | NC_STRING | STRING | Variable-length string of characters | E
+| double | NC_DOUBLE | DOUBLE | IEEE double-precision floating point (64 bits) | Classic, Enhanced, CDF&#x2011;5
+| ubyte  | NC_UBYTE  | UBYTE  | Unsigned 8-bit integer               | Enhanced, CDF&#x2011;5
+| ushort | NC_USHORT | USHORT | Unsigned 16-bit integer              | Enhanced, CDF&#x2011;5
+| uint   | NC_UINT   | UINT   | Unsigned 32-bit integer              | Enhanced, CDF&#x2011;5
+| int64  | NC_INT64  | LONG   | 64-bit signed integer                | Enhanced, CDF&#x2011;5
+| uint64 | NC_UINT64 | ULONG  | Unsigned 64-bit signed integer       | Enhanced, CDF&#x2011;5
+| string | NC_STRING | STRING | Variable-length string of characters | Enhanced
 
 Note: Availability - A ==> all data models and file variants; E --> Enhanced data model; 5 --> CDF-5
 
 <!-- NOTE:
-See netCDF-Java ArrayType ilines 19-46
+See netCDF-Java ArrayType lines 19-46
 https://github.com/Unidata/netcdf-java/blob/01d8aef292cc7bbcee556657129bc88694613d65/cdm/core/src/main/java/ucar/array/ArrayType.java#L19-L46
 -->
 

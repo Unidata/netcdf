@@ -2,14 +2,14 @@
 
 entries:
   - title: Sidebar
-    product: NetCDF Users Guide - Specifications and Best Practices
+    product: NetCDF User's Guide - Specifications and Best Practices
     folders:
 
       - title: NetCDF and NUG Overview
         output: web, pdf
         folderitems:
 
-          - title: The NetCDF Users Guide (NUG)
+          - title: The NetCDF User's Guide (NUG)
             url: /index.html
             output: web, pdf
 
@@ -69,26 +69,30 @@ entries:
             url: /nczarr.html
             output: web, pdf
 
-      - title: Conventions
+      - title: Best Practices and Conventions
         output: web, pdf
         folderitems:
+
+          - title: Best Practices
+            url: /best_practices.html
+            output: web, pdf
 
           - title: NUG Conventions
             url: /nug_conventions.html
             output: web, pdf
 
-          - title: External Conventions
-            url: /external_conventions.html
+          - title: Other Conventions
+            url: /other_conventions.html
             output: web, pdf
 
-      - title: Best Practices
-        url: /best_practices.html
+      - title: NetCDF History and NUG Roadmap
         output: web, pdf
+        folderitems:
 
-      - title: NetCDF History (in NUG or should this be elsewhere?)
-        url: /nc_history.html
-        output: web, pdf
+          - title: NetCDF History
+            url: /netcdf_history.html
+            output: web, pdf
 
-      - title: NUG Roadmap
-        url: /Roadmap.html
-        output: web, pdf
+          - title: NUG Roadmap
+            url: /Roadmap.html
+            output: web, pdf

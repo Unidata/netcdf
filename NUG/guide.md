@@ -24,11 +24,18 @@ The project page for the NetCDF User's Guide can be found at [the NetCDF User's 
 
 ## The Purpose of NetCDF {#netcdf_purpose}
 
-The purpose of the Network Common Data Form (netCDF) interface is to allow you to create, access, and share array-oriented data in a form that is self-describing and portable.
+<!-- NOTE:
+NUG-new/index.md is a combination of the text below and the text from the
+[netCDF home page](https://www.unidata.ucar.edu/software/netcdf/).
+
+Though not word for word, marking the text here used in NUG-new as strikethrough.
+-->
+
+~~The purpose of the Network Common Data Form (netCDF) interface is to allow you to create, access, and share array-oriented data in a form that is self-describing and portable.
 "Self-describing" means that a dataset includes information defining the data it contains.
 "Portable" means that the data in a dataset is represented in a form that can be accessed by computers with different ways of storing integers, characters, and floating-point numbers.
 Using the netCDF interface for creating new datasets makes the data portable.
-Using the netCDF interface in software for data access, management, analysis, and display can make the software more generally useful.
+Using the netCDF interface in software for data access, management, analysis, and display can make the software more generally useful.~~
 
 
 The netCDF software includes C, Fortran 77, Fortran 90, and C++ interfaces for accessing netCDF data. These libraries are available for many common computing platforms.
