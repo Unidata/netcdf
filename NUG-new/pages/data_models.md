@@ -12,14 +12,14 @@ Two main sources of text were used for this page:
 - "Developing Conventions for netCDF-4\" article by Rew and Caron - https://www.unidata.ucar.edu/software/netcdf/papers/nc4_conventions.html
 More details in notes below.
 -->
+
 [//]: # (TODO: Review other possible source of content.)
-[//]: # (      - Unidata's Common Data Model (CDM) - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/common_data_model_overview.html)
+[//]: # (      - Unidata's Common Data Model - CDM - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/common_data_model_overview.html)
 [//]: # (      - CDM NetCDF Mapping - https://docs.unidata.ucar.edu/netcdf-java/current/userguide/cdm_netcdf_mapping.html)
 
-
-[//]: # (TODO: Decide where should we put "Limitations of NetCDF" section in NUG/netcdf_introduction.md ?)
-[//]: # (      - Is the "2 GiBytes size limit" in CDF-1 part of the data model?)
-[//]: # (      - Is the "only one unlimited dimension" limitation in CDF-1, 2, and -5 part of the data model?)
+[//]: # (TODO: Decide where should we put Limitations of NetCDF section in NUG/netcdf_introduction.md)
+[//]: # (      - Is the `2 GiBytes size limit` in CDF-1 part of the data model?)
+[//]: # (      - Is the `only one unlimited dimension` limitation in CDF-1, 2, and -5 part of the data model?)
 
 NetCDF has two main data models. 
 * The netCDF Classic Data Model, which represents a dataset with named variables, dimensions, and attributes.
@@ -32,11 +32,11 @@ support for unsigned integer and 64-bit integer data types.
 Whereas ncZarr supports a subset of the Enhanced Data Model
 that does not include support for strings, user-defined types, or VLEN dimensions.
 
-<!-- TODO: Should we use CDL, C, Fortran, Java to clarify some aspects of the data model? (E.g., dimension order, data types, etc.)
-If so we should mention something about them here (with pointers to full descriptions).
-Or add more details (and pointers) to CDL and libraries in index.md and netcdf_overview.md. -->
-
-<!-- Do we explain the difference between Enhanced DM and CDM?  -->
+[//]: # (TODO: Should we use CDL, C, Fortran, Java to clarify some aspects of the data model?)
+[//]: # (      E.g., dimension order, data types, etc. If so we should mention something about)
+[//]: # (      them here, with pointers to full descriptions. Or add more details, and pointers, )
+[//]: # (      to CDL and libraries in index.md and netcdf_overview.md.)
+[//]: # (TODO: Do we explain the difference between Enhanced DM and CDM?)
 
 
 ## NetCDF Classic Data Model
@@ -106,13 +106,19 @@ A dimension might also be used to index other quantities, for example station or
 
 A dimension length is either an arbitrary positive integer or unlimited.
 Dimensions with an unlimited length are called unlimited dimensions or record dimensions.
-<!-- TODO: Move the rest of this section be in the variable section?? Or is write/access performance impacts part of the data model? But again, perhaps better in the variable section than in the dimension section. -->
+
+[//]: # (TODO: Consider moving the rest of this section into the variable section.)
+[//]: # (      Or is write/access performance impacts part of the data model?)
+[//]: # (      But again, perhaps better in the variable section than in the dimension section.)
+
 Unlimited dimensions indicate that data may be efficiently appended to variables along that dimension.
 A variable with an unlimited dimension can grow to any length along that dimension.
 The unlimited dimension index is like a record number in conventional record-oriented files.
 
 In the netCDF classic data model, a dataset can have at most one unlimited dimension, but need not have any.
-<!-- TODO: Is relation between dimension ordering and array layout part of data model?? -->
+
+[//]: # (TODO: Is relation between dimension ordering and array layout part of data model??)
+
 If a variable has an unlimited dimension, that dimension must be the most significant (slowest changing) one.
 ???Thus any unlimited dimension must be the first dimension in a CDL shape and the first dimension in corresponding C array declarations.???
 
@@ -133,10 +139,10 @@ A scalar variable has rank 0, a vector has rank 1 and a matrix has rank 2.
 A variable may also have associated attributes, which may be added, deleted or changed after the variable is created. <!-- ??? Creation time here as well.???> 
 
 A variables shape and the dimensions that make up that shape define the index space that allows individual elements of the variable to be identified.
-<!-- TODO: Shared dimensions indicating a shared grid is mentioned in dimensino section. It should probably be moved to the variables section.
+
+[//]: # (TODO: Consider moving mention of shared dimensions indicating a shared grid to dimension section.)
 
 Dimensions shared by two or more variables indicates the variables share a grid / coordinate system.
--->
 
 #### Coordinate Variables
 
@@ -149,7 +155,10 @@ It typically defines a physical coordinate corresponding to that dimension.
 ~~The above CDL example includes the coordinate variables lat, lon, level and time, defined as follows:~~
 
 Current application packages that make use of coordinate variables commonly assume they are numeric vectors and strictly monotonic (all values are different and either increasing or decreasing).
-<!-- TODO: Current "Best Practices" section defines 'char station(station, stn_len)' as a coordinate variable. The above does not include string value coord vars. Need to harmonize various coord var sections. -->
+
+[//]: # (TODO: Harmonize the various coordinate variable sections.)
+[//]: # (      E.g. - NUG/bestpractices.md#coordinate_systems section defines `char station\(station, stn_len\)`)
+[//]: # (      as a coordinate variable. The above does not include string value coord vars.)
 
 ### Attributes
 NetCDF attributes are used to store data about the data (ancillary data or metadata), similar in many ways to the information stored in data dictionaries and schema in conventional database systems.
@@ -163,22 +172,20 @@ In ~~netCDF-4 file~~ netCDF enhanced data model datasets, attributes can also be
 An attribute has an associated variable (the null "global variable" for a global or group-level attribute), a name, a data type, a length, and a value.
 The current version treats all attributes as vectors; scalar values are treated as single-element vectors.
 
-<!-- TODO: Rewrite next sentence something like: "Follow community conventions for attribute names where possible."
+[//]: # (TODO: Consider rewriting sentence recommending meaningful/conventional attribute names.)
+[//]: # (      Something like: `Follow community conventions for attribute names where possible.`)
 Conventional attribute names should be used where applicable.
-New names should be as meaningful as possible. -->
+New names should be as meaningful as possible.
 
 The types permitted for attributes are the same as the netCDF external data types for variables.
 Attributes with the same name for different variables should sometimes be of different types.
 For example, the attribute valid_max, specifying the maximum valid data value for a variable of type int, should be of type int.
 Whereas the attribute valid_max for a variable of type double, should instead be of type double.
 
+[//]: # (TODO: Decide how much about creating and/or deleting netCDF objects is part of data model.)
 Attributes are more dynamic than variables or dimensions; they can be deleted and have their type, length, and values changed after they are created, whereas the netCDF interface provides no way to delete a variable or to change its type or shape.
-<!-- TODO: Again, is how/when create delete part of data model.
--->
 
 ### Differences between Attributes and Variables
-<!-- TODO: Does this section need updating?
--->
 
 In contrast to variables, which are intended for bulk data, attributes are intended for ancillary data, or information about the data.
 The total amount of ancillary data associated with a netCDF object, and stored in its attributes, is typically small enough to be memory-resident.
@@ -201,11 +208,11 @@ More generally, if data require ancillary data to describe them, are multidimens
 
 ### Atomic Data Types
 
-[//]: # (TODO: Decide whether to use "atomic", "primitive", and "external" for these data types.)
+[//]: # (TODO: Decide whether to use `atomic`, `primitive`, and `external` for these data types.)
 [//]: # (      The current NUG uses these terms somewhat interchangeable.)
-[//]: # (      The term "external" is in reference to these types being external to the)
+[//]: # (      The term `external` is in reference to these types being external to the)
 [//]: # (      programming language data types used in each particular library.)
-[//]: # (      So, "external" isn't appropriate for data types in the netCDF data model.)
+[//]: # (      So, `external` isn't appropriate for data types in the netCDF data model.)
 
 |---
 | CDL | netCDF-C | netCDF-Java | Description | Availability
@@ -225,8 +232,6 @@ More generally, if data require ancillary data to describe them, are multidimens
 | uint64 | NC_UINT64 | ULONG  | Unsigned 64-bit signed integer       | Enhanced, CDF&#x2011;5
 | string | NC_STRING | STRING | Variable-length string of characters | Enhanced
 
-Note: Availability - A ==> all data models and file variants; E --> Enhanced data model; 5 --> CDF-5
-
 <!-- NOTE:
 See netCDF-Java ArrayType lines 19-46
 https://github.com/Unidata/netcdf-java/blob/01d8aef292cc7bbcee556657129bc88694613d65/cdm/core/src/main/java/ucar/array/ArrayType.java#L19-L46
@@ -239,20 +244,19 @@ Text from NUG/types.md#external_types
 The netCDF atomic data types were chosen to provide a reasonably wide range of trade-offs between data precision and number of bits required for each value.
 They are independent from whatever internal data types are supported by a particular machine and language combination.
 
-<!-- NOTE:
-This is new text. Better for data model section?
--->
+[//]: # (TODO: This is new text. Better for data model section?)
 The netCDF atomic data types provide a variety of integer, floating point, and character data types.
 The data types in different programming languages and on different computing platforms will not necessarily align with the netCDF atomic data types.
 In those cases conversions will be necessary and are generally handled by the different language libraries.
 (More details on conversions in ???section???.)
 
-<!-- NOTE:
-Not sure data model section is appropriate for discussion of converting between netCDF data types and language specific data types. The following is from NUG/types.md#external_types. Would a seperate section on conversions (and mapping for DAP, Zarr, etc.) makes sense?
--->
-<!-- NOTE:
-I don't think talk of errors makes sense in a data model section.
--->
+[//]: # (TODO: Decide where conversion to language specific data types should be discussed.)
+[//]: # (      Probably not appropriate for data model section. The following text is from)
+[//]: # (      NUG/types.md#external_types. Perhaps need a section on implementations and)
+[//]: # (      issues that apply to all implementations. Related to mappings for DAP, Zarr, etc.)
+
+[//]: # (TODO: Also, discussing errors probably doesn't make sense in a data model section.)
+
 Converting from one numeric type to another may result in an error if the target type is not capable of representing the converted value.
 
 Note that mere loss of precision in type conversion does not return an error.
@@ -269,10 +273,11 @@ However, when reading byte data to be converted into other numeric types, it is 
 #### String data types in netCDF
 ##### `Char` array Strings
 ##### String data type in Enhanced Data Model
-<!-- TODO: The ncgen man page doc says
-"For netCDF extended, the use of the char type is deprecated in favor of the string type."
-This is the only mention of deprecation for 'char' type. Not sure deprecated is the right term, maybe discouraged.
--->
+
+[//]: # (TODO: Review various statements about char vs String.)
+[//]: # (      The ncgen man page doc says `For netCDF extended, the use of the char type is deprecated in favor of the string type.`)
+[//]: # (      This is the only mention of deprecation for `char' type. Not sure deprecated is the right term, maybe discouraged.)
+
 ##### String character encodings (UTF-8)
 
 ### User Defined Data Types
@@ -281,7 +286,7 @@ The Enhanced Data Model supports compound types (similar to C-structs), VLEN typ
 #### Compound Types
 #### VLEN Types
 
-<!-- TODO: Is the VLEN atomic read part of the data model? -->
+[//]: # (TODO: Is the VLEN atomic read part of the data model?)
 
 #### Opaque Types
 #### Enum Types
@@ -301,8 +306,7 @@ Case is significant in netCDF names.
 
 ### Length of NetCDF Object Names
 
-<!-- TODO: Some of this is netCDF-C specific.
--->
+[//]: # (TODO: Separate out the netCDF-C specific material.)
 A zero-length name is not allowed.
 
 Names longer than ::NC_MAX_NAME will not be accepted any netCDF define function. An error of ::NC_EMAXNAME will be returned.

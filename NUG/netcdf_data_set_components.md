@@ -73,10 +73,9 @@ The basic unit of named data in a netCDF dataset is a variable. When a variable 
 
 ~~Variables are used to store the bulk of the data in a netCDF dataset. A variable represents an array of values of the same type. A scalar value is treated as a 0-dimensional array. A variable has a name, a data type, and a shape described by its list of dimensions specified when the variable is created. A variable may also have associated attributes, which may be added, deleted or changed after the variable is created.~~
 
-<!-- TODO: Some of the following should probably get moved into NUG-new/pages/cdl.md
-- Probably the form of variable declarations
-- The types supported by CDF-1, -2, -5 and netCDF-4 should probably go in NUG-new/pages/file_formats.md
--->
+[//]: # (TODO: Some of the following should probably get moved into NUG-new/pages/cdl.md)
+[//]: # (      - Probably the form of variable declarations)
+[//]: # (      - The types supported by CDF-1, -2, -5 and netCDF-4 should probably go in NUG-new/pages/file_formats.md)
 
 A variable external data type is one of a small set of netCDF types. In classic CDF-1 and 2 files, only the original six types are available (byte, character, short, int, float, and double). CDF-5 adds unsigned byte, unsigned short, unsigned int, 64-bit int, and unsigned 64-bit int.  In netCDF-4, variables may also use these additional data types, plus the string data type. Or the user may define a type, as an opaque blob of bytes, as an array of variable length arrays, or as a compound type, which acts like a C struct. (See \ref data_type).
 
@@ -143,8 +142,8 @@ The external type of an attribute is specified when it is created. ~~The types p
 
 ~~Attributes are more dynamic than variables or dimensions; they can be deleted and have their type, length, and values changed after they are created, whereas the netCDF interface provides no way to delete a variable or to change its type or shape.~~
 
-<!-- TODO: Move the following into NUG-new/pages/cdl.md
--->
+[//]: # (TODO: Move the following into NUG-new/pages/cdl.md)
+
 The CDL notation for defining an attribute is
 
 \code
@@ -215,8 +214,8 @@ The strikethrough text in this section has been moved to NUG-new/data_models.md#
 
 # Is NetCDF a Good Archive Format? {#archival}
 
-<!-- TODO: This should go in an overview section (or advice section)
--->
+[//]: # (TODO: This should go in an overview section \(or advice section\))
+
 NetCDF classic formats can be used as a general-purpose archive format for storing arrays. Compression of data is possible with netCDF (e.g., using arrays of eight-bit or 16-bit integers to encode low-resolution floating-point numbers instead of arrays of 32-bit numbers), or the resulting data file may be compressed before storage (but must be uncompressed before it is read). Hence, using these netCDF formats may require more space than special-purpose archive formats that exploit knowledge of particular characteristics of specific datasets.
 
 With netCDF-4/HDF5 format, the zlib library can provide compression on a per-variable basis. That is, some variables may be compressed, others not. In this case the compression and decompression of data happen transparently to the user, and the data may be stored, read, and written compressed.
@@ -295,8 +294,9 @@ Starting with version 4.1.1 the netCDF C libraries and utilities have supported 
 
 # Data Access {#data_access}
 
-<!-- TODO: Are data access / query patterns part of the data model? Perhaps just the "forms of data access" section?
--->
+[//]: # (TODO: Decide where in NUG-new this discussion of data access / query patterns belongs.)
+[//]: # (      The \"Forms of Data Access\" section seems appropriate for the data model.)
+
 To access (read or write) netCDF data you specify an open netCDF dataset, a netCDF variable, and information (e.g., indices) identifying elements of the variable. The name of the access function corresponds to the internal type of the data. If the internal type has a different representation from the external type of the variable, a conversion between the internal type and external type will take place when the data is read or written.
 
 Access to data in classic formats is direct. Access to netCDF-4 data is buffered by the HDF5 layer. In either case you can access a small subset of data from a large dataset efficiently, without first accessing all the data that precedes it.

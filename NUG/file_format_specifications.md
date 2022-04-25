@@ -4,6 +4,7 @@ Appendix B. File Format Specifications {#file_format_specifications}
 [TOC]
 
 # The NetCDF Classic Format Specification {#classic_format_spec}
+<!-- NOTE: All netCDF-3 text moved to NUG-new/classic-file-formats.md -->
 
 To present the format more formally, we use a BNF grammar notation.
 In this notation:

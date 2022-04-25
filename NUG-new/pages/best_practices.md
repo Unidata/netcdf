@@ -6,18 +6,17 @@ toc: false
 permalink: best_practices.html
 ---
 
-<!-- TODO: Do we need some introductory text for the best practices?
--->
-<!-- TODO: Should attribute conventions be part of best pracices?
--->
+<!-- NOTE: All text from NUG/bestpractices.md -->
+[//]: # (TODO: Decide if any introductory text is needed for Best Practices. Write if needed.)
+[//]: # (TODO: Decide if attribute conventions be part of best practices. Why not?)
 
 ## Conventions
 
 While netCDF is intended for "self-documenting data", it is often necessary for data writers and readers to agree upon attribute conventions and representations for discipline-specific data structures.
 These agreements are written up as human readable documents called ***netCDF conventions***.
 
-<!-- TODO: Should "registered conventions" page be part of NUG-SBP or at least moved into Unidata/netcdf repo?
--->
+[//]: # (TODO Decide if \"registered conventions\" page be part of NUG-SBP or at least moved into Unidata/netcdf repo?)
+
 Use an existing Convention if possible. See the list of [registered conventions](https://www.unidata.ucar.edu/software/netcdf/conventions.html).
 
 The CF Conventions are recommended where applicable, especially for gridded (model) datasets.

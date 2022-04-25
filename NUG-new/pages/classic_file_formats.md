@@ -1,5 +1,5 @@
 ---
-title: NetCDF Classic File Formats
+title: NetCDF Classic File Format Specifications
 last_updated: 2021-04-23
 sidebar: nnug_sidebar
 toc: false

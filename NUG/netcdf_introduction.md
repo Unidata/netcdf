@@ -5,7 +5,7 @@
 
 # The netCDF Interface {#netcdf_interface}
 
-[//]: # (TODO: Consider moving some of the text in this section to 'NUG-new/index.md'.)
+[//]: # (TODO: Consider moving some of the text in this section to NUG-new/index.md.)
 [//]: # (      Text needs updating - include Java, Python, etc.)
 
 The Network Common Data Form, or netCDF, is an interface to a library of data access functions for storing and retrieving data in the form of arrays.
@@ -32,7 +32,7 @@ Unidata's netCDF software is freely available [via HTTP and FTP](https://www.uni
 For detailed installation instructions, see \ref getting_and_building_netcdf.
 
 # The netCDF File Format {#netcdf_format}
-[//]: # (TODO: Consider moving the text in this section to 'NUG-new/netcdf_history.md'.)
+[//]: # (TODO: Consider moving the text in this section to NUG-new/netcdf_history.md.)
 
 Until version 3.6.0, all versions of netCDF employed only one binary data format, now referred to as netCDF classic format.
 NetCDF classic is the default format for all versions of netCDF.
@@ -68,7 +68,7 @@ See \ref netcdf_format.
 However, users are discouraged from using the format specification to develop independent low-level software for reading and writing netCDF files, because this could lead to compatibility problems if the format is ever modified.
 
 ## How to Select the Format {#select_format}
-[//]: # (TODO: Consider moving the text in this section to `NUG-new/file_formats.md`)
+[//]: # (TODO: Consider moving the text in this section to NUG-new/file_formats.md)
 [//]: # (      May need some rewriting.)
 
 With four different base formats, care must be taken in creating data files to choose the correct base format.
@@ -92,7 +92,7 @@ C programmers see nc_set_default_format().
 Fortran programs see NF_SET_DEFAULT_FORMAT.
 
 ## NetCDF Classic Format (CDF-1) {#classic_format}
-[//]: # (TODO: Consider moving the next few sections to `NUG-new/file_formats.md` )
+[//]: # (TODO: Consider moving the next few sections to NUG-new/file_formats.md )
 [//]: # (      Some rewriting probably needed.)
 
 The original netCDF format is identified using four bytes in the file header.

@@ -3,6 +3,9 @@
 [TOC]
 \tableofcontents
 
+<!-- NOTE:
+All text in this file has been moved to NUG-new/best_practices.md.
+-->
 ## Best Practices {#bp_Best_Practices}
 
 ## Conventions {#bp_Conventions}

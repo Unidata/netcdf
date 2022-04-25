@@ -2,18 +2,18 @@
 
 entries:
   - title: Sidebar
-    product: NetCDF User's Guide - Specifications and Best Practices
+    product: NetCDF User's Guide
     folders:
 
-      - title: NetCDF and NUG Overview
+      - title: NetCDF User's Guide
         output: web, pdf
         folderitems:
 
-          - title: The NetCDF User's Guide (NUG)
+          - title: NUG Overview
             url: /index.html
             output: web, pdf
 
-          - title: NetCDF Overview
+          - title: ???
             url: /netcdf_overview.html
             output: web, pdf
 

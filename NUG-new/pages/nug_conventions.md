@@ -5,6 +5,7 @@ sidebar: nnug_sidebar
 toc: false
 permalink: nug_conventions.html
 ---
+<!-- NOTE: This text originally from NUG/bestpractices.md -->
 
 Attribute conventions are assumed by some netCDF generic applications, e.g., ‘units’ as the name for a string attribute that gives the units for a netCDF variable.
 
@@ -12,8 +13,10 @@ It is strongly recommended that applicable conventions be followed unless there 
 Below we list the names and meanings of recommended standard attributes that have proven useful.
 Note that some of these (e.g. units, valid_range, scale_factor) assume numeric data and should not be used with character data.
 
-<!-- TODO: Add "Use Conventions" section here. Move the Best Practices section on conventions here. Move `Conventions` attribute to the top of the attributes list.
--->
+[//]: # (TODO: Decide how to reference the conventions section in Best Practices, NUG-new/best_practices.md#Conventions)
+[//]: # (Move some of it here or this there.)
+[//]: # (Maybe move `Conventions` attribute to the top of the attributes list.)
+
 
 > Attribute names commencing with underscore ('\_') are reserved for use by the netCDF library.
 
@@ -165,9 +168,8 @@ Typical conventions web sites will include references to documents in some form 
 
 ## Provenance Attributes {#provenance_attributes}
 
-<!-- TODO: Decide which aspects of this apply to any netCDF implementation.
-Move netCDF-C specific material to nc-C docs?
--->
+[//]: # (TODO: Decide which aspects of this apply to any netCDF implementation.)
+[//]: # (Move netCDF-C specific material to nc-C docs or expand to include nc-Java?)
 
 These attributes can occur in netCDF enhanced (netcdf-4) files beginning
 with version `4.4.1`.
