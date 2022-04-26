@@ -5,16 +5,12 @@ entries:
     product: NetCDF User's Guide
     folders:
 
-      - title: NetCDF User's Guide
+      - title: An Introduction to NetCDF
         output: web, pdf
         folderitems:
 
-          - title: NUG Overview
+          - title: Introduction
             url: /index.html
-            output: web, pdf
-
-          - title: ???
-            url: /netcdf_overview.html
             output: web, pdf
 
       - title: NetCDF Data Models
@@ -54,7 +50,7 @@ entries:
             output: web, pdf
 
           - title: NetCDF Classic File Formats (CDF-1, -2, and -5)
-            url: /classic_file_formats.html
+            url: /nc3_file_formats.html
             output: web, pdf
 
           - title: NetCDF-4 (HDF5) File Format
