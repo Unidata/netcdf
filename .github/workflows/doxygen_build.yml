@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: mattnotmitt/doxygen-action@v1
         with:
-          working-directory: 'NUG/'
+          working-directory: 'NUG-doxygen/'
           doxyfile-path: 'Doxyfile'
       - uses: actions/upload-artifact@v2
         with:
