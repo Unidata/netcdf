@@ -7,6 +7,9 @@
 Data in a netCDF file may be one of the \ref external_types, or may be a user-defined data type (see \ref user_defined_types).
 
 #External Data Types {#external_types}
+<!--
+The strikethrough text in this section has been moved to NUG-new/data_models.md#atomic_data_types
+-->
 
 The atomic external types supported by the netCDF interface are:
 - ::NC_BYTE 	8-bit signed integer
@@ -25,8 +28,8 @@ The atomic external types supported by the netCDF interface are:
 \remark * These types are available only for CDF5 (NC_CDF5) and netCDF-4 format (NC_NETCDF4) files. All the unsigned ints and the 64-bit ints are for CDF5 or netCDF-4 files only.
 \remark + These types are available only for netCDF-4 (NC_NETCDF4) files.
 
-These types were chosen to provide a reasonably wide range of trade-offs between data precision and number of bits required for each value.
-These external data types are independent from whatever internal data types are supported by a particular machine and language combination.
+~~These types were chosen to provide a reasonably wide range of trade-offs between data precision and number of bits required for each value.
+These external data types are independent from whatever internal data types are supported by a particular machine and language combination.~~
 
 These types are called "external", because they correspond to the portable external representation for netCDF data.
 When a program reads external netCDF data into an internal variable, the data is converted, if necessary, into the specified internal type.
@@ -39,19 +42,19 @@ Programs need not be changed to accommodate a change to the external type of a v
 
 If conversion to or from an external numeric type is necessary, it is handled by the library.
 
-Converting from one numeric type to another may result in an error if the target type is not capable of representing the converted value.
+~~Converting from one numeric type to another may result in an error if the target type is not capable of representing the converted value.~~
 For example, an internal short integer type may not be able to hold data stored externally as an integer.
 When accessing an array of values, a range error is returned if one or more values are out of the range of representable values, but other values are converted properly.
 
-Note that mere loss of precision in type conversion does not return an error.
+~~Note that mere loss of precision in type conversion does not return an error.
 Thus, if you read double precision values into a single-precision floating-point variable, for example, no error results unless the magnitude of the double precision value exceeds the representable range of single-precision floating point numbers on your platform.
 Similarly, if you read a large integer into a float incapable of representing all the bits of the integer in its mantissa, this loss of precision will not result in an error.
-If you want to avoid such precision loss, check the external types of the variables you access to make sure you use an internal type that has adequate precision.
+If you want to avoid such precision loss, check the external types of the variables you access to make sure you use an internal type that has adequate precision.~~
 
 The names for the primitive external data types (char, byte, ubyte, short, ushort, int, uint, int64, uint64, float or real, double, string) are reserved words in CDL, so the names of variables, dimensions, and attributes must not be type names.
 
-It is possible to interpret byte data as either signed (-128 to 127) or unsigned (0 to 255).
-However, when reading byte data to be converted into other numeric types, it is interpreted as signed.
+~~It is possible to interpret byte data as either signed (-128 to 127) or unsigned (0 to 255).
+However, when reading byte data to be converted into other numeric types, it is interpreted as signed.~~
 
 For the correspondence between netCDF external data types and the data types of a language see \ref variables.
 

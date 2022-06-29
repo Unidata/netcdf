@@ -14,6 +14,14 @@ NetCDF is:
 * APIs
 * Libraries
 
+<!-- NOTE:
+Text from NUG/netcdf_data_set_components.md#data_model, paragraph 1
+-->
+
+A netCDF dataset contains named dimensions, variables, and attributes.
+These components can be used together to capture the meaning of data
+and relations among data fields in an array-oriented dataset.
+
 ## NetCDF Data Models
 
 ### NetCDF Classic Data Model

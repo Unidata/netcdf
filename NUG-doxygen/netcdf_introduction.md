@@ -5,6 +5,9 @@
 
 # The netCDF Interface {#netcdf_interface}
 
+[//]: # (TODO: Consider moving some of the text in this section to NUG-new/index.md.)
+[//]: # (      Text needs updating - include Java, Python, etc.)
+
 The Network Common Data Form, or netCDF, is an interface to a library of data access functions for storing and retrieving data in the form of arrays.
 An array is an n-dimensional (where n is 0, 1, 2, ...) rectangular structure containing items which all have the same data type (e.g., 8-bit character, 32-bit integer).
 A scalar (simple single value) is a 0-dimensional array.
@@ -29,6 +32,7 @@ Unidata's netCDF software is freely available [via HTTP and FTP](https://www.uni
 For detailed installation instructions, see \ref getting_and_building_netcdf.
 
 # The netCDF File Format {#netcdf_format}
+[//]: # (TODO: Consider moving the text in this section to NUG-new/netcdf_history.md.)
 
 Until version 3.6.0, all versions of netCDF employed only one binary data format, now referred to as netCDF classic format.
 NetCDF classic is the default format for all versions of netCDF.
@@ -64,6 +68,8 @@ See \ref netcdf_format.
 However, users are discouraged from using the format specification to develop independent low-level software for reading and writing netCDF files, because this could lead to compatibility problems if the format is ever modified.
 
 ## How to Select the Format {#select_format}
+[//]: # (TODO: Consider moving the text in this section to NUG-new/file_formats.md)
+[//]: # (      May need some rewriting.)
 
 With four different base formats, care must be taken in creating data files to choose the correct base format.
 
@@ -86,6 +92,8 @@ C programmers see nc_set_default_format().
 Fortran programs see NF_SET_DEFAULT_FORMAT.
 
 ## NetCDF Classic Format (CDF-1) {#classic_format}
+[//]: # (TODO: Consider moving the next few sections to NUG-new/file_formats.md )
+[//]: # (      Some rewriting probably needed.)
 
 The original netCDF format is identified using four bytes in the file header.
 All files in this format have "CDF\001" at the beginning of the file.
@@ -132,6 +140,7 @@ NetCDF-4 files can't be read by any version of the netCDF library previous to 4.
 For more discussion of format issues see [The NetCDF Tutorial](https://www.unidata.ucar.edu/software/netcdf/docs/tutorial_8dox.html).
 
 # NetCDF Library Architecture {#architecture}
+[//]: # (TODO: Move this section to C-library docs.)
 
 ![NetCDF Architecture](images/netcdf_architecture.png "NetCDF Architecture")
 
@@ -144,6 +153,7 @@ The netCDF C-based libraries depend on a core C library and some externally deve
 * "Apps" in the above means applications, not mobile apps!
 
 # What about Performance? {#performance}
+[//]: # (TODO: Decide if keeping this section in NUG-new Where? In intro?)
 
 One of the goals of netCDF is to support efficient access to small subsets of large datasets.
 To support this goal, netCDF uses direct access rather than sequential access.
@@ -161,22 +171,25 @@ We continue to study the challenge of implementing netCDF-4/HDF5 format without 
 
 # Creating Self-Describing Data conforming to Conventions {#creating_self}
 
-The mere use of netCDF is not sufficient to make data "self-describing" and meaningful to both humans and machines.
+<!-- Moved to NUG-new/community_conventions_and_practices.md -->
+
+~~The mere use of netCDF is not sufficient to make data "self-describing" and meaningful to both humans and machines.
 The names of variables and dimensions should be meaningful and conform to any relevant conventions.
-Dimensions should have corresponding coordinate variables (See \ref coordinate_variables) where sensible.
+Dimensions should have corresponding coordinate variables (See \ref coordinate_variables) where sensible.~~
 
-Attributes play a vital role in providing ancillary information.
+~~Attributes play a vital role in providing ancillary information.
 It is important to use all the relevant standard attributes using the relevant conventions.
-For a description of reserved attributes (used by the netCDF library) and attribute conventions for generic application software, see \ref attribute_conventions.
+For a description of reserved attributes (used by the netCDF library) and attribute conventions for generic application software, see \ref attribute_conventions.~~
 
-A number of groups have defined their own additional conventions and styles for netCDF data.
-Descriptions of these conventions, as well as examples incorporating them can be accessed from the netCDF Conventions site, https://www.unidata.ucar.edu/software/netcdf/conventions.html.
+~~A number of groups have defined their own additional conventions and styles for netCDF data.
+Descriptions of these conventions, as well as examples incorporating them can be accessed from the netCDF Conventions site, https://www.unidata.ucar.edu/software/netcdf/conventions.html.~~
 
-These conventions should be used where suitable.
+~~These conventions should be used where suitable.
 Additional conventions are often needed for local use.
-These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.
+These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.~~
 
 # Limitations of NetCDF {#limitations}
+[//]: # (TODO: Decide if/where to move this section. Overview or Best Practices?)
 
 The netCDF classic data model is widely applicable to data that can be organized into a collection of named array variables with named attributes, but there are some important limitations to the model and its implementation in software.
 Some of these limitations have been removed or relaxed in netCDF-4 files, but still apply to netCDF classic and netCDF 64-bit offset files.
