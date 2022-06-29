@@ -13,6 +13,18 @@ entries:
             url: /index.html
             output: web, pdf
 
+          - title: What is NetCDF?
+            url: /what_is_netcdf.html
+            output: web, pdf
+
+          - title: The Purpose of the NUG
+            url: /purpose_of_nug.html
+            output: web, pdf
+
+          - title: NetCDF Implementations
+            url: /netcdf_implementations.html
+            output: web, pdf
+
       - title: NetCDF Data Models
         output: web, pdf
         folderitems:
@@ -27,18 +39,6 @@ entries:
 
           - title: NetCDF Enhanced Data Model
             url: /enhanced_data_model.html
-            output: web, pdf
-
-      - title: Describing NetCDF Datasets - CDL and NcML
-        output: web, pdf
-        folderitems:
-
-          - title: CDL (netCDF Common Data Language)
-            url: /cdl.html
-            output: web, pdf
-
-          - title: NcML (NetCDF Markup Language)
-            url: /ncml.html
             output: web, pdf
 
       - title: NetCDF File Formats, Encodings, and Mappings
@@ -65,16 +65,36 @@ entries:
             url: /nczarr.html
             output: web, pdf
 
-      - title: Best Practices and Conventions
+          - title: Compression in NetCDF
+            url: /compression.html
+            output: web, pdf
+
+      - title: Describing NetCDF Datasets - CDL and NcML
         output: web, pdf
         folderitems:
 
-          - title: Best Practices
-            url: /best_practices.html
+          - title: CDL (netCDF Common Data Language)
+            url: /cdl.html
+            output: web, pdf
+
+          - title: NcML (NetCDF Markup Language)
+            url: /ncml.html
+            output: web, pdf
+
+      - title: Community Conventions and Practices
+        output: web, pdf
+        folderitems:
+
+          - title: Community Conventions and Practices
+            url: /community_conventions_and_practices.html
             output: web, pdf
 
           - title: NUG Conventions
             url: /nug_conventions.html
+            output: web, pdf
+
+          - title: Best Practices
+            url: /best_practices.html
             output: web, pdf
 
           - title: Other Conventions

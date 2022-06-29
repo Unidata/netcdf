@@ -7,7 +7,8 @@ permalink: cdl.html
 ---
 
 NetCDF CDL (Common Data form Language) is a text notation for representing the structure and data of a binary netCDF dataset.
-CDL can be read (and edited) by a human. It can also be read and produced by machines. For instance, a CDL description can be generated, given a netCDF file, by the `ncdump` utility and a netCDF file can be generated, given a CDL desription, by the `ncgen` utility.
+CDL can be read (and edited) by a human. It can also be read and produced by machines.
+For instance, a CDL description can be generated, given a netCDF file, by the `ncdump` utility and a netCDF file can be generated, given a CDL desription, by the `ncgen` utility.
 
 [//]: # (TODO: Update the following with more current ncgen man page, Unidata/netcdf-c - ncgen/ncgen.1)
 [//]: # (      The following text was taken from the NUG CDL document, NUG/cdl.md, which is not)

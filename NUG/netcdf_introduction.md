@@ -153,7 +153,7 @@ The netCDF C-based libraries depend on a core C library and some externally deve
 * "Apps" in the above means applications, not mobile apps!
 
 # What about Performance? {#performance}
-[//]: # (TODO: Decide if keeping this sectionin NUG-new Where? In intro?)
+[//]: # (TODO: Decide if keeping this section in NUG-new Where? In intro?)
 
 One of the goals of netCDF is to support efficient access to small subsets of large datasets.
 To support this goal, netCDF uses direct access rather than sequential access.
@@ -170,22 +170,23 @@ The use of HDF5 as a data format adds significant overhead in metadata operation
 We continue to study the challenge of implementing netCDF-4/HDF5 format without compromising performance.
 
 # Creating Self-Describing Data conforming to Conventions {#creating_self}
-[//]: # (TODO: Decide if/where to move this section. Overview or Best Practices?)
 
-The mere use of netCDF is not sufficient to make data "self-describing" and meaningful to both humans and machines.
+<!-- Moved to NUG-new/community_conventions_and_practices.md -->
+
+~~The mere use of netCDF is not sufficient to make data "self-describing" and meaningful to both humans and machines.
 The names of variables and dimensions should be meaningful and conform to any relevant conventions.
-Dimensions should have corresponding coordinate variables (See \ref coordinate_variables) where sensible.
+Dimensions should have corresponding coordinate variables (See \ref coordinate_variables) where sensible.~~
 
-Attributes play a vital role in providing ancillary information.
+~~Attributes play a vital role in providing ancillary information.
 It is important to use all the relevant standard attributes using the relevant conventions.
-For a description of reserved attributes (used by the netCDF library) and attribute conventions for generic application software, see \ref attribute_conventions.
+For a description of reserved attributes (used by the netCDF library) and attribute conventions for generic application software, see \ref attribute_conventions.~~
 
-A number of groups have defined their own additional conventions and styles for netCDF data.
-Descriptions of these conventions, as well as examples incorporating them can be accessed from the netCDF Conventions site, https://www.unidata.ucar.edu/software/netcdf/conventions.html.
+~~A number of groups have defined their own additional conventions and styles for netCDF data.
+Descriptions of these conventions, as well as examples incorporating them can be accessed from the netCDF Conventions site, https://www.unidata.ucar.edu/software/netcdf/conventions.html.~~
 
-These conventions should be used where suitable.
+~~These conventions should be used where suitable.
 Additional conventions are often needed for local use.
-These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.
+These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.~~
 
 # Limitations of NetCDF {#limitations}
 [//]: # (TODO: Decide if/where to move this section. Overview or Best Practices?)

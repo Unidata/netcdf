@@ -7,6 +7,7 @@ permalink: best_practices.html
 ---
 
 <!-- NOTE: All text from NUG/bestpractices.md -->
+
 [//]: # (TODO: Decide if any introductory text is needed for Best Practices. Write if needed.)
 [//]: # (TODO: Decide if attribute conventions be part of best practices. Why not?)
 

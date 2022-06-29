@@ -21,9 +21,9 @@ More details in notes below.
 [//]: # (      - Is the `2 GiBytes size limit` in CDF-1 part of the data model?)
 [//]: # (      - Is the `only one unlimited dimension` limitation in CDF-1, 2, and -5 part of the data model?)
 
-NetCDF has two main data models. 
-* The netCDF Classic Data Model, which represents a dataset with named variables, dimensions, and attributes.
-* The netCDF Enhanced Data Model, which adds hierarchical structure, string and unsigned integer types, and user-defined types.  
+NetCDF has two main data models:
+* The **netCDF Classic Data Model**, which represents a dataset with named variables, dimensions, and attributes.
+* The **netCDF Enhanced Data Model**, which adds hierarchical structure, string and unsigned integer types, and user-defined types.
 
 Some file formats and encodings support subsets of the Enhanced Data Model
 or minor extensions to the Classic Data Model.
