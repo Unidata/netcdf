@@ -6,22 +6,25 @@
 
 ## Parts of a NetCDF Classic File {#classic_file_parts}
 
-A netCDF classic dataset (including CDF-1, 2, and 5 formats) is stored as a single file comprising two parts:
+A netCDF classic dataset (including CDF-1, 2, and 5 formats) is stored as a single file comprising three parts:
 
 * a header, containing all the information about dimensions, attributes, and variables except for the variable data;
-* a data part, comprising fixed-size data, containing the data for variables that don't have an unlimited dimension; and variable-size data, containing the data for variables that have an unlimited dimension.
+* a fixed-size data part, containing the data for variables that don't have an unlimited dimension;
+* and a variable-size data part, containing the data for variables that have an unlimited dimension.
 
-Both the header and data parts are represented in a machine-independent form.
+All three parts are represented in a machine-independent form.
 This form is very similar to XDR (eXternal Data Representation), extended to support efficient storage of arrays of non-byte data.
 
 The header at the beginning of the file contains information about the dimensions, variables, and attributes in the file, including their names, types, and other characteristics.
-The information about each variable includes the offset to the beginning of the variable's data for fixed-size variables or the relative offset of other variables within a record.
+The information about each variable includes the offset to the beginning of the variable's data for fixed-size variables, or the relative offset of other variables within a record.
 The header also contains dimension lengths and information needed to map multidimensional indices for each variable to the appropriate offsets.
 
-By default, this header has little usable extra space; it is only as large as it needs to be for the dimensions, variables, and attributes (including all the attribute values) in the netCDF dataset, with a small amount of extra space from rounding up to the nearest disk block size.
+By default, this header has little usable extra space.
+It is only as large as it needs to be for the dimensions, variables, and attributes (including all the attribute values) in the netCDF dataset, with a small amount of extra space from rounding up to the nearest disk block size.
 This has the advantage that netCDF files are compact, requiring very little overhead to store the ancillary data that makes the datasets self-describing.
 A disadvantage of this organization is that any operation on a netCDF dataset that requires the header to grow (or, less likely, to shrink), for example adding new dimensions or new variables, requires moving the data by copying it.
 This expense is incurred when the enddef function is called: nc_enddef() in C, NF_ENDDEF() in Fortran, after a previous call to the redef function: nc_redef() in C or NF_REDEF() in Fortran.
+
 If you create all necessary dimensions, variables, and attributes before writing data, and avoid later additions and renamings of netCDF components that require more space in the header part of the file, you avoid the cost associated with later changing the header.
 
 Alternatively, you can use an alternative version of the enddef function with two underbar characters instead of one to explicitly reserve extra space in the file header when the file is created: in C nc__enddef(), in Fortran NF__ENDDEF(), after a previous call to the redef function.
