@@ -22,7 +22,7 @@ The `netCDF-3` file format has two variants for a total of four file formats:
 For a detailed description and discussion of the `CDF-1`, `CDF-2`, and `CDF-5` file formats, see the ["NetCDF-3 File Formats" page](nc3_file_formats.html).
 For a detailed description and discussion of the `netCDF-4` file format, see the  ["NetCDF-4 File Format" page](nc4_file_format.html).
 
-# Experimental Support for Zarr and NCZarr
+## Experimental Support for Zarr and NCZarr
 
 Both the netCDF-C and netCDF-Java libaries provide experimental support for the `Zarr` and `NCZarr` format.
 (The netCDF-Java library is currently limited to read-only access.)
@@ -32,14 +32,14 @@ Both the netCDF-C and netCDF-Java libaries provide experimental support for the 
 
 For a detailed description and discussion of netCDF support for `Zarr` and `NCZarr`, see the  ["NCZarr" page](nczarr.html).
 
-# Read-Only Support for OPeNDAP 
+## Read-Only Support for OPeNDAP 
 
 NetCDF supports read-only access to the OPeNDAP Data Access Protocols (`DAP-2` and `DAP-4`).
 Both `DAP-2` and `DAP-4` are mapped to the netCDF Enhanced Data Model.
 
 For a detailed description and discussion of netCDF support for OPeNDAP, see the ["OPeNDAP" page](dap.html).
 
-# Other File Formats Supported Read-Only by NetCDF-C and -Java Libraries
+## Other File Formats Supported Read-Only by NetCDF-C and -Java Libraries
 
 The netCDF-C library supports HDF-4 SD format files and ... For a full list see the [netCDF-C File Format Support page]().
 

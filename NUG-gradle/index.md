@@ -17,6 +17,7 @@ The NUG describes and specifies the details of
 
 The NUG also:
 
+* provides a list of [known implementations, libraries, APIs](netcdf_implementations.html)
 * provides a set of [Best Practices](best_practices.html)
 * defines a basic set of [attribute conventions](nug_conventions.html) (e.g., units, valid_min, and scale_factor/add_offset)
 * provides references to other community conventions (e.g., CF, UGRID) - see current list/page
@@ -33,13 +34,17 @@ netcdf minimal_example {   // very simple example of CDL notation
         lon = 3 ;
         lat = 8 ;
     variables:
-        float lon(lon)
-        float lat(lat)
         float rh(lon, lat) ;
+            rh:units = "percent" ;
+            rh:long_name = "Relative humidity" ;
     // global attributes
     :title = "Simple example" ;
 
-    data: // data for lon, lat, and rh not shown for brevity
+    data:
+        rh =
+            2, 3, 5, 7, 11, 13, 17, 19,
+            23, 29, 31, 37, 41, 43, 47, 53,
+            59, 61, 67, 71, 73, 79, 83, 89 ;
 }
 ````
 
