@@ -26,7 +26,9 @@ The NUG also:
 ## Use of CDL in this Document
 
 Throughout the NUG, we will use the [CDL (netCDF Comman Data Language) text notation](cdl.html)
-to present the content and structure of netCDF datasets for all examples. A simple example is shown here
+to present the content and structure of netCDF datasets for all examples.
+
+A simple CDL example is shown here
 
 ````
 netcdf minimal_example {   // very simple example of CDL notation
