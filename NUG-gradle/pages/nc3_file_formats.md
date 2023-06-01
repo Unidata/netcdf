@@ -9,7 +9,7 @@ permalink: nc3_file_formats.html
 This page will describe all three variants of the `netCDF-3` file format:
 * `CDF-1` (aka `netCDF-3` or `classic`) which supports the netCDF Classic Data Model.
 * `CDF-2` (aka `64-bit Offset`) which removes some variable and dataset size limitations of the `CDF-1` format.
-* `CDF-5` (aka `64-bit Data` or pnetcdf) which extends `CDF-2` with support for 64-bit integer and unsigned integer data types.
+* `CDF-5` (aka `64-bit Data` or 'pnetcdf') which extends `CDF-2` with support for 64-bit integer and unsigned integer data types.
 
 ## BNF Grammar
 
@@ -145,10 +145,10 @@ Comments in the grammar point to the notes and special cases, and help to clarif
      ints         = [INT ...]
      floats       = [FLOAT ...]
      doubles      = [DOUBLE ...]
-     ubytes      = [UBYTE ...] padding    // for CDF-5 formats
-     ushorts      = [USHORT ...] padding  // for CDF-5 formats
-     uints        = [UINT ...]            // for CDF-5 formats
-     int64s       = [INT64 ...]           // for CDF-2(?) and CDF-5 formats
+     ubytes      = [UBYTE ...] padding    // for CDF-5 format
+     ushorts      = [USHORT ...] padding  // for CDF-5 format
+     uints        = [UINT ...]            // for CDF-5 format
+     int64s       = [INT64 ...]           // for CDF-5 format
      uint64s      = [UINT64 ...]          // for CDF-5 format
      padding      = <0, 1, 2, or 3 bytes to next 4-byte boundary>
                                   // Header padding uses null (\\x00) bytes.  In
@@ -206,6 +206,27 @@ Comments in the grammar point to the notes and special cases, and help to clarif
      FILL_UINT64  = \xFF \xFF \xFF \xFF \xFF \xFF \xFF \xFE  // (unsigned long long) 18446744073709551614ULL -- for CDF-5 format
 ````
 
+## Differences between CDF-1, CDF-2, and CDF-5
+
+CDF-2, the 64-bit offset format, differs from the classic format only in the VERSION byte, ‘\x02’ instead of ‘\x01’, and the OFFSET entity, a 64-bit instead of a 32-bit offset from the beginning of the file.
+This small format change permits much larger files, but there are still some practical size restrictions.
+Each fixed-size variable and the data for one record's worth of each record variable are still limited in size to a little less that 4 GiB.
+The rationale for this limitation is to permit aggregate access to all the data in a netCDF variable (or a record's worth of data) on 32-bit platforms.
+
+CDF-5, the 64-bit data format, differs from the CDF-2 format in that
+* the magic number version byte (`VERSION`) byte is ‘\x05’ instead of ‘\x02’
+* it adds support for five new integer data types (a 64-bit integer and four unsigned integer data types)
+* the following are non-negative 64-bit integers instead of non-negative 32-bit integers (`NON_NEG`):
+  * the size of a dimension (`dim_length` and `numrecs`)
+  * the number of elements (`nelems`) in a list of dimensions, variables, or attributes
+  * the number of bytes (`nelems`) in the name of a dimension, variable, or attribute
+  * the size (bytes) of a variable (`vsize`), see "Note on vsize" below
+  * the offset (`OFFSET`) to the start (`begin`) of a variable
+  * a dimension ID (`dimid`)
+* empty lists (`ABSENT`) are represented as a 32-bit integer zero followed by a 64-bit integer zero instead of two 32-bit integer zeros
+
+## Notes
+
 **Note on vsize**: This number is the product of the dimension lengths (omitting the record dimension) and the number of bytes per value (determined from the type), increased to the next multiple of 4, for each variable.
 If a record variable, this is the amount of space per record (except that, for backward compatibility, it always includes padding to the next multiple of 4 bytes, even in the exceptional case noted below under “Note on padding”).
 The netCDF “record size” is calculated as the sum of the vsize's of all the record variables.
@@ -242,7 +263,7 @@ This makes the creation of large files faster, but also eliminates the possibili
 
 # Notes on Computing File Offsets {#computing_offsets}
 
-The offset (position within the file) of a specified data value in a classic format or 64-bit offset data file is completely determined by the variable start location (the offset in the begin field), the external type of the variable (the nc_type field), and the dimension indices (one for each of the variable's dimensions) of the value desired.
+The offset (position within the file) of a specified data value in a CDF-1, CDF-2, or CDF-5 data file is completely determined by the variable start location (the offset in the begin field), the external type of the variable (the nc_type field), and the dimension indices (one for each of the variable's dimensions) of the value desired.
 
 The external size in bytes of one data value for each possible netCDF type, denoted `extsize` below, is:
 
@@ -252,30 +273,38 @@ The external size in bytes of one data value for each possible netCDF type, deno
 - NC_INT 4
 - NC_FLOAT 4
 - NC_DOUBLE 8
+- NC_UBYTE	1     // For CDF-5
+- NC_USHORT	2
+- NC_UINT	4
+- NC_INT64	8
+- NC_UINT64	8
 
-The record size, denoted by recsize below, is the sum of the vsize fields of record variables (variables that use the unlimited dimension), using the actual value determined by dimension sizes and variable type in case the vsize field is too small for the variable size.
+The record size, denoted by `recsize` below, is the sum of the `vsize` fields of record variables (variables that use the unlimited dimension), using the actual value determined by dimension sizes and variable type in case the `vsize` field is too small for the variable size.
 
-To compute the offset of a value relative to the beginning of a variable, it is helpful to precompute a “product vector” from the dimension lengths. Form the products of the dimension lengths for the variable from right to left, skipping the leftmost (record) dimension for record variables, and storing the results as the product vector for each variable.
+To compute the offset of a value relative to the beginning of a variable, it is helpful to precompute a “product vector” from the dimension lengths.
+From the products of the dimension lengths for the variable from right to left, skipping the leftmost (record) dimension for record variables, and storing the results as the product vector for each variable.
 
 For example:
 
 ````
 Non-record variable:
 
-  dimension lengths: [ 5 3 2 7] product vector: [210 42 14 7]
+  dimension lengths: [ 5 3 2 7]
+  product vector:    [210 42 14 7]
 
 Record variable:
 
-  dimension lengths: [0 2 9 4] product vector: [0 72 36 4]
+  dimension lengths: [0 2 9 4]
+  product vector:    [0 72 36 4]
 ````
 
-At this point, the leftmost product, when rounded up to the next multiple of 4, is the variable size, vsize, in the grammar above.
-For example, in the non-record variable above, the value of the vsize field is 212 (210 rounded up to a multiple of 4).
-For the record variable, the value of vsize is just 72, since this is already a multiple of 4.
+At this point, the leftmost product, when rounded up to the next multiple of 4, is the variable size, `vsize`, in the grammar above.
+For example, in the non-record variable above, the value of the `vsize` field is 212 (210 rounded up to a multiple of 4).
+For the record variable, the value of `vsize` is just 72, since this is already a multiple of 4.
 
-Let coord be the array of coordinates (dimension indices, zero-based) of the desired data value.
-Then the offset of the value from the beginning of the file is just the file offset of the first data value of the desired variable (its begin field) added to the inner product of the coord and product vectors times the size, in bytes, of each datum for the variable.
-Finally, if the variable is a record variable, the product of the record number, 'coord[0]', and the record size, recsize, is added to yield the final offset value.
+Let 'coord' be the array of coordinates (dimension indices, zero-based) of the desired data value.
+Then the offset of the value from the beginning of the file is just the file offset of the first data value of the desired variable (its `begin` field) added to the inner product of the coord and product vectors times the size, in bytes, of each datum for the variable.
+Finally, if the variable is a record variable, the product of the record number, 'coord[0]', and the record size, `recsize`, is added to yield the final offset value.
 
 A special case: Where there is exactly one record variable, we drop the requirement that each record be four-byte aligned, so in this case there is no record padding.
 
@@ -284,41 +313,143 @@ A special case: Where there is exactly one record variable, we drop the requirem
 By using the grammar above, we can derive the smallest valid netCDF file, having no dimensions, no variables, no attributes, and hence, no data.
 A CDL representation of the empty netCDF file is
 
-````
+```
 netcdf empty { }
-````
+```
 
-This empty netCDF file has 32 bytes if it is in CDF-1 or CDF-2 format.
+The `ncgen` utility (which comes with the netCDF-C library) can be used to create a netCDF binary file in CDF-1 format as follows:
+
+```
+ncgen -1 -o empty_CDF-1.nc
+```
+
+For a CDF-2 file, use
+
+```
+ncgen -6 -o empty_CDF-2.nc
+```
+
+For a CDF-5 file, use
+
+```
+ncgen -5 -o empty_CDF-5.nc
+```
+
+The size of the empty CDF-1 and CDF-2 files are 32 bytes.
 If the file is in CDF-5 format the size is 48 bytes.
-For CDF-1 and CDF-2 formats, the file begins with the four-byte “magic number” that identifies it as a netCDF version 1 file: ‘C’, ‘D’, ‘F’, ‘\x01’ or '\x02'.
-Following are seven 32-bit integer zeros representing the number of records, an empty list of dimensions, an empty list of global attributes, and an empty list of variables.
-The layout is similar for CDF-5, but the NON_NEG and ZERO64 integers are 64-bits.
+The files begins with a four-byte "magic number" that identifies it as a netCDF version 1, 2, or 5 file.
+The "magic number" consists of ‘C’, ‘D’, ‘F’, and a byte representing the version (‘\x01’, ‘\x02’, or ‘\x05’).
+For a CDF-1 and CDF-2 file, seven 32-bit integer zeros follow the magic number and represent the number of records (zero), an empty list of dimensions, an empty list of global attributes, and an empty list of variables.
+The layout for CDF-5 is similar but the number of records is given by a 64-bit integer zero and each empty list is represented by a 32-bit integer zero followed by a 64-bit integer zero. 
 
 Below is an (edited) dump of the file produced using the Unix command
 
+```
+od -c empty.nc
+```
+
+Each 16-byte portion of the file is displayed with 2 lines.
+The first line displays the bytes as characters.
+The second line (added by human) presents the interpretation of the bytes in terms of netCDF components and values.
+
+Here it is for a CDF-1 file (a CDF-2 file would be the same except for the version of the magic number):
+```
+0000000    C   D   F 001  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+          [magic number]  [ 0 records  ]  [  0 dims (ABSENT=ZERO ZERO) ]
+          
+0000020   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+          [  0 global atts  (ABSENT)   ]  [  0 variables    (ABSENT)   ]
+0000040
+```
+
+Here is the dump for a CDF-5 file:
+```
+0000000    C   D   F 005  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+          [magic number]  [    0 records               ]  [ 0 dimensions ...
+           
+0000020   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+      ...   (ABSENT=ZERO ZERO64)       ]  [ 0 global atts (ABSENT=ZERO   ...
+      
+0000040   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+      ...   ZERO64)    ]  [ 0 variables (ABSENT=ZERO ZERO64)           ]
+0000060
+
+```
+
+As a less trivial example, consider the CDL
+
 ````
-od -xcs empty.nc
+     netcdf tiny {
+     dimensions:
+             dim = 5;
+     variables:
+             short vx(dim);
+     data:
+             vx = 3, 1, 4, 1, 5 ;
+     }
 ````
 
-Each 16-byte portion of the file is displayed with 4 lines.
-The first line displays the bytes in hexadecimal.
-The second line displays the bytes as characters.
-The third line displays each group of two bytes interpreted as a signed 16-bit integer.
-The fourth line (added by human) presents the interpretation of the bytes in terms of netCDF components and values.
+The dump of the tiny dataset written as a CDF-1 file (92 bytes):
+```
+0000000    C   D   F 001  \0  \0  \0  \0  \0  \0  \0  \n  \0  \0  \0 001
+          [magic number]  [ numrecs = 0]  [NC_DIMENSION]  [ 1 dimension]
+0000020   \0  \0  \0 003   d   i   m  \0  \0  \0  \0 005  \0  \0  \0  \0
+          [3 characters]  [ name="dim" ]  [dim_length=5]  [0 global atts ...
+0000040   \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0 001  \0  \0  \0 002
+      ...   ABSENT     ]  [NC_VARIABLE ]  [ 1 variable ]  [  2 char      ...
+0000060    v   x  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
+      ... name = "vx"  ]  [1 dimension ]  [ with ID 0  ]  [ 0 attributes ...
+0000100   \0  \0  \0  \0  \0  \0  \0 003  \0  \0  \0  \f  \0  \0  \0   P
+      ...   ABSENT     ]  [type NC_SHORT] [size 12 bytes] [ offset: 80 ]
+0000120   \0 003  \0 001  \0 004  \0 001  \0 005 200 001  
+          [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]              
+0000134
+```
+Note: offset to values of "vx" var is 80 (size of offset value is four bytes)
 
-````
-        4344    4601    0000    0000    0000    0000    0000    0000
-       C   D   F 001  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
-       17220   17921   00000   00000   00000   00000   00000   00000
-     [magic number ] [  0 records  ] [  0 dimensions   (ABSENT)    ]
+written as a CDF-2 file (96 bytes):
+```
+0000000    C   D   F 002  \0  \0  \0  \0  \0  \0  \0  \n  \0  \0  \0 001
+          [magic number]  [ numrecs = 0]  [NC_DIMENSION]  [ 1 dimension]
+0000020   \0  \0  \0 003   d   i   m  \0  \0  \0  \0 005  \0  \0  \0  \0
+          [3 characters]  [ name="dim" ]  [dim_length=5]  [0 global atts ...
+0000040   \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0 001  \0  \0  \0 002
+      ...   ABSENT     ]  [NC_VARIABLE ]  [ 1 variable ]  [  2 char      ...
+0000060    v   x  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
+      ... name = "vx"  ]  [1 dimension ]  [ with ID 0  ]  [ 0 attributes ...
+0000100   \0  \0  \0  \0  \0  \0  \0 003  \0  \0  \0  \f  \0  \0  \0  \0
+      ...   ABSENT     ]  [type NC_SHORT] [size 12 bytes] [  offset:     ...
+0000120   \0  \0  \0   T  \0 003  \0 001  \0 004  \0 001  \0 005 200 001
+      ...      84      ]  [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]
+0000140
+```
+Note: offset to values of "vx" var is 84 (size of offset value is eight bytes) 
 
-        0000    0000    0000    0000    0000    0000    0000    0000
-      \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
-       00000   00000   00000   00000   00000   00000   00000   00000
-     [  0 global atts  (ABSENT)    ] [  0 variables    (ABSENT)    ]
-````
+written as a CDF-5 file (140 bytes):
+```
+0000000    C   D   F 005  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \n
+          [magic number]  [    numrecs = 0 records     ]  [NC_DIMENSION]
+0000020   \0  \0  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0 003
+          [  nelems = 1 dimension      ]  [ dimension name has 3 chars ]
+0000040    d   i   m  \0  \0  \0  \0  \0  \0  \0  \0 005  \0  \0  \0  \0
+          [ name="dim" ]  [       dim_length = 5       ]  [ 0 global att ...
+0000060   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0  \0
+      ...    (ABSENT = ZERO ZERO64)    ]  [NC_VARIABLE ]  [  nelems =    ... 
+0000100   \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0 002   v   x  \0  \0
+      ...  1 variable  ]  [ variable name has 2 chars  ]  [ name = "vx"]
+0000120   \0  \0  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
+          [ var has 1 dimension        ]  [ first dimension has ID 0   ]
+0000140   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0 003
+          [ var has 0 atts (ABSENT = ZERO ZERO64)      ]  [type=NC_SHORT]
+0000160   \0  \0  \0  \0  \0  \0  \0  \f  \0  \0  \0  \0  \0  \0  \0 200
+          [ var size, vsize = 12 bytes ]  [var's file offset, begin=128]
+0000200   \0 003  \0 001  \0 004  \0 001  \0 005 200 001                
+0000214   [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]
+```
 
-Some extra stuff I'm testing
+## More examples (to be should be deleted)
+
+Just extra examples I'm testing since empty files were 4096 bytes.
 
 ```
 edavis@patrice NUG % od -c dim_only_CDF-1.nc 
@@ -379,126 +510,18 @@ edavis@patrice NUG % od -c scalar_var_only_CDF-2.nc
 0000110
 edavis@patrice NUG % od -c scalar_var_only_CDF-5.nc
 0000000    C   D   F 005  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+          [magic number]  [    numrecs = 0 records     ]  [ 0 dimensions ...
 0000020   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+      ...  (ABSENT = ZERO ZERO64)      ]  [ 0 global atts (ABSENT =      ...
 0000040   \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0  \0  \0  \0  \0 001
+      ...  ZERO ZERO64)]  [NC_VARIABLE ]  [ 1 variable                 ]
 0000060   \0  \0  \0  \0  \0  \0  \0 002   v   x  \0  \0  \0  \0  \0  \0
+          [ variable name has 2 chars  ]  [ name = "vx"]  [0 dimensions  ...
 0000100   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+      ...              ]  [ 0 attributes (ABSENT = ZERO ZERO64)        ]
 0000120   \0  \0  \0 003  \0  \0  \0  \0  \0  \0  \0 004  \0  \0  \0  \0
+          [type NC_SHORT] [ size 4 bytes               ]  [ offset:      ...
 0000140   \0  \0  \0   d  \0 005 200 001                                
+      ...     100      ]  [  5 ] [fill ]
 0000150
 ```
-
-
-As a less trivial example, consider the CDL
-
-````
-     netcdf tiny {
-     dimensions:
-             dim = 5;
-     variables:
-             short vx(dim);
-     data:
-             vx = 3, 1, 4, 1, 5 ;
-     }
-````
-
-The dump of the tiny dataset written as a CDF-1 file:
-```
-0000000    C   D   F 001  \0  \0  \0  \0  \0  \0  \0  \n  \0  \0  \0 001
-          [magic number]  [ numrecs = 0]  [NC_DIMENSION]  [ 1 dimension]
-0000020   \0  \0  \0 003   d   i   m  \0  \0  \0  \0 005  \0  \0  \0  \0
-          [3 characters]  [ name="dim" ]  [dim_length=5]  [0 global atts ...
-0000040   \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0 001  \0  \0  \0 002
-      ...   ABSENT     ]  [NC_VARIABLE ]  [ 1 variable ]  [  2 char      ...
-0000060    v   x  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
-      ... name = "vx"  ]  [1 dimension ]  [ with ID 0  ]  [ 0 attributes ...
-0000100   \0  \0  \0  \0  \0  \0  \0 003  \0  \0  \0  \f  \0  \0  \0   P
-      ...   ABSENT     ]  [type NC_SHORT] [size 12 bytes] [ offset: 80 ]
-0000120   \0 003  \0 001  \0 004  \0 001  \0 005 200 001  
-          [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]              
-0000134
-```
-Note: offset to values of "vx" var is 80 (size of offset value is four bytes)
-
-written as a CDF-2 file:
-```
-0000000    C   D   F 002  \0  \0  \0  \0  \0  \0  \0  \n  \0  \0  \0 001
-          [magic number]  [ numrecs = 0]  [NC_DIMENSION]  [ 1 dimension]
-0000020   \0  \0  \0 003   d   i   m  \0  \0  \0  \0 005  \0  \0  \0  \0
-          [3 characters]  [ name="dim" ]  [dim_length=5]  [0 global atts ...
-0000040   \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0 001  \0  \0  \0 002
-      ...   ABSENT     ]  [NC_VARIABLE ]  [ 1 variable ]  [  2 char      ...
-0000060    v   x  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
-      ... name = "vx"  ]  [1 dimension ]  [ with ID 0  ]  [ 0 attributes ...
-0000100   \0  \0  \0  \0  \0  \0  \0 003  \0  \0  \0  \f  \0  \0  \0  \0
-      ...   ABSENT     ]  [type NC_SHORT] [size 12 bytes] [  offset:     ...
-0000120   \0  \0  \0   T  \0 003  \0 001  \0 004  \0 001  \0 005 200 001
-      ...      84      ]  [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]
-0000140
-```
-Note: offset to values of "vx" var is 84 (size of offset value is eight bytes) 
-
-written as a CDF-5 file:
-```
-0000000    C   D   F 005  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \n
-          [magic number]  [    numrecs = 0 records     ]  [NC_DIMENSION]
-0000020   \0  \0  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0 003
-          [  nelems = 1 dimension      ]  [ dimension name has 3 chars ]
-0000040    d   i   m  \0  \0  \0  \0  \0  \0  \0  \0 005  \0  \0  \0  \0
-          [ name="dim" ]  [       dim_length = 5       ]  [ 0 global att ...
-0000060   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \v  \0  \0  \0  \0
-      ...    (ABSENT = ZERO ZERO64)    ]  [NC_VARIABLE ]  [  nelems =    ... 
-0000100   \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0 002   v   x  \0  \0
-      ...  1 variable  ]  [ variable name has 2 chars  ]  [ name = "vx"]
-0000120   \0  \0  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
-          [ var has 1 dimension        ]  [ first dimension has ID 0   ]
-0000140   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0 003
-          [ var has 0 atts (ABSENT = ZERO ZERO64)      ]  [type=NC_SHORT]
-0000160   \0  \0  \0  \0  \0  \0  \0  \f  \0  \0  \0  \0  \0  \0  \0 200
-          [ var size, vsize = 12 bytes ]  [var's file offset, begin=128]
-0000200   \0 003  \0 001  \0 004  \0 001  \0 005 200 001                
-0000214   [  3 ]  [  1 ]  [  4 ]  [  1 ]  [  5 ] [fill ]
-```
-
-which corresponds to a 92-byte netCDF file. The following is an edited dump of this file:
-
-````
-        4344    4601    0000    0000    0000    000a    0000    0001
-       C   D   F 001  \0  \0  \0  \0  \0  \0  \0  \n  \0  \0  \0 001
-       17220   17921   00000   00000   00000   00010   00000   00001
-     [magic number ] [  0 records  ] [NC_DIMENSION ] [ 1 dimension ]
-
-        0000    0003    6469    6d00    0000    0005    0000    0000
-      \0  \0  \0 003   d   i   m  \0  \0  \0  \0 005  \0  \0  \0  \0
-       00000   00003   25705   27904   00000   00005   00000   00000
-     [  3 char name = "dim"        ] [ size = 5    ] [ 0 global atts
-
-        0000    0000    0000    000b    0000    0001    0000    0002
-      \0  \0  \0  \0  \0  \0  \0 013  \0  \0  \0 001  \0  \0  \0 002
-       00000   00000   00000   00011   00000   00001   00000   00002
-      (ABSENT)     ] [NC_VARIABLE  ] [ 1 variable  ] [ 2 char name =
-
-        7678    0000    0000    0001    0000    0000    0000    0000
-       v   x  \0  \0  \0  \0  \0 001  \0  \0  \0  \0  \0  \0  \0  \0
-       30328   00000   00000   00001   00000   00000   00000   00000
-      "vx"         ] [1 dimension  ] [ with ID 0   ] [ 0 attributes
-
-        0000    0000    0000    0003    0000    000c    0000    0050
-      \0  \0  \0  \0  \0  \0  \0 003  \0  \0  \0  \f  \0  \0  \0   P
-       00000   00000   00000   00003   00000   00012   00000   00080
-      (ABSENT)     ] [type NC_SHORT] [size 12 bytes] [offset:    80]
-
-        0003    0001    0004    0001    0005    8001
-      \0 003  \0 001  \0 004  \0 001  \0 005 200 001
-       00003   00001   00004   00001   00005  -32767
-     [    3] [    1] [    4] [    1] [    5] [fill ]
-````
-
-# CDF-2 - The 64-bit Offset Format
-
-The netCDF 64-bit offset format differs from the classic format only in the VERSION byte, ‘\\x02’ instead of ‘\\x01’, and the OFFSET entity, a 64-bit instead of a 32-bit offset from the beginning of the file.
-This small format change permits much larger files, but there are still some practical size restrictions.
-Each fixed-size variable and the data for one record's worth of each record variable are still limited in size to a little less that 4 GiB.
-The rationale for this limitation is to permit aggregate access to all the data in a netCDF variable (or a record's worth of data) on 32-bit platforms.
-
-# CDF-5 - The 64-bit Data Format
