@@ -5,11 +5,11 @@ entries:
     product: NetCDF User's Guide
     folders:
 
-      - title: An Introduction to NetCDF
+      - title: Introduction
         output: web, pdf
         folderitems:
 
-          - title: Introduction
+          - title: NetCDF User's Guide (NUG)
             url: /index.html
             output: web, pdf
 
@@ -17,8 +17,8 @@ entries:
             url: /what_is_netcdf.html
             output: web, pdf
 
-          - title: The Purpose of the NUG
-            url: /purpose_of_nug.html
+          - title: Why Use NetCDF?
+            url: /why_use_netcdf.html
             output: web, pdf
 
           - title: NetCDF Implementations
@@ -39,6 +39,18 @@ entries:
 
           - title: NetCDF Enhanced Data Model
             url: /enhanced_data_model.html
+            output: web, pdf
+
+          - title: NetCDF Objects
+            url: /netcdf_objects.html
+            output: web, pdf
+
+          - title: NetCDF Data Types
+            url: /netcdf_data_types.html
+            output: web, pdf
+
+          - title: NetCDF Object Names
+            url: /netcdf_object_names.html
             output: web, pdf
 
       - title: NetCDF File Formats, Encodings, and Mappings
@@ -69,9 +81,13 @@ entries:
             url: /compression.html
             output: web, pdf
 
-      - title: Describing NetCDF Datasets - CDL and NcML
+      - title: Text Representations of NetCDF Datasets
         output: web, pdf
         folderitems:
+
+          - title: Text Representations of NetCDF
+            url: /text_representations_of_netcdf.html
+            output: web, pdf
 
           - title: CDL (netCDF Common Data Language)
             url: /cdl.html
