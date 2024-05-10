@@ -145,9 +145,9 @@ Well-behaved generic netCDF applications should append a line containing:~~
 ### Conventions {#conventions}
 
 ~~If present, 'Conventions' is a global attribute that is a character array for the name of the conventions followed by the dataset.
-Originally, these conventions were named by a string that was interpreted as a directory name relative to the directory /pub/netcdf/Conventions/ on the host ftp.unidata.ucar.edu.
+Originally, these conventions were named by a string that was interpreted as a directory name relative to the directory /pub/netcdf/Conventions/ on the defunct ftp.unidata.ucar.edu site.
 The web page http://www.unidata.ucar.edu/netcdf/conventions.html is now the preferred and authoritative location for registering a URI reference to a set of conventions maintained elsewhere.
-The FTP site will be preserved for compatibility with existing references, but authors of new conventions should submit a request to support-netcdf@unidata.ucar.edu for listing on the Unidata conventions web page.~~
+Authors of new conventions should submit a request to support-netcdf@unidata.ucar.edu for listing on the Unidata conventions web page.~~
 
 ~~It may be convenient for defining institutions and groups to use a hierarchical structure for general conventions and more specialized conventions.
 For example, if a group named NUWG agrees upon a set of conventions for dimension names, variable names, required attributes, and netCDF representations for certain discipline-specific data structures, they may store a document describing the agreed-upon conventions in a dataset in the NUWG/ subdirectory of the Conventions directory.
