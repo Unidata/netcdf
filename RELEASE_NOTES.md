@@ -1,6 +1,6 @@
 # Release Notes
 
-See [https://www.unidata.ucar.edu/software/netcdf/documentation/NUG/](https://www.unidata.ucar.edu/software/netcdf/documentation/NUG/) for the rendered documentation.
+See [https://docs.unidata.ucar.edu/nug/current/](https://docs.unidata.ucar.edu/nug/current/) for the rendered documentation.
 
 ## NetCDF User's Guide v1.2 - TBD
 

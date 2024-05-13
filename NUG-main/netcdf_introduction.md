@@ -27,7 +27,7 @@ Unidata supports the netCDF interfaces for C (see [NetCDF-C User's Guide](https:
 The netCDF library is supported for various UNIX operating systems.
 A MS Windows port is also available.
 The software is also ported and tested on a few other operating systems, with assistance from users with access to these systems, before each major release.
-Unidata's netCDF software is freely available [via HTTP and FTP](https://www.unidata.ucar.edu/downloads/netcdf/) to encourage its widespread use.
+Unidata's netCDF software is freely available [via HTTP](https://downloads.unidata.ucar.edu/netcdf/) to encourage its widespread use.
 
 For detailed installation instructions, see \ref getting_and_building_netcdf.
 

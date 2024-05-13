@@ -314,7 +314,7 @@ Note: `--disable` prefix indicates that the option is normally enabled.
 <tr><td>--disable-netcdf-4<td>build netcdf-3 without HDF5 and zlib<td>
 <tr><td>--disable-netcdf4<td>synonym for disable-netcdf-4<td>
 <tr><td>--enable-hdf4<td>build netcdf-4 with HDF4 read capability<td>HDF4, HDF5 and zlib
-<tr><td>--enable-hdf4-file-tests<td>test ability to read HDF4 files<td>selected HDF4 files from Unidata ftp site
+<tr><td>--enable-hdf4-file-tests<td>test ability to read HDF4 files<td>selected HDF4 files from Unidata
 <tr><td>--disable-parallel4<td>build netcdf-4 without parallel I/O support<td>
 <tr><td>--disable-cdf5<td>build netcdf-4 without support of classic CDF-5 file format<td>
 <tr><td>--enable-pnetcdf<td>build netcdf-4 with parallel I/O for classic files (CDF-1, 2, and 5 formats) using PnetCDF<td>PnetCDF
@@ -338,7 +338,7 @@ Note: `--disable` prefix indicates that the option is normally enabled.
                           specify temporary directory
 <tr><td>--enable-benchmarks<td>Run benchmarks. This is an experimental feature.
 			  The benchmarks are extra tests, used to check netCDF performance.
-    <td>sample data files from the Unidata ftp site
+    <td>sample data files from the Unidata resources site
 <tr><td>--disable-extreme-numbers
 <td>don't use extreme numbers during testing, such as MAX_INT - 1<td>
 <tr><td>--disable-shared<td>don't build shared libraries<td>
