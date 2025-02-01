@@ -1,21 +1,31 @@
 # Instructions for Building Markdown Documentation
 
+## Requirements
+
+* Java 11 (or greater)
+* docker
+
 ## Quick-Start
 
 List build options:
 
     $ ./gradlew tasks # get a list of tasks
 
-Build and start server: 
+To build the NUG documentation, run:
 
-    $ ./gradlew buildJekyllSite
-    $ ./gradlew serveJekyllSite
+```shell
+./gradlew buildJekyllSite
+```
 
+The rendered html will appear under `./build/site`.
 
-Connect to local site: 
+To live edit the docs, run:
 
-* [http://127.0.0.1:4000](http://127.0.0.1:4000)
+```shell
+./gradlew serveJekyllSite
+```
 
-Stop Gradle daemon
+Open [http://127.0.0.1:4000](http://127.0.0.1:4000) for a live view.
+As you make changes to the markdown files, the site content will automatically regenerate.
 
-    $ gradle --stop
+When finished editing, run `./gradlew stopServe` to shut down the container.
