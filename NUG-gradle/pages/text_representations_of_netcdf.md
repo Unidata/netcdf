@@ -3,7 +3,7 @@ title: Text Representations of netCDF
 last_updated: 2021-06-28
 sidebar: nnug_sidebar
 toc: false
-permalink: text_representation_of_netcdf.html
+permalink: text_representations_of_netcdf.html
 ---
 
 
