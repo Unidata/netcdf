@@ -17,10 +17,6 @@ entries:
             url: /what_is_netcdf.html
             output: web, pdf
 
-          - title: Why Use NetCDF?
-            url: /why_use_netcdf.html
-            output: web, pdf
-
           - title: NetCDF Implementations
             url: /netcdf_implementations.html
             output: web, pdf

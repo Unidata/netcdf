@@ -189,7 +189,7 @@ Additional conventions are often needed for local use.
 These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.~~
 
 # Limitations of NetCDF {#limitations}
-[//]: # (TODO: Decide if/where to move this section. Overview or Best Practices?)
+[//]: # (TODO: Decide if/where to move this section. Overview or Best Practices? Maybe just some of this section?)
 
 The netCDF classic data model is widely applicable to data that can be organized into a collection of named array variables with named attributes, but there are some important limitations to the model and its implementation in software.
 Some of these limitations have been removed or relaxed in netCDF-4 files, but still apply to netCDF classic and netCDF 64-bit offset files.

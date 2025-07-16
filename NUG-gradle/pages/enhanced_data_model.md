@@ -19,7 +19,7 @@ and from NUG/netcdf_data_set_components.md#enhanced_nc4_hdf5
 -->
 The Enhanced Data Model adds groups, a string type, several unsigned integer types, and four kinds of user-defined types (see [below](#user_defined_data_types)).
 Groups, like directories in a file system, can be hierarchically organized to arbitrary depth.
-Each netCDF file/dataset contains a top-level, unnamed group (aka root group).
+Each netCDF dataset contains a top-level, unnamed group (aka root group).
 Each group may contain one or more named variables, dimensions, attributes, groups, and user-defined types.
 
 A variable is still a multidimensional array whose elements are all of the same type.
