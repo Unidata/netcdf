@@ -6,4 +6,6 @@ toc: false
 permalink: other_conventions.html
 ---
 
-<!-- Consider moving/updating old convention docs (e.g., ftp stuff?) here. -->
+[//]: # (TODO: Consider moving \"NetCDF Conventions\" page here.)
+[//]: # (      It needs updating!)
+See the [NetCDF Conventions page](https://www.unidata.ucar.edu/software/netcdf/conventions.html).

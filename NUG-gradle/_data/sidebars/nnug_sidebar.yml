@@ -73,8 +73,8 @@ entries:
             url: /nczarr.html
             output: web, pdf
 
-          - title: Compression in NetCDF
-            url: /compression.html
+          - title: Chunking and Compression
+            url: /chunking_compression.html
             output: web, pdf
 
       - title: Text Representations of NetCDF Datasets

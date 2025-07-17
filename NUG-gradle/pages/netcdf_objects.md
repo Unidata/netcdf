@@ -20,6 +20,10 @@ A dimension might also be used to index other quantities, for example station or
 A dimension length is either an arbitrary positive integer or unlimited.
 Dimensions with an unlimited length are called unlimited dimensions or record dimensions.
 
+## Dimension Scope in a Group Hierarchy
+Dimensions are scoped such that they can be seen in all descendant groups.
+That is, dimensions can be shared between variables in different groups, if they are defined in a parent group.
+
 ## Dimension advice
 It is possible (since version 3.1 of netCDF) to use the same dimension more than once in specifying a variable shape.
 For example, correlation(instrument, instrument) could be a matrix giving correlations between measurements using different instruments.
@@ -39,6 +43,7 @@ A variable may also have associated attributes, which may be added, deleted or c
 A variables shape and the dimensions that make up that shape define the index space that allows individual elements of the variable to be identified.
 Dimensions shared by two or more variables indicates the variables share a grid / coordinate system.
 
+## Variables with Unlimited Dimensions
 [//]: # (TODO: Is write/access performance impacts part of the data model?)
 [//]: # (TODO: Is relation between dimension ordering and array layout part of data model??)
 

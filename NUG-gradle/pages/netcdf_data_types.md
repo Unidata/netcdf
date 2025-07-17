@@ -83,7 +83,7 @@ Because attributes are either scalar or vector,
 
 [//]: # (TODO: Is there need to indicate when `char` array might be intended as an array of single characters rather than as a string?)
 
-# User Defined Data Types
+# User Defined Data Types {#user_defined_data_types}
 
 The Enhanced Data Model supports compound types (similar to C-structs), VLEN types (which can be used for ragged arrays), opaque types ( to blobs of bytes), and enumerations.
 
@@ -92,10 +92,10 @@ For example, a compound type containing an array of VLEN types, each containing 
 Users are cautioned to keep types simple.
 Reading data of complex types can be challenging, especially perhaps for Fortran users.
 
-Types may be defined in any group in the data file, but they are always available globally in the file.
-
 Types cannot have attributes (but variables of the type may have attributes).
 
+## Scope of User Defined Types in a Group Hierarchy
+Types may be defined in any group in the data file, but they are always available globally in the file.
 
 ## Compound Types
 The compound type can be used to define a data structure which contains an arbitrary collection of other data types, including other compound types.
@@ -108,22 +108,21 @@ A compound type is defined by its name and the set of named fields in the compou
 [//]: # (TODO: Is the VLEN atomic read part of the data model? Or only something for the HDF5 file format?)
 [//]: # (      NetCDF-Java handles it as an iterator, I think. But does that matter? Is VLEN only available in HDF5?)
 
-The VLEN type can be used to store variable length arrays of a known base type.
+The VLEN type can be used to store variable length arrays of a known base type, providing support for ragged arrays.
 A VLEN type is defined by its name and it's base type.
-
-(?Is this right?) The size/length of a variable with a VLEN type is determined when that variable is written and discovered when the variable is read.
-If a field in a compound type if of type VLEN, the size of that field in a variable is determined/discovered when that component is written/read.
+A VLEN base type may be of any type, including user-defined types.
+Access to the values of a VLEN variable is atomic.
+The number of values contained by a VLEN variable is determined when that variable is written and discovered when the variable is read.
+If a field in a compound type is of type VLEN, the size of that field in a variable is determined/discovered when that component is written/read.
 
 ## Opaque Types
 [//]: # (TODO: Why use an opaque type instead of a byte array? Just a named abstraction shared by variables of that type.)
-The opaque type can be used to store a collection/sequence of bytes.
+The opaque type can be used to store a collection/sequence of bytes where the number of bytes is known.
 An opaque type is defined by its name and its size in bytes.
 
 ## Enum Types
-The enum type
-From 2011 workshop page ["Using Enums"](https://www.unidata.ucar.edu/software/netcdf/workshops/2011/groups-types/Enum.html):
-> The enumerated type can associate integer constant values with names.
-> - Enums are based on any integer types.
-> - The integers associated with enums need not be consecutive.
-> - Define an enum type, then add value/label pairs one at a time.
-> - The underlying integer type is what is stored in the file.
+[//]: # (TODO: Text from 2011 workshop page Using Enums - https://www.unidata.ucar.edu/software/netcdf/workshops/2011/groups-types/Enum.html )
+The enumerated type can be used to associate integer constant values with names/labels.
+An enumerated type is defined by its name, its base type (any integer type), and by its member value/name pairs.
+The integer member values need not be consecutive.
+The underlying base integer type is what is stored in the netCDF dataset.
