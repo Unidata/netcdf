@@ -2,7 +2,7 @@
 
 ## Requirements
 
-* Java 11 (or greater)
+* Java 17 (or greater)
 * docker
 
 ## Quick-Start
