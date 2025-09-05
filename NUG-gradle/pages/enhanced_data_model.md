@@ -6,20 +6,17 @@ toc: false
 permalink: enhanced_data_model.html
 ---
 
-<!--
-Include acyclic graph nature of Groups
-From the "Interop with HDF5" section of file_structure_and_performance.md
-    "Groups form a tree with no cycles, so each Group
-     (except the top-level unnamed Group) has a unique parent."
--->
+[//]: # (TODO: Include acyclic graph nature of Groups )
+[//]: # (      From the -Interop with HDF5- section of file_structure_and_performance.md)
+[//]: # (      > Groups form a tree with no cycles, so each Group)
+[//]: # (      > except the top-level unnamed Group) has a unique parent.)
 
-<!-- NOTE:
-Text from [Rew & Caron] Section \"NetCDF Data Models\", paragraph 5
-and from NUG/netcdf_data_set_components.md#enhanced_nc4_hdf5
--->
-The Enhanced Data Model adds groups, a string type, several unsigned integer types, and four kinds of user-defined types (see [below](#user_defined_data_types)).
+[//]: # (NOTE: Text from Rew & Caron Section \"NetCDF Data Models\", paragraph 5)
+[//]: # (      and from NUG/netcdf_data_set_components.md#enhanced_nc4_hdf5)
+
+The Enhanced Data Model adds groups, a string type, several unsigned integer types, and four kinds of user-defined types (see [User Defined Data Types](netcdf_data_types.html#user_defined_data_types)).
 Groups, like directories in a file system, can be hierarchically organized to arbitrary depth.
-Each netCDF file/dataset contains a top-level, unnamed group (aka root group).
+Each netCDF dataset contains a top-level, unnamed root group ("/").
 Each group may contain one or more named variables, dimensions, attributes, groups, and user-defined types.
 
 A variable is still a multidimensional array whose elements are all of the same type.
@@ -34,7 +31,7 @@ In netCDF-4 files, the user may also define a type.
 For example a compound type may hold information from an array of C structures,
 or a variable length type allows the user to read and write arrays of variable length values.
 
-User-defined types are ~~also~~ scoped such that they can be referenced in all other groups.
+User-defined types are scoped such that they can be referenced in all other groups.
 That means, for example, that variables in different groups can have the same type.
 
 Variables, groups, and types share a namespace.

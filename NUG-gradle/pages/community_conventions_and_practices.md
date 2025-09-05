@@ -23,27 +23,16 @@ Additional conventions are often needed for local use.
 These should be contributed to the above netCDF conventions site if likely to interest other users in similar areas.
 
 <!-- New text -->
-Over the years, the netCDF community has developed conventions around
-how to describe data being stored in netCDF files.
+Over the years, the netCDF community has developed conventions around how to describe data being stored in netCDF files.
 Some of the most general conventions are encoded in the NUG.
-While other conventions, more specific to particular scientific domains,
-have been developed by groups/communities focused on particular domains.
+While other conventions, more specific to particular scientific domains, have been developed by groups/communities focused on particular domains.
 
-The "[NUG Conventions](nug_conventions.html)" and the "[Best Practices](best_practices.html)"
-sections are the general guidelines included in the NUG.
-The "[Other Conventions](other_conventions.html)" section discusses and provides references
-to other community conventions, e.g., CF and UGRID.
+The NUG includes:
+* "[Attribute Conventions](nug_conventions.html)"
+* "[Best Practices](best_practices.html)"
 
-The "CF Conventions for NetCDF" 
+The "[CF Metadata Conventions for NetCDF](https://cfconventions.org/)" are used widely across the geosciences.
 
-## Advice, Guidance, Best Practices (???)
 
-### Performance )???)
+The "[Other Conventions](other_conventions.html)" section discusses and provides references to other community conventions, e.g., CF and UGRID.
 
-[//]: # (TODO: See text in NUG/netcdf_introduction.html#performance)
-
-### Limitations (??? maybe should go in file formats?)
-
-[//]: # (TODO: See text in NUG/netcdf_introduction.html#limitations)
-
-## NetCDF History
