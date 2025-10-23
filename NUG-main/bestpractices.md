@@ -43,7 +43,7 @@ On the other extreme, it is possible to create different variables e.g. for diff
 However, standard visualization and analysis software may have trouble grouping that data back together.
 Here are some guidelines for deciding how to group your data into variables:
 
--   All of the data in a variable must be of the same type and shouldhave the same units of measurement.
+-   All of the data in a variable must be of the same type and should have the same units of measurement.
 -   A variable's attributes should be applicable to all its data.
 -   If possible, all of the coordinate variables should be spatio-temporal, with no extra dimensions.
 -   Use 4D spatio-temporal coordinate systems in preference to 3D. Use 3D spatio-temporal coordinate systems in preference to 2D.
@@ -53,7 +53,7 @@ Here are some guidelines for deciding how to group your data into variables:
 ## Variable Attributes {#bp_Variable-Attributes}
 
 -   For each variable where it makes sense, add a **units** attribute, using the [udunits](https://www.unidata.ucar.edu/software/udunits/) conventions, if possible.
--   For each variable where it makes sense, add a **long\_name **** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
+-   For each variable where it makes sense, add a **long_name** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
 
 ## Strings and Variables of type char {#bp_Strings-and-Variables-of-type-char}
 
