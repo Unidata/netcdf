@@ -53,7 +53,7 @@ Here are some guidelines for deciding how to group your data into variables:
 ## Variable Attributes {#bp_Variable-Attributes}
 
 -   For each variable where it makes sense, add a **units** attribute, using the [udunits](https://www.unidata.ucar.edu/software/udunits/) conventions, if possible.
--   For each variable where it makes sense, add a **long_name ** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
+-   For each variable where it makes sense, add a **long_name** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
 
 ## Strings and Variables of type char {#bp_Strings-and-Variables-of-type-char}
 
