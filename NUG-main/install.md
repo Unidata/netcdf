@@ -105,25 +105,25 @@ For HDF5 problems, see the <a href="http://www.hdfgroup.org/services/support.htm
 
 To build zlib from source, specify where you want to install zlib in a shell variable you will also use later (ZDIR, for example), and build it like this from the top-level zlib source directory
 
-~~~~{.py}
+{.py}
     $ # Build and install zlib
     $ ZDIR=/usr/local
     $ ./configure --prefix=${ZDIR}
     $ make check
     $ make install   # or sudo make install, if root permissions required
-~~~~
+
 
 ### Building hdf5 from source {#build_hdf5_from_source}
 
 Next, specify where you want to install HDF5 in another shell variable, for example H5DIR, and build it from the HDF5 top-level source directory:
 
-~~~~{.py}
+{.py}
     $ # Build and install HDF5
     $ H5DIR=/usr/local
     $ ./configure --with-zlib=${ZDIR} --prefix=${H5DIR} --enable-hl
     $ make check
     $ make install   # or sudo make install, if root permissions required
-~~~~
+
 
 If you are building HDF5 with the optional szip library, include the `--with-szlib=` option to specify where it was installed.
 
@@ -137,13 +137,13 @@ Indicate where you want to install netCDF in another shell variable, for example
 Then run the netCDF configure script, specifying where HDF5 was installed using the CPPFLAGS and LDFLAGS environment variables.
 For example, from the top-level netCDF source directory:
 
-~~~~{.py}
+{.py}
     $ # Build and install netCDF-4
     $ NCDIR=/usr/local
     $ CPPFLAGS='-I${H5DIR}/include -I${ZDIR}/include' LDFLAGS='-L${H5DIR}/lib -L${ZDIR}/lib' ./configure --prefix=${NCDIR}
     $ make check
     $ make install  # or sudo make install
-~~~~
+
 
 If you don't provide a `--prefix` option, installation will be in `/usr/local/`, in subdirectories lib/, include/, and bin/.  
 The installation location specified with the `--prefix` option must be different from the source directory where the software is being built.
@@ -160,27 +160,27 @@ It is possible to build the netCDF C libraries and utilities so that only the ne
 If necessary, set the NCDIR shell variable to indicate where netCDF should be installed.
 Then to build a netCDF-3 library without support for the netCDF-4 formats or functions, but with remote client access, use:
 
-~~~~{.py}
+{.py}
     $ # Build and install netCDF-3 from netCDF-4 source
     $ ./configure --prefix=${NCDIR} --disable-netcdf-4
     $ make check install
-~~~~
+
 
 To build with full support for netCDF-4 API's and format but without remote client access, use:
 
-~~~~{.py}
+{.py}
     $ # Build and install netCDF-4 without DAP client support
     $ ./configure --prefix=${NCDIR} --disable-dap
     $ make check install
-~~~~
+
 
 To build without netCDF-4 support or remote client access, use:
 
-~~~~{.py}
+{.py}
     $ # Build and install minimal netCDF-3 with no DAP client support
     $ ./configure --prefix=${NCDIR} --disable-netcdf-4 --disable-dap
     $ make check install
-~~~~
+
 
 If you get the message that netCDF installed correctly, then you are done!
 
@@ -198,23 +198,23 @@ For HDF4 access to work, the library must be built with netCDF-4 features.
 Here's an example, assuming the HDF5 library has been built and installed in H5DIR and you will build and install the HDF4 library in H4DIR (which could be the same as H5DIR).
 From the top-level HDF4 source directory:
 
-~~~~{.py}
+{.py}
     $ # Build and install HDF4
     $ ./configure --enable-shared --disable-netcdf --disable-fortran --prefix=${H4DIR}
     $ make check
     $ make install
-~~~~
+
 
 Then from the top-level netCDF directory:
 
-~~~~{.py}
+{.py}
     $ # Build and install netCDF-4 with HDF4 access enabled
     $ CPPFLAGS="-I${H5DIR}/include -I${H4DIR}/include" \
       LDFLAGS="-L${H5DIR}/lib -L${H4DIR}/lib" \
       ./configure --enable-hdf4 --enable-hdf4-file-tests
     $ make check
     $ make install
-~~~~
+
 
 ## Building with Parallel I/O Support {#build_parallel}
 
@@ -224,25 +224,25 @@ This can be accomplished with an mpicc wrapper script.
 
 The following works from the top-level HDF5 source directory to buildHDF5 with parallel I/O:
 
-~~~~{.py}
+{.py}
     $ # Build and install HDF5 with parallel support
     $ CC=mpicc ./configure --enable-parallel --prefix=${H5DIR}
     $ make check
     $ make install
-~~~~
+
 
 If the HDF5 used by netCDF has been built with parallel I/O, then netCDF will also be built with inherited support for parallel I/O. This allows parallel I/O access to netCDF-4/HDF5 files.  
 (See /ref netcdf_formats for more information about the netCDF format variants.)
 
 From the top-level netCDF-4 source directory, the following builds netCDF-4 with parallel I/O, assuming H5DIR specifies where parallel HDF5 was installed:
 
-~~~~{.py}
+{.py}
     $ # Build, test, and install netCDF-4 with HDF5 parallel support
     $ CC=mpicc CPPFLAGS=-I${H5DIR}/include LDFLAGS=-L${H5DIR}/lib \
       ./configure --disable-shared --enable-parallel-tests --prefix=${NCDIR}
     $ make check
     $ make install
-~~~~
+
 
 ### Building PnetCDF from source {#build_pnetcdf_from_source}
 
@@ -251,18 +251,18 @@ First specify where you want to install PnetCDF in a shell variable, for example
 If you would like to build the shared library, include `--enable-shared` option at the configure command line.  
 By default, only a static library is built.
 
-~~~~{.py}
+{.py}
     $ # Build and install PnetCDF
     $ PNDIR=/usr/local
     $ ./configure --prefix=${PNDIR} --with-mpi=/path/to/MPI/compilers
     $ make check
     $ make install   # or sudo make install, if root permissions required
-~~~~
+
 
 To build netCDF-4 with PnetCDF support, from the top-level netCDF-4 source directory, configure netCDF with the "--enable-pnetcdf" option.
 If PnetCDF is built with static library only, add "--disable-shared" option.
 
-~~~~{.py}
+{.py}
     $ # Build, test, and install netCDF-4 with PnetCDF support
     $ CC=mpicc CPPFLAGS="-I${H5DIR}/include -I${PNDIR}/include" \
       LDFLAGS="-L${H5DIR}/lib -L${PNDIR}/lib" ./configure \
@@ -270,7 +270,7 @@ If PnetCDF is built with static library only, add "--disable-shared" option.
 	  --prefix=${NCDIR}
     $ make check
     $ make install
-~~~~
+
 
 ## Linking to netCDF-C {#linking}
 
@@ -279,9 +279,9 @@ This will require -L options to your build for the locations of the libraries, a
 
 For example, you might build other applications with netCDF-4 by setting the LIBS environment variable, assuming NCDIR, H5DIR, PNDIT, and ZDIR indicate where netCDF, HDF5, PnetCDF, and zlib are installed:
 
-~~~~{.py}
+{.py}
     LIBS="-L${NCDIR}/lib -lnetcdf -L${H5DIR}/lib -lhdf5_hl -lhdf5 -L${PNDIR} -lpnetcdf -L${ZDIR}/lib -lz -lm"
-~~~~
+
 
 For shared builds, only `-L${NCDIR}/lib -lnetcdf` is needed.
 All other libraries will be found automatically.
@@ -289,17 +289,17 @@ All other libraries will be found automatically.
 The `pkg-config` or `nc-config` utilities can be used to specify build options for software that uses netCDF.  
 For example, to compile and link an application named myapp.c with a netCDF-C libraries, whether shared or static, you can use
 
-~~~~{.py}
+{.py}
     $ cc -o myapp myapp.c `nc-config --cflags --libs`
-~~~~
+
 
 or
 
-~~~~{.py}
+{.py}
     $ PKG_CONFIG_PATH=${NCDIR}/lib/pkgconfig:$PKG_CONFIG_PATH
     $ export PKG_CONFIG_PATH
     $ cc -o myapp myapp.c `pkg-config --cflags --libs netcdf`
-~~~~
+
 
 configure options {#configure_options}
 -----------------------------
