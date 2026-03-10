@@ -2,7 +2,7 @@ plugins {
     id("base")
 }
 
-val dockerImage = "docker.io/unidata/unidata-jekyll-docs:0.0.6"
+val dockerImage = "docker.io/unidata/unidata-jekyll-docs:0.1.1"
 
 val buildDoc = tasks.register<Exec>(name = "buildJekyllSite") {
     group = "documentation"
