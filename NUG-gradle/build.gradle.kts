@@ -54,5 +54,6 @@ tasks.register<Exec>(name = "stopServe") {
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "9.0.0"
+    gradleVersion = "9.4.0"
+    distributionSha256Sum = "b21468753cb43c167738ee04f10c706c46459cf8f8ae6ea132dc9ce589a261f2"
 }
