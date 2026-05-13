@@ -31,9 +31,9 @@ For recommendations about conventions for the netCDF-4 *enhanced* data model, se
 
 A ***coordinate variable*** is a one-dimensional variable with the same name as a dimension, which names the coordinate values of the dimension.
 It must not have any missing data (for example, no `_FillValue` or `missing_value` attributes) and must be strictly monotonic (values increasing or decreasing).
-A two-dimensional variable of type char is a ***string-valued coordinate variable*** if it has the same name as its first dimension, e.g.: **char time( time, time\_len);** all of its strings must be unique.
+A two-dimensional variable of type char is a ***string-valued coordinate variable*** if it has the same name as its first dimension, e.g.: **char time( time, time_len);** all of its strings must be unique.
 A variable's ***coordinate system*** is the set of coordinate variables used by the variable.
-Coordinates that refer to physical space are called ***spatial coordinates***, ones that refer to physical time are called ***time coordinates***, ones that refer to either physical space or time are called ***spatio\ temporal coordinates***.
+Coordinates that refer to physical space are called ***spatial coordinates***, ones that refer to physical time are called ***time coordinates***, ones that refer to either physical space or time are called ***spatio temporal coordinates***.
 
 - Make coordinate variables for every dimension possible (except for string length dimensions).
 - Give each coordinate variable at least `unit` and `long_name` attributes to document its meaning.
@@ -58,14 +58,14 @@ Here are some guidelines for deciding how to group your data into variables:
 ## Variable Attributes
 
 -   For each variable where it makes sense, add a **units** attribute, using the [udunits](https://www.unidata.ucar.edu/software/udunits/) conventions, if possible.
--   For each variable where it makes sense, add a **long\_name **** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
+-   For each variable where it makes sense, add a **long_name **** attribute, which is a human-readable descriptive name for the variable. This could be used for labeling plots, for example.
 
 ## Strings and Variables of type char
 
 NetCDF-3 does not have a primitive **String** type, but does have arrays of type **char**, which are 8 bits in size.
 The main difference is that Strings are variable length arrays of chars, while char arrays are fixed length.
 Software written in C usually depends on Strings being zero terminated, while software in Fortran and Java do not.
-Both C (*nc\_get\_vara\_text()*) and Java (*ArrayChar.getString()*) libraries have convenience routines that read char arrays and convert to Strings.
+Both C (*nc_get_vara_text()*) and Java (*ArrayChar.getString()*) libraries have convenience routines that read char arrays and convert to Strings.
 
 -   Do not use char type variables for numeric data, use byte type variables instead.
 -   Consider using a global Attribute instead of a Variable to store a String applicable to the whole dataset.
@@ -95,7 +95,7 @@ However the ncdump "-T" option can display numeric times that use udunits (and o
 
 -   If your data uses real, physical time that is well represented using the Gregorian/Julian calendar, encode it as an interval from a reference time, and add a units attribute which uses a udunits-compatible time unit. If the data assumes one of the non-standard calendars mentioned in the CF Conventions, specify that with a Calendar attribute. Readers can then use the udunits package to manipulate or format the date values, and the ncdump utility can display them with either numeric or string representation.
 -   If your data uses a calendar not supported by the CF Conventions, make it compatible with existing date manipulation packages if possible (for example, java.text.SimpleDateFormat).
--   Add multiple sets of time encodings if necessary to allow different readers to work as well as possible.\
+-   Add multiple sets of time encodings if necessary to allow different readers to work as well as possible.
 
 ## Unsigned Data
 
@@ -112,20 +112,21 @@ TheC-based netCDF libraries do not do the packing and unpacking. (The [netCDF Ja
 Interface is used.
 For details see [EnhancedScaleMissing](https://www.unidata.ucar.edu/software/netcdf-java/v4.1/javadocAll/ucar/nc2/dataset/EnhanceScaleMissing.html)).
 
--   Each variable with packed data has two attributes called **scale\_factor** and **add\_offset**, so that the packed data may be read and unpacked using the formula:
-
-    > ***unpacked\_data\_value = packed\_data\_value \* scale\_factor +
-    > add\_offset***
+-   Each variable with packed data has two attributes called **scale_factor** and **add_offset**, so that the packed data may be read and unpacked using the formula:
+```
+unpacked_data_value = packed_data_value * scale_factor + add_offset
+```
 
 -   The type of the stored variable is the packed data type, typically byte, short or int.
--   The type of the scale\_factor and add\_offset attributes should be the type that you want the unpacked data to be, typically float or double.
+-   The type of the scale_factor and add_offset attributes should be the type that you want the unpacked data to be, typically float or double.
 -   To avoid introducing a bias into the unpacked values due to truncation when packing, the data provider should round to the
     nearest integer rather than just truncating towards zero before writing the data:
+```
+packed_data_value = INT_ROUND( (unpacked_data_value - add_offset) / scale_factor )
+```
+where `INT_ROUND` is a function appropriate to the programming language in use that rounds to the nearest integer, e.g., it would be `(int)round(<float>)` in C or `(int)Math.round(<float>)` in Java.
 
-    > ***packed\_data\_value = nint((unpacked\_data\_value -
-    > add\_offset) / scale\_factor)***
-
-Depending on whether the packed data values are intended to be interpreted by the reader as signed or unsigned integers, there are alternative ways for the data provider to compute the *scale\_factor* and *add\_offset* attributes.
+Depending on whether the packed data values are intended to be interpreted by the reader as signed or unsigned integers, there are alternative ways for the data provider to compute the *scale_factor* and *add_offset* attributes.
 In either case, the formulas above apply for unpacking and packing the data.
 
 A conventional way to indicate whether a byte, short, or int variable is meant to be interpreted as unsigned, even for the netCDF-3 classic model that has no external unsigned integer type, is by providing the special variable attribute `_Unsigned` with value `"true"`.
@@ -135,35 +136,36 @@ In the enhanced netCDF-4 data model, packed integers may be declared to be of th
 Let *n* be the number of bits in the packed type, and assume *dataMin* and *dataMax* are the minimum and maximum values that will be used for a variable to be packed.
 
 -   If the packed values are intended to be interpreted as signed integers (the default assumption for classic model data), you may use:
-
-    > *scale\_factor =(dataMax - dataMin) / (2^n^ - 1)*
-
-    > *add\_offset = dataMin + 2^n\\ -\\ 1^ \* scale\_factor*
+```
+scale_factor = (dataMax - dataMin) / (2**n - 1)
+add_offset = dataMin + 2**(n - 1) * scale_factor
+```
 
 -   If the packed values are intended to be interpreted as unsigned (for example, when read in the C interface using the `nc_get_var_uchar()` function), use:
+```
+scale_factor = (dataMax - dataMin) / (2**n - 1)
+add_offset = dataMin
+```    
 
-    > *scale\_factor =(dataMax - dataMin) / (2^n^ - 1)*
-
-    > *add\_offset = dataMin*
-
--   In either the signed or unsigned case, an alternate formula may be used for the add\_offset and scale\_factor packing parameters that reserves a packed value for a special value, such as an indicator of missing data. For example, to reserve the minimum packed value (-2^n\\ -\\ 1^) for use as a special value in the case of signed packed values:
-
-    > *scale\_factor =(dataMax - dataMin) / (2^n^ - 2)*
-
-    > *add\_offset = (dataMax + dataMin) / 2*
+-   In either the signed or unsigned case, an alternate formula may be used for the add_offset and scale_factor packing parameters that reserves a packed value for a special value, such as an indicator of missing data. For example, to reserve the minimum packed value (-2^n - 1^) for use as a special value in the case of signed packed values:
+```
+scale_factor = (dataMax - dataMin) / (2**n - 2)
+add_offset = (dataMax + dataMin) / 2
+```    
 
 -   If the packed values are unsigned, then the analogous formula that reserves 0 as the packed form of a special value would be:
-
-    > *scale\_factor =(dataMax - dataMin) / (2^n^ - 2)*
-
-    > *add\_offset = dataMin - scale\_factor*
+```
+scale_factor = (dataMax - dataMin) / (2**n - 2)
+add_offset = dataMin - scale_factor
+``` 
 
 -   Example, packing 32-bit floats into 16-bit shorts:
-
-            variables:
-              short data( z, y, x);
-                data:scale_offset = 34.02f;
-                data:add_offset = 1.54f;
+```
+variables:
+        short data( z, y, x);
+            data:scale_offset = 34.02f;
+            data:add_offset = 1.54f;
+```
 
 -   The `units` attribute applies to unpacked values.
 
@@ -173,19 +175,19 @@ Let *n* be the number of bits in the packed type, and assume *dataMin* and *data
 The netCDF library itself does not handle these values in any special way, except that the value of a `_FillValue` attribute, if any, is used in pre-filling unwritten data.
 (The Java-netCDF library will assist in recognizing these values when reading, see class **VariableStandardized**).
 
--   Default fill values for each type are available in the C-based interfaces, and are defined in the appropriate header files. For example, in the C interface, NC\_FILL\_FLOAT and NC\_FILL\_DOUBLE are numbers near 9.9692e+36 that are returned when you try to read values that were never written. Writing, reading, and testing for equality with these default fill values works portably on the platforms on which netCDF has been tested.
+-   Default fill values for each type are available in the C-based interfaces, and are defined in the appropriate header files. For example, in the C interface, NC_FILL_FLOAT and NC_FILL_DOUBLE are numbers near 9.9692e+36 that are returned when you try to read values that were never written. Writing, reading, and testing for equality with these default fill values works portably on the platforms on which netCDF has been tested.
 -   The `_FillValue` attribute should have the same data type as the variable it describes. If the variable is packed using `scale_factor` and `add_offset` attributes, the `_FillValue` attribute should have the data type of the packed data.
 -   Another way of indicating missing values for real type data is to store an IEEE **NaN** floating point value. The advantage of this is that any computation using a NaN results in a NaN. Client software must know to look for NaNs, however, and detection of NaNs is tricky, since any comparison with a NaN is required to return *false*.
 
     -   In Java, you can use **Double.NaN** and **Float.NaN** constants.
     -   In many C compilers, you can generate a NaN value using **double nan = 0.0 / 0.0;**
 
--   Alternatively or in addition, set the **valid\_range** attribute for each variable that uses missing values, and make sure all valid data is within that range, and all missing or invalid data is outside of that range. Again, the client software must recognize and make use of this information. Example:
-
-            variables:
-              float data( z, y, x);
-                data:valid_range = -999.0f, 999.0f;
-
+-   Alternatively or in addition, set the **valid_range** attribute for each variable that uses missing values, and make sure all valid data is within that range, and all missing or invalid data is outside of that range. Again, the client software must recognize and make use of this information. Example:
+```
+variables:
+        float data( z, y, x);
+            data:valid_range = -999.0f, 999.0f;
+```
 
 If the variable is packed using `scale_factor` and `add_offset` attributes, the `valid_range` attribute should have the data type of the packed data.
 
@@ -202,7 +204,8 @@ There are 3 correct spellings of "netCDF":
 
 1.  **netCDF:** The original spelling of the name of the data model, API, and format. The acronym stands for network Common Data Form (not Format), and the "CDF" part was capitalized in part to pay homage to the NASA "CDF" data model which the netCDF data model extended.
 2.  **netcdf:** Used in certain file names, such as:
-
-             #include <netcdf.h>  
+```
+#include <netcdf.h>
+```               
 
 3.  **NetCDF**: Used in titles and at the beginning of sentences, where "netCDF" is awkward or violates style guidelines.
