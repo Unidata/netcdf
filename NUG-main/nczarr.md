@@ -108,8 +108,7 @@ inferences.
 - _zarr_ => _nczarr_
 
 So for example: ```...#mode=xarray,zip``` is equivalent to this.
-``...#mode=nczarr,zarr,xarray,zip
-```
+```...#mode=nczarr,zarr,xarray,zip```
 
 
 # NCZarr Map Implementation {#nczarr_mapimpl}
